@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config> -->
+    <domain-config>
+        <domain cleartextTrafficPermitted="true" includeSubdomains="true">abadata.ca</domain>
+        <!-- <domain cleartextTrafficPermitted="true" includeSubdomains="true">z.abacusdatagraphics.com</domain> -->
+
+        <!-- <pin-set>
+            <pin digest="SHA-256">iOnHhRhQIU2L5dQu6D4QU2sXlGwvvkpdeKtwDiOLzAM=</pin>
+            <pin digest="SHA-256">8Rw90Ej3Ttt8RRkrg+WYDS9n7IS03bk5bjP/UXPtaY8=</pin>
+            <pin digest="SHA-256">Ko8tivDrEjiY90yGasP6ZpBU4jwXvHqVvQI0GS3GNdA=</pin>
+        </pin-set> -->
+
+        <trust-anchors>
+            <certificates src="@raw/godaddy1"/>
+            <certificates src="@raw/godaddy2"/>
+            <certificates src="@raw/abadata_ca"/>
+            <!-- <certificates src="user" /> -->
+        </trust-anchors>
+    </domain-config>
+</network-security-config>
