@@ -7,7 +7,10 @@ import android.location.Address
 import android.location.Geocoder
 import android.os.Looper
 import android.util.Log
+<<<<<<< HEAD
 import android.widget.Toast
+=======
+>>>>>>> origin/master
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcgismaps.LoadStatus
@@ -49,7 +52,11 @@ class ImageLocationInfoViewModel @Inject constructor(
     private val packagePath = File(application.getExternalFilesDir(null), "sections.mmpk").path
     private val mobileMapPackage = MobileMapPackage(packagePath)
 
+<<<<<<< HEAD
     private val _location = MutableStateFlow<LocationObject?>(LocationObject())
+=======
+    private val _location = MutableStateFlow<LocationObject?>(null)
+>>>>>>> origin/master
     val location: StateFlow<LocationObject?> = _location
 
     fun insertImageLocationInfo(imageUri: Int?, locationInfoObject: LocationObject) {
@@ -65,7 +72,10 @@ class ImageLocationInfoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+<<<<<<< HEAD
             Log.d("load: ", "init+load")
+=======
+>>>>>>> origin/master
             mobileMapPackage.load()
              mobileMapPackage.loadStatus.collect {
                  Log.d("status: ", it.toString())
@@ -83,8 +93,26 @@ class ImageLocationInfoViewModel @Inject constructor(
 
     @SuppressLint("MissingPermission")
     private fun getLocationInfo() {
+<<<<<<< HEAD
         //ARCGIS
 
+=======
+        var locationObject = LocationObject()
+        var lat: String = ""
+        var lon: String = ""
+        var elevation: Double = 0.0
+        var gridLocation: String = ""
+        var distance: String = ""
+        var utmCoordinate: String = ""
+        var bearing: String = ""
+        var address: String = ""
+        var date: String = ""
+
+        //ARCGIS
+
+
+
+>>>>>>> origin/master
         var sectionLayer: FeatureLayer? = null
         var mMapView: MapView? = null
         val dec = DecimalFormat("#.000")
@@ -105,6 +133,7 @@ class ImageLocationInfoViewModel @Inject constructor(
                         // Location retrieved successfully
                         val lonDouble = location.longitude
                         val latDouble = location.latitude
+<<<<<<< HEAD
                         val elevationDouble = location.altitude
                         val bearingDouble  = location.bearing
                         _location.value!!.address = getAddressFromLocation(application, latDouble, lonDouble)
@@ -114,6 +143,16 @@ class ImageLocationInfoViewModel @Inject constructor(
                         _location.value!!.bearing = String.format("%.0f", bearingDouble) + "\u2103 TN"
 
                         val agsString: String = _location.value!!.lat + "N" + _location.value!!.lat + "W"
+=======
+                        getAddressFromLocation(application, latDouble, lonDouble, locationObject)
+                        elevation = location.altitude
+                        bearing = String.format("%.0f", location.bearing) + "\u2103 TN"
+                        lat = String.format("%.6f", latDouble)
+                        lon = String.format("%.6f", lonDouble)
+                        locationObject.lat = lat
+                        locationObject.lon = lon
+                        val agsString: String = lat + "N" + lon + "W"
+>>>>>>> origin/master
                         //Calculate the GridLocation (SW) 6-15-25-2W5
                         val pnt = CoordinateFormatter.fromLatitudeLongitudeOrNull(
                             agsString,
@@ -175,6 +214,7 @@ class ImageLocationInfoViewModel @Inject constructor(
                                             val yDelta =
                                                 (latDouble - extent.yMin) / (extent.yMax - extent.yMin)
                                             //Caculate GridLocation
+<<<<<<< HEAD
                                             _location.value!!.gridLocation =
                                                 getGridLocation(secLbl, xDelta, yDelta)
                                             //Calculate UTM Coordinate
@@ -183,11 +223,21 @@ class ImageLocationInfoViewModel @Inject constructor(
                                                 utmTup!!.third + " m " + utmTup!!.second + " m " + "Zone: " + utmTup.first
                                             //Calculate Distance
                                             _location.value!!.distance =
+=======
+                                            gridLocation = getGridLocation(secLbl, xDelta, yDelta)
+                                            //Calculate UTM Coordinate
+                                            val utmTup = sepUtm(utmString!!)
+                                            utmCoordinate =
+                                                utmTup!!.third + " m " + utmTup!!.second + " m " + "Zone: " + utmTup.first
+                                            //Calculate Distance
+                                            distance =
+>>>>>>> origin/master
                                                 calcDistances(
                                                     utmTup.second!!.toInt(),
                                                     utmTup.third!!.toInt(),
                                                     extent
                                                 )
+<<<<<<< HEAD
                                         }
 
                                             onFailure {
@@ -197,6 +247,21 @@ class ImageLocationInfoViewModel @Inject constructor(
                                                     Toast.LENGTH_SHORT
                                                 )
                                             }
+=======
+
+                                            _location.value = LocationObject().apply {
+                                                this.lat = lat
+                                                this.lon = lon
+                                            }
+
+//                                            onFailure {
+//                                                Toast.makeText(
+//                                                    context,
+//                                                    "Fail Query",
+//                                                    Toast.LENGTH_SHORT
+//                                                )
+//                                            }
+>>>>>>> origin/master
                                         }
                                     }
 
@@ -205,18 +270,32 @@ class ImageLocationInfoViewModel @Inject constructor(
                         }
                     }
                 }
+<<<<<<< HEAD
+=======
+            }
+
+>>>>>>> origin/master
 
             //getAddress
             fun getAddressFromLocation(
                 context: Context,
                 latitude: Double,
                 longitude: Double,
+<<<<<<< HEAD
             ):String {
+=======
+                locationInfoObject: LocationObject
+            ) {
+>>>>>>> origin/master
                 val geocoder = Geocoder(context, Locale.getDefault())
                 try {
                     @Suppress("DEPRECATION") val addresses: List<Address> =
                         geocoder.getFromLocation(latitude, longitude, 1) ?: listOf()
+<<<<<<< HEAD
                       if (addresses.isNotEmpty()) {
+=======
+                    return if (addresses.isNotEmpty()) {
+>>>>>>> origin/master
                         val address: Address = addresses[0]
 
                         // Retrieve the address information
@@ -225,15 +304,23 @@ class ImageLocationInfoViewModel @Inject constructor(
                         val state: String = address.adminArea
                         val country: String = address.countryName
                         val postalCode: String = address.postalCode
+<<<<<<< HEAD
                          return addressLine
                      }
                      else {
+=======
+                        locationInfoObject.address = addressLine
+                    } else {
+>>>>>>> origin/master
 
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+<<<<<<< HEAD
                 return ""
+=======
+>>>>>>> origin/master
             }
 
             //GetDateTime

@@ -19,13 +19,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+<<<<<<< HEAD
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+=======
+>>>>>>> origin/master
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+<<<<<<< HEAD
+=======
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+>>>>>>> origin/master
 import androidx.room.Room
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -73,9 +80,14 @@ class MainActivity : ComponentActivity() {
         copySectionsAssetToFile()
 
         setContent {
+<<<<<<< HEAD
             val location = viewModel.location.collectAsState().value
             Log.d("location: ", location.toString())
             var lat = remember(location){ mutableStateOf(location?.lat) }.value
+=======
+            val location = viewModel.location.collectAsStateWithLifecycle()
+            Log.d("location: ", location.toString())
+>>>>>>> origin/master
 
             DLSAndroidReDesignTheme {
                 Surface(
@@ -93,11 +105,21 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
+<<<<<<< HEAD
                     Column() {
                         Text(text = "${location?.lat}")
 
                         Text(text = "This is lat $lat")
                     }
+=======
+
+
+
+
+
+
+
+>>>>>>> origin/master
 
 
                     LaunchedEffect(permissionState) {
