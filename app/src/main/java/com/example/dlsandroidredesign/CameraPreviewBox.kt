@@ -92,7 +92,7 @@ import java.util.Locale
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalSheetApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun FullPreviewScreen(imageLocationInfoViewModel:ImageLocationInfoViewModel) {
+fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
 
     /////////////////SETUP
     val context = LocalContext.current
@@ -128,6 +128,10 @@ fun FullPreviewScreen(imageLocationInfoViewModel:ImageLocationInfoViewModel) {
     //API
     val retrofitInstance = RetoInstance().getInstance()
     val apiService = retrofitInstance.create(ApiInterfaceService::class.java)
+
+
+    val settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial = hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
+
 
 
     //Zoom value
@@ -266,6 +270,7 @@ fun FullPreviewScreen(imageLocationInfoViewModel:ImageLocationInfoViewModel) {
             textAlign = Paint.Align.RIGHT
 
         }
+
 
 
         var xleft = 100f
@@ -500,7 +505,7 @@ fun FullPreviewScreen(imageLocationInfoViewModel:ImageLocationInfoViewModel) {
                         modifier = Modifier.fillMaxSize(),
                     )
 
-                    getCurrentLocation()
+                    locationView(viewModel)
 
                 }
         }
@@ -527,9 +532,8 @@ fun FullPreviewScreen(imageLocationInfoViewModel:ImageLocationInfoViewModel) {
     }
     ModalSheet(visible = galleryModalSheetVisible, onVisibleChange ={galleryModalSheetVisible=it} ) {
         GalleryScreen()
-
     }
-    ModalBottomSheetSetting(sheetState, isSettingFragmentShow = isSettingFragmentShow)
+    ModalBottomSheetSetting(sheetState, isSettingFragmentShow = isSettingFragmentShow, viewModel )
 
 
 }

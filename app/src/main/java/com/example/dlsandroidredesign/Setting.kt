@@ -49,10 +49,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eu.wewox.modalsheet.ExperimentalSheetApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-
-
 
 
 @Composable
@@ -75,7 +74,7 @@ fun settingFragment(){
                 .fillMaxWidth()
                 .size(17.dp, 30.dp)
 
-                ,
+            ,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(painter = painterResource(id = R.drawable.ic_xmark_single), contentDescription =null, modifier = Modifier.size(17.dp,17.dp) )
@@ -86,10 +85,10 @@ fun settingFragment(){
         //Spacer
         Spacer(modifier = Modifier.padding(bottom = 10.dp))
         //cardView
-       Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)) {
-           Text(text = "PHOTO DISPLAY OPTIONS")
+        Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)) {
+            Text(text = "PHOTO DISPLAY OPTIONS")
             DisplayOption()
-       }
+        }
 
         //SAVE TO PHOTO LIBRARY OPTIONS
 
@@ -105,7 +104,7 @@ fun settingFragment(){
                 onLogInPressed= {isLoginFragmentShow=true
                     isWaypointgroupsFragmentsShow=false
                     coroutineScope.launch { settingSheetState.show() }
-                                          },
+                },
                 onWaypointgroupsPressed = {isWaypointgroupsFragmentsShow=true
                     isLoginFragmentShow=false
                     coroutineScope.launch { settingSheetState.show()}
@@ -148,60 +147,67 @@ fun MyPhotoDisplaySwitch(title: String, checked: Boolean, onCheckChanged: (Boole
 fun DisplayOption( ){
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
     val coroutineScope = rememberCoroutineScope()
-
-//    runBlocking { preferenceDataStore.getLatitude.first() }
-    var latitude = preferenceDataStore.getLatitudeAndLongitudeChecked.collectAsState(initial =true)
-    var elevation = preferenceDataStore.getElevation.collectAsState(initial =true)
-    var gridLocation = preferenceDataStore.getGridLocation.collectAsState(initial =true)
-    var distance = preferenceDataStore.getDistance.collectAsState(initial =true)
-    var heading = preferenceDataStore.getHeading.collectAsState(initial =true)
-    var address = preferenceDataStore.getAddress.collectAsState(initial =true)
-    var dateAndTime = preferenceDataStore.getDateAndTime.collectAsState(initial =true)
-    var utm = preferenceDataStore.getUtm.collectAsState(initial =true)
+    var settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial = hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
+    val menuTitleList :List<String> = listOf("Latitude/Longitude","Elevation","Grid Location","Distance from Grid Lines","Heading","Address","Date and Time","UTM Coordinates","Custom Text: ")
     var customText =preferenceDataStore.getCustomText.collectAsState(initial = "")
+
 
     Box(modifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(8.dp))
         .padding(20.dp, 0.dp, 20.dp, 4.dp),
 
-){
-    Column(modifier = Modifier
-    ) {
-        MyPhotoDisplaySwitch("Latitude/Longitude",latitude.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setLatitudeAndLongitudeChecked(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("Elevation",elevation.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setElevation(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-            MyPhotoDisplaySwitch("Grid Location",gridLocation.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setGridLocation(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("Distance from Grid Lines",distance.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setDistance(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("Heading",heading.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setHeading(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("Address",address.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setAddress(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("Date and Time",dateAndTime.value, onCheckChanged ={ newValue-> coroutineScope.launch { preferenceDataStore.setDateAndTime(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        MyPhotoDisplaySwitch("UTM Coordinates",utm.value, onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setUtm(newValue)}})
-        Divider( thickness = 0.2.dp, color = Color.Black)
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)) {
-            Text(text = "Custom Text: ")
-            BasicTextField(value = customText.value, onValueChange = {newValue-> coroutineScope.launch { preferenceDataStore.setCustomText(newValue)}})
-        }
+        ){
+        for (menuTitle in menuTitleList){
 
         }
 
-}
+
+        Column(modifier = Modifier
+        ) {
+            MyPhotoDisplaySwitch("Latitude/Longitude",settingCheckbox.contains("LatLon"),
+                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("LatLon",settingCheckbox) }
+                }
+            )
+
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Elevation",settingCheckbox.contains("Elevation"),
+                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("Elevation",settingCheckbox)}
+                }
+            )
+
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Grid Location",settingCheckbox.contains("Location"),
+                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("GridLocation",settingCheckbox)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Distance from Grid Lines",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setDistance(newValue)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Heading",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setHeading(newValue)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Address",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setAddress(newValue)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Date and Time",settingCheckbox.contains("LatLon"), onCheckChanged ={ newValue-> coroutineScope.launch { preferenceDataStore.setDateAndTime(newValue)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("UTM Coordinates",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setUtm(newValue)}})
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)) {
+                Text(text = "Custom Text: ")
+                BasicTextField(value = "${customText.value}", onValueChange = {newValue-> coroutineScope.launch(Dispatchers.IO) { preferenceDataStore.setCustomText(newValue)}})
+            }
+
+        }
+
+    }
     Log.d("Setting", "Displayoption")
 
 }
@@ -333,7 +339,7 @@ fun TabRowPhotoOption(){
         .fillMaxWidth()
         .padding(18.dp, 4.dp, 18.dp, 4.dp),
         verticalAlignment = Alignment.CenterVertically
-        ) {
+    ) {
 
         Text(text = "PHOTO SIZE", fontSize = 14.sp)
 
@@ -341,7 +347,7 @@ fun TabRowPhotoOption(){
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.LightGray)
-                ) {
+        ) {
             tabs.forEachIndexed { index, title ->
 
                 Tab(text = { Text(title) },
@@ -351,7 +357,7 @@ fun TabRowPhotoOption(){
                         .clip(RoundedCornerShape(8.dp))//Round shape for each item
                         .padding(3.dp, 3.dp),
 
-                )
+                    )
 
             }
         }
@@ -383,42 +389,42 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
         .padding(5.dp, 4.dp, 0.dp, 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Upload Photos to AbaData", color = Color(0xFF00B0FF),
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .clickable { onLogInPressed() })
-                if(isLoginSuccessful) {
-                    Row(modifier = Modifier.align(Alignment.TopEnd)) {
-                        Text(text = "User: $usernameDisplay", color = Color(0xFF00B0FF))
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
-                            modifier = Modifier
-                                .size(30.dp, 30.dp),
-                            contentDescription = null
-                        )
-                    }
+            Text(text = "Upload Photos to AbaData", color = Color(0xFF00B0FF),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .clickable { onLogInPressed() })
+            if(isLoginSuccessful) {
+                Row(modifier = Modifier.align(Alignment.TopEnd)) {
+                    Text(text = "User: $usernameDisplay", color = Color(0xFF00B0FF))
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
+                        modifier = Modifier
+                            .size(30.dp, 30.dp),
+                        contentDescription = null
+                    )
                 }
+            }
         }
 
         Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))
 
         if(isLoginSuccessful){
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {})
-        {
-            Text(text = "Upload Automatically", color= Color(0xFF00B0FF),
-                modifier = Modifier
-                    .align(Alignment.TopStart))
-            Image(painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
-                modifier= Modifier
-                    .size(30.dp, 30.dp)
-                    .align(Alignment.TopEnd),
-                contentDescription =null )
-        }
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {})
+            {
+                Text(text = "Upload Automatically", color= Color(0xFF00B0FF),
+                    modifier = Modifier
+                        .align(Alignment.TopStart))
+                Image(painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
+                    modifier= Modifier
+                        .size(30.dp, 30.dp)
+                        .align(Alignment.TopEnd),
+                    contentDescription =null )
+            }
 
-        Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))}
+            Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))}
 
 
         Row(modifier = Modifier
@@ -526,7 +532,7 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
 
                 }
             }
-    }
+        }
 
         Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))
         if(isLoginSuccessful){
