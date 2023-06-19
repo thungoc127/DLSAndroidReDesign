@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
@@ -71,8 +72,8 @@ class MainActivity : ComponentActivity() {
         copySectionsAssetToFile()
 
         setContent {
-            val location = viewModel.location.collectAsStateWithLifecycle()
-            Log.d("location: ", location.toString())
+            val locationObject by viewModel.locationObject.collectAsStateWithLifecycle()
+            Log.d("location act: ", locationObject.toString())
 
             DLSAndroidReDesignTheme {
                 Surface(
@@ -90,20 +91,9 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
-
-
-
-
-
-
-
-
-
                     LaunchedEffect(permissionState) {
                         permissionState.launchMultiplePermissionRequest()
                     }
-
-
                 }
             }
         }
