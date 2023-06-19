@@ -1,6 +1,7 @@
 package com.example.dlsandroidredesign
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -11,6 +12,18 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+
+
+val settingMap = mapOf(
+    "latlon" to true,
+    "elevation" to true,
+    "gridLocation" to true,
+    "distance" to true,
+    "utmCoordinate" to true,
+    "bearing" to true,
+    "address" to true,
+    "date" to true
+)
 
 class PreferencesDataStore(private val context: Context){
     companion object {
@@ -35,7 +48,37 @@ class PreferencesDataStore(private val context: Context){
         private var loginSharedInfoList = stringPreferencesKey("loginSharedInfoList")
         private var waypointgroup = stringPreferencesKey("waypointgroupcheck")
         private var waypointgroupCheck = stringPreferencesKey("groupIdCheck")
+        private var settingCheckbox = stringPreferencesKey("settingCheck")
+    }
 
+    ///CheckBox
+    fun getSettingCheckbox(): Flow<HashSet<String>> {
+        Log.d("getCheckBox","Get")
+        return context.dataStore.data.map { preferences ->
+            val serializedData = preferences[settingCheckbox]
+            val settingCheckboxType = object : TypeToken<HashSet<String>>() {}.type
+            Gson().fromJson(serializedData, settingCheckboxType) ?: hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")
+
+        }
+    }
+
+     suspend fun setSettingCheckBox(value: String, hashSet: HashSet<String>) {
+        if (hashSet.contains(value)) {
+            hashSet.remove(value)
+            Log.d("setCheckBox","Remove")
+            Log.d("setCheckBox","$hashSet")
+
+        } else {
+            hashSet.add(value)
+            Log.d("setCheckBox","Set")
+            Log.d("setCheckBox","$hashSet")
+
+
+        }
+        val newSerializedData = Gson().toJson(hashSet)
+        context.dataStore.edit { preferences ->
+            preferences[settingCheckbox] = newSerializedData
+        }
     }
 
 
@@ -45,10 +88,10 @@ class PreferencesDataStore(private val context: Context){
     }
 
     var getWaypointgroupCheck =  context.dataStore.data.map { it[waypointgroupCheck] ?: null }
-///loginSharedInfoList
+    ///loginSharedInfoList
     suspend fun setLoginSharedInfoList(dataObject: LoginDTO) {
-    val serializedList = Gson().toJson(dataObject)
-    context.dataStore.edit { it[loginSharedInfoList] = serializedList } }
+        val serializedList = Gson().toJson(dataObject)
+        context.dataStore.edit { it[loginSharedInfoList] = serializedList } }
 
     fun getLoginSharedInfoList(): Flow<LoginDTO> {
         return context.dataStore.data.map { preferences ->
@@ -83,19 +126,19 @@ class PreferencesDataStore(private val context: Context){
 
     var getIsLoginSuccess =  context.dataStore.data.map { it[isLoginSuccessful] ?: false }
 
-//UserName
-     suspend fun setUsername(userNameInput: String) {
+    //UserName
+    suspend fun setUsername(userNameInput: String) {
         context.dataStore.edit { it[userName] = userNameInput }
     }
 
-        var getUsername =  context.dataStore.data.map { it[userName] ?: "" }
+    var getUsername =  context.dataStore.data.map { it[userName] ?: "" }
 
-//Password
+    //Password
     suspend fun setPassword(passwordInput: String) {
         context.dataStore.edit { it[passWord] = passwordInput }
     }
 
-        var getPassword =  context.dataStore.data.map { it[passWord] ?: "" }
+    var getPassword =  context.dataStore.data.map { it[passWord] ?: "" }
 
 
 
@@ -212,14 +255,14 @@ class PreferencesDataStore(private val context: Context){
 
 
 /**
- var preferenceDataStore = PreferenceDataStore(this)
- btSaveDetails.setOnClickListener{
- CoroutineScope(Dispatcher.IO).launch{
- var channelDetails = ChannelDetails("Noob Developer",1000,"Education)
- preferenceDataStore.setDetailts(channelDetails)
+var preferenceDataStore = PreferenceDataStore(this)
+btSaveDetails.setOnClickListener{
+CoroutineScope(Dispatcher.IO).launch{
+var channelDetails = ChannelDetails("Noob Developer",1000,"Education)
+preferenceDataStore.setDetailts(channelDetails)
 
- )
- }
+)
+}
 
  **/
 

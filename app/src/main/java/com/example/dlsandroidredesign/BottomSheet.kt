@@ -12,13 +12,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
 @Composable
-fun ModalBottomSheetSetting(sheetState:ModalBottomSheetState,isSettingFragmentShow: Boolean){
-    val CorotineScope = rememberCoroutineScope()
+fun ModalBottomSheetSetting(sheetState:ModalBottomSheetState,isSettingFragmentShow: Boolean,viewModel: ImageLocationInfoViewModel){
+    val corotineScope = rememberCoroutineScope()
 
 
     ModalSheet(
         sheetState = sheetState,
-        onSystemBack = {CorotineScope.launch { sheetState.hide() }},
+        onSystemBack = {corotineScope.launch { sheetState.hide() }},
         content={
             if(isSettingFragmentShow)
                 settingFragment()},

@@ -19,20 +19,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-<<<<<<< HEAD
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-=======
->>>>>>> origin/master
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-<<<<<<< HEAD
-=======
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
->>>>>>> origin/master
 import androidx.room.Room
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -74,20 +66,12 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("StateFlowValueCalledInComposition", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //name = "Nancy"
-//        name = "test"
         // TODO: Check file exist or not
         copySectionsAssetToFile()
 
         setContent {
-<<<<<<< HEAD
-            val location = viewModel.location.collectAsState().value
-            Log.d("location: ", location.toString())
-            var lat = remember(location){ mutableStateOf(location?.lat) }.value
-=======
-            val location = viewModel.location.collectAsStateWithLifecycle()
-            Log.d("location: ", location.toString())
->>>>>>> origin/master
+            val locationObject by viewModel.locationObject.collectAsStateWithLifecycle()
+            Log.d("location act: ", locationObject.toString())
 
             DLSAndroidReDesignTheme {
                 Surface(
@@ -105,28 +89,11 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
-<<<<<<< HEAD
-                    Column() {
-                        Text(text = "${location?.lat}")
-
-                        Text(text = "This is lat $lat")
-                    }
-=======
-
-
-
-
-
-
-
->>>>>>> origin/master
-
+                    FullPreviewScreen(viewModel)
 
                     LaunchedEffect(permissionState) {
                         permissionState.launchMultiplePermissionRequest()
                     }
-
-
                 }
             }
         }
@@ -153,67 +120,18 @@ class MainActivity : ComponentActivity() {
       } catch (error: Exception) {
           error
       }
-
-// The file has been copied to the internal storage at the specified location
     }
 }
 
-/*
-
-private fun MainScreen() {
-    someFunctionWithCallback(finalResultCallback = { name: String, age: Int ->  
-        // continue
-
-    })
-}
-
-private fun someFunctionWithCallback(finalResultCallback: (name: String, age: Int) -> Unit) {
-    // run 1
-    // run 2
-    //run 3
-    // finish job
-    // => callback to where it gets called
-    finalResultCallback.invoke("Success", 15)
-}
-
-@Composable
-fun Screen() {
-    var single by remember { mutableStateOf(false) }
-    var over18 by remember { mutableStateOf(false) }
-    Column() {
-        MySwitch(title = "Are you single?", checked = single, onCheckChanged = { single = it })
-        MySwitch(title = "Are you over 18+?", checked = over18, onCheckChanged = { over18 = it })
-    }
-}
-
-@Composable
-fun MySwitch(title: String, checked: Boolean, onCheckChanged: (Boolean) -> Unit) {
-    Row() {
-        Text(text =title)
-        Switch(
-            checked = checked,
-            onCheckedChange = {
-                onCheckChanged(it)
-            }
-        )
-    }
-}
-
-@Preview
-@Composable
-fun MySwitchPreview() {
-    Screen()
-}
-*/
 
 
 @Composable
-fun test(date:String,lat:String,lon:String){
+fun test(location:LocationObject){
     Column {
         Column() {
-            Text(text = "$date")
-            Text(text = "$lat")
-            Text(text = "$lon")
+            Text(text = "${location.date}")
+            Text(text = "${location.lat}")
+            Text(text = "${location.lon}")
 
         }
     }
