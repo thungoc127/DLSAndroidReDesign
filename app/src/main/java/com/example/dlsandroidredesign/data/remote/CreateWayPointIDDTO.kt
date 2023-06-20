@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.data.remote
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

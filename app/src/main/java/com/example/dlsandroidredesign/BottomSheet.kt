@@ -6,25 +6,17 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.example.dlsandroidredesign.ui.login.LogInScreen
+import com.example.dlsandroidredesign.ui.setting.settingFragment
+import com.example.dlsandroidredesign.ui.waypointGroup.WaypointgroupsFragment
 import eu.wewox.modalsheet.ExperimentalSheetApi
 import eu.wewox.modalsheet.ModalSheet
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
 @Composable
-fun ModalBottomSheetSetting(sheetState:ModalBottomSheetState,isSettingFragmentShow: Boolean,viewModel: ImageLocationInfoViewModel){
-    val corotineScope = rememberCoroutineScope()
+fun ModalBottomSheetSetting(sheetState:ModalBottomSheetState,isSettingFragmentShow: Boolean){
 
-
-    ModalSheet(
-        sheetState = sheetState,
-        onSystemBack = {corotineScope.launch { sheetState.hide() }},
-        content={
-            if(isSettingFragmentShow)
-                settingFragment()},
-        shape= MaterialTheme.shapes.extraLarge
-
-    )
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
@@ -39,9 +31,13 @@ fun ModalBottomSheetLoginAndWaypointgroups(sheetState:ModalBottomSheetState, isL
                        },
         content={
             if(isLoginFragmentShow)
-            {LogInFragement()}
+            {
+                LogInScreen()
+            }
             if(isWaypointgroupsFragment)
-            {WaypointgroupsFragment()}
+            {
+                WaypointgroupsFragment()
+            }
         }
     )
 }

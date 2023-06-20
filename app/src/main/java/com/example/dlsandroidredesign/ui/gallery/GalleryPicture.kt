@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.ui.gallery
 
 import android.app.Activity
 import android.content.ContentUris
@@ -41,9 +41,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.dlsandroidredesign.R
 
 
 @OptIn(ExperimentalCoilApi::class, ExperimentalFoundationApi::class)
@@ -113,7 +115,7 @@ fun AppContent() {
 
 @OptIn(ExperimentalCoilApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun GalleryScreen(){
+fun GalleryScreen(viewModel: GalleryViewModel= hiltViewModel()){
     val context = LocalContext.current
     var selectedImageUris by remember {
         mutableStateOf<List<Uri>>(emptyList())
@@ -124,7 +126,7 @@ fun GalleryScreen(){
         onResult = { uris -> selectedImageUris = uris }
     )
 
-    val recentImages = getAllGalleryImages(context)
+    val recentImages = viewModel.allImages
 
 
 
@@ -183,7 +185,7 @@ fun CameraPicker(){
     }
     Image(painter = painterResource(id = R.drawable.camera_capture)
         , contentDescription = null
-        ,modifier=Modifier
+        ,modifier= Modifier
             .padding(2.dp)
             .background(Color.Red)
             .clickable {

@@ -7,62 +7,34 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.room.Room
+import com.example.dlsandroidredesign.ui.login.LogInScreen
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-
 @OptIn(ExperimentalMaterialApi::class)
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     @get:RequiresApi(Build.VERSION_CODES.O)
     @get:SuppressLint("SuspiciousIndentation")
     @ExperimentalPermissionsApi
     val context: Context = this
-
-    private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            ImageLocationInfoDatabase::class.java,
-            "contacts.db"
-        )
-            .addTypeConverter(Converters())
-            .build()
-    }
     @OptIn(ExperimentalPermissionsApi::class)
-    private val viewModel by viewModels<ImageLocationInfoViewModel>(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ImageLocationInfoViewModel(application,db.imageLocaitonInfoDAO) as T
-                }
-            }
-        }
-    )
-
     @SuppressLint("StateFlowValueCalledInComposition", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +42,8 @@ class MainActivity : ComponentActivity() {
         copySectionsAssetToFile()
 
         setContent {
-            val locationObject by viewModel.locationObject.collectAsStateWithLifecycle()
-            Log.d("location act: ", locationObject.toString())
+/*            val locationObject by viewModel.locationObject.collectAsStateWithLifecycle()
+            Log.d("location act: ", locationObject.toString())*/
 
             DLSAndroidReDesignTheme {
                 Surface(
@@ -89,7 +61,7 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
-                    FullPreviewScreen(viewModel)
+                    LogInScreen()
 
                     LaunchedEffect(permissionState) {
                         permissionState.launchMultiplePermissionRequest()
@@ -125,14 +97,3 @@ class MainActivity : ComponentActivity() {
 
 
 
-@Composable
-fun test(location:LocationObject){
-    Column {
-        Column() {
-            Text(text = "${location.date}")
-            Text(text = "${location.lat}")
-            Text(text = "${location.lon}")
-
-        }
-    }
-}

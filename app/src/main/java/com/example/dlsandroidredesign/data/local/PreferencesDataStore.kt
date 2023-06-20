@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.data.local
 
 import android.content.Context
 import android.util.Log
@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.dlsandroidredesign.domain.entity.Waypointgroup
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
@@ -62,7 +63,7 @@ class PreferencesDataStore(private val context: Context){
         }
     }
 
-     suspend fun setSettingCheckBox(value: String, hashSet: HashSet<String>) {
+     suspend fun setSettingChheckBox(value: String, hashSet: HashSet<String>) {
         if (hashSet.contains(value)) {
             hashSet.remove(value)
             Log.d("setCheckBox","Remove")
@@ -88,17 +89,7 @@ class PreferencesDataStore(private val context: Context){
     }
 
     var getWaypointgroupCheck =  context.dataStore.data.map { it[waypointgroupCheck] ?: null }
-    ///loginSharedInfoList
-    suspend fun setLoginSharedInfoList(dataObject: LoginDTO) {
-        val serializedList = Gson().toJson(dataObject)
-        context.dataStore.edit { it[loginSharedInfoList] = serializedList } }
 
-    fun getLoginSharedInfoList(): Flow<LoginDTO> {
-        return context.dataStore.data.map { preferences ->
-            val serializedData = preferences[loginSharedInfoList]
-            Gson().fromJson(serializedData, LoginDTO::class.java)?: LoginDTO(null,null,null,null,null)
-        }
-    }
 
     //Waypoint group ch
 
