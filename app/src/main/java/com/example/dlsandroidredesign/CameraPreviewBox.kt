@@ -66,6 +66,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
+import com.example.dlsandroidredesign.data.remote.DLSService
+import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.google.gson.JsonObject
 import com.smarttoolfactory.screenshot.rememberScreenshotState
 import eu.wewox.modalsheet.ExperimentalSheetApi
@@ -123,12 +125,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
     var bmp by remember { mutableStateOf<Bitmap?>(null) }
     var locationInfoLeft = preferenceDataStore.getLocationInfoLeft.collectAsState(initial = "0.0").value
     var locationInfoRight = preferenceDataStore.getLocationInfoRight.collectAsState(initial = "0.0").value
-
-
-    //API
-    val retrofitInstance = RetoInstance().getInstance()
-    val apiService = retrofitInstance.create(ApiInterfaceService::class.java)
-
 
     val settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial = hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
 
@@ -209,44 +205,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
         )
         Toast.makeText(context, "Convert Success ", Toast.LENGTH_SHORT).show()
         return picture
-    }
-
-    suspend fun uploadPhoto(
-        apiKey: String?,
-        waypointId: String?,
-        photo: MultipartBody.Part?
-    ) {
-        val response = apiService.uploadPhoto(
-            apiKey = apiKey,
-            waypointId = waypointId,
-            photo = photo
-        )
-        val body = response.body()
-        withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                val id = body!!.waypointid
-                Toast.makeText(context, "Success $id ", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-    }
-
-    suspend fun getWayPoint(apiKey: String?, bean: JsonObject?):String? {
-        val response = apiService.getWayPointID(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", bean = bean)
-        val body = response.body()
-        var id:String? =null
-        withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                 id = response.body()!!.waypointid
-                Toast.makeText(context, "Success + $id", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-        return id
     }
 
 

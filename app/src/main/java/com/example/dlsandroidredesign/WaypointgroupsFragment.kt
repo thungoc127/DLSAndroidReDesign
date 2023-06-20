@@ -28,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dlsandroidredesign.data.remote.DLSService
+import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -41,7 +43,7 @@ fun WaypointgroupsFragment(){
     var waypointgroups = preferenceDataStore.getWaypointgroup().collectAsState(initial = emptyList()).value
     val apiKey = preferenceDataStore.getLoginSharedInfoList().collectAsState(initial = LoginDTO(null,null,null,null,null)).value.id
     val retrofitInstance = RetoInstance().getInstance()
-    val apiService = retrofitInstance.create(ApiInterfaceService::class.java)
+    val apiService = retrofitInstance.create(DLSService::class.java)
     var groupIdCheck = preferenceDataStore.getWaypointgroupCheck.collectAsState(initial = null).value
 
     suspend fun getWayPointGroups(apiKey:String?){

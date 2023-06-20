@@ -1,5 +1,8 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.data.remote
 
+import com.example.dlsandroidredesign.CreateWayPointIDDTO
+import com.example.dlsandroidredesign.LoginDTO
+import com.example.dlsandroidredesign.WaypointGroupsDTO
 import com.google.gson.JsonObject
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -10,7 +13,8 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 
-interface ApiInterfaceService {
+interface DLSService {
+
     @GET("dlsphoto-validate")
     suspend fun validate(
         @Query("username") userName: String?,
@@ -35,6 +39,4 @@ interface ApiInterfaceService {
         @Query("waypointId") waypointId: String?,
         @Part photo: MultipartBody.Part?
     ): Response<CreateWayPointIDDTO>
-
-
 }

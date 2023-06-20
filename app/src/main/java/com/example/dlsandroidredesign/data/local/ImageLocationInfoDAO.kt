@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 
 
 @Dao
-interface ImageLocaitonInfoDAO {
+interface ImageLocationInfoDAO {
     @Insert
     suspend fun insertImageLocationInfo(imageLocationInfo: ImageLocationInfo)
     @Delete

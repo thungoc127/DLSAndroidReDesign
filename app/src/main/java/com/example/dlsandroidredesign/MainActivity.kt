@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.room.Room
+import com.example.dlsandroidredesign.data.local.DLSDatabase
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -43,21 +44,13 @@ class MainActivity : ComponentActivity() {
     @ExperimentalPermissionsApi
     val context: Context = this
 
-    private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            ImageLocationInfoDatabase::class.java,
-            "contacts.db"
-        )
-            .addTypeConverter(Converters())
-            .build()
-    }
+
     @OptIn(ExperimentalPermissionsApi::class)
     private val viewModel by viewModels<ImageLocationInfoViewModel>(
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ImageLocationInfoViewModel(application,db.imageLocaitonInfoDAO) as T
+                    return ImageLocationInfoViewModel(application,db.imageLocationInfoDAO) as T
                 }
             }
         }
@@ -126,7 +119,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun test(location:LocationObject){
+fun test(location: LocationObject){
     Column {
         Column() {
             Text(text = "${location.date}")

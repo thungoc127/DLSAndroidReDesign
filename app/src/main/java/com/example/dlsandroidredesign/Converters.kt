@@ -3,6 +3,7 @@ package com.example.dlsandroidredesign
 import android.net.Uri
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
+import com.example.dlsandroidredesign.data.local.LocationObject
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

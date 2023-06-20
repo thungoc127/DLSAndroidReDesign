@@ -6,6 +6,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.example.dlsandroidredesign.ui.login.LogInScreen
 import eu.wewox.modalsheet.ExperimentalSheetApi
 import eu.wewox.modalsheet.ModalSheet
 import kotlinx.coroutines.launch
@@ -39,7 +40,9 @@ fun ModalBottomSheetLoginAndWaypointgroups(sheetState:ModalBottomSheetState, isL
                        },
         content={
             if(isLoginFragmentShow)
-            {LogInFragement()}
+            {
+                LogInScreen()
+            }
             if(isWaypointgroupsFragment)
             {WaypointgroupsFragment()}
         }

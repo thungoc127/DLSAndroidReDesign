@@ -8,6 +8,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,11 +21,16 @@ import com.arcgismaps.geometry.SpatialReference
 import com.arcgismaps.geometry.UtmConversionMode
 import com.arcgismaps.mapping.MobileMapPackage
 import com.arcgismaps.mapping.layers.FeatureLayer
+import com.example.dlsandroidredesign.data.local.ImageLocationInfo
+import com.example.dlsandroidredesign.data.local.ImageLocationInfoDAO
+import com.example.dlsandroidredesign.data.local.PreferencesDataStore
+import com.example.dlsandroidredesign.domain.entity.LocationObject
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -34,6 +40,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
 import java.io.File
 import java.io.IOException
 import java.math.RoundingMode
@@ -49,7 +56,7 @@ import kotlin.coroutines.suspendCoroutine
 @HiltViewModel
 class ImageLocationInfoViewModel @Inject constructor(
     private val application: Application,
-    private val dao: ImageLocaitonInfoDAO
+    private val dao: ImageLocationInfoDAO
 ) : ViewModel() {
     val preferenceDataStore = PreferencesDataStore(application)
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
@@ -238,8 +245,43 @@ class ImageLocationInfoViewModel @Inject constructor(
         }
     }
 
+//    suspend fun uploadPhoto(
+//        apiKey: String?,
+//        waypointId: String?,
+//        photo: MultipartBody.Part?
+//    ) {
+//        val response = apiService.uploadPhoto(
+//            apiKey = apiKey,
+//            waypointId = waypointId,
+//            photo = photo
+//        )
+//        val body = response.body()
+//        withContext(Dispatchers.Main) {
+//            if (response.isSuccessful) {
+//                val id = body!!.waypointid
+//                Toast.makeText(context, "Success $id ", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+//
+//            }
+//        }
+//    }
 
+    suspend fun getWayPoint(apiKey: String?, bean: JsonObject?):String? {
+        val response = apiService.getWayPointID(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", bean = bean)
+        val body = response.body()
+        var id:String? =null
+        withContext(Dispatchers.Main) {
+            if (response.isSuccessful) {
+                id = response.body()!!.waypointid
+                Toast.makeText(context, "Success + $id", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
 
+            }
+        }
+        return id
+    }
 }
 
 fun getDistances(x: Int, y: Int, ext: Envelope): String {
