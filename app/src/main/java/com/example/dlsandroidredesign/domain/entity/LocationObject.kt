@@ -1,14 +1,4 @@
-package com.example.dlsandroidredesign
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity
-data class ImageLocationInfo (
-    @PrimaryKey(autoGenerate = true)
-    val uriImage: Int?,
-    val locationObject: LocationObject?,
-)
+package com.example.dlsandroidredesign.domain.entity
 
 data class LocationObject(
     var lat: String="",

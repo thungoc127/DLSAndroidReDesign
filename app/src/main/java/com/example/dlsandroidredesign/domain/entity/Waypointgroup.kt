@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.domain.entity
 
 import com.google.gson.annotations.SerializedName
 

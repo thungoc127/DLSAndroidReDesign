@@ -1,7 +1,7 @@
 @file:Suppress("FunctionName")
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.ui.mainScreen
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -29,7 +29,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +44,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,19 +60,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.dlsandroidredesign.R
+import com.example.dlsandroidredesign.data.local.PreferencesDataStore
+import com.example.dlsandroidredesign.ui.gallery.GalleryScreen
 import com.google.gson.JsonObject
 import com.smarttoolfactory.screenshot.rememberScreenshotState
 import eu.wewox.modalsheet.ExperimentalSheetApi
 import eu.wewox.modalsheet.ModalSheet
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -90,14 +87,11 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalSheetApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalSheetApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
-
-    /////////////////SETUP
+fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel()) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-
     //Camera
     var cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -105,7 +99,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
     var flashModeState by remember{ mutableStateOf(FLASH_MODE_OFF) }
     val imageCapture by remember{ mutableStateOf( ImageCapture.Builder().build()) }
     val preview by remember { mutableStateOf(androidx.camera.core.Preview.Builder().build()) }
-
     //BottomFragment
     var galleryModalSheetVisible by remember { mutableStateOf(false) }
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
@@ -114,8 +107,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
     var isSettingFragmentShow by remember{ mutableStateOf(false) }
     var isLoginFragmentShow by remember{ mutableStateOf(false) }
     var isWaypointgroupsFragmentShow by remember{ mutableStateOf(false) }
-
-
     val previewView = remember { PreviewView(context) }
     var savedUri by remember { mutableStateOf<Uri?>(null) }
 //ScreenShotBox
@@ -123,24 +114,8 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
     var bmp by remember { mutableStateOf<Bitmap?>(null) }
     var locationInfoLeft = preferenceDataStore.getLocationInfoLeft.collectAsState(initial = "0.0").value
     var locationInfoRight = preferenceDataStore.getLocationInfoRight.collectAsState(initial = "0.0").value
-
-
-    //API
-    val retrofitInstance = RetoInstance().getInstance()
-    val apiService = retrofitInstance.create(ApiInterfaceService::class.java)
-
-
-    val settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial = hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
-
-
-
     //Zoom value
-    var zoomRatio by remember {
-        mutableStateOf<Float>(0.0f)
-    }
-
-
-
+    var zoomRatio by remember { mutableStateOf<Float>(0.0f) }
     // Create time-stamped file name and MediaStore entry
     val fileNameCapture = "Temp.jpg"
     val contentValues = ContentValues().apply {
@@ -149,9 +124,7 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/DLSPhotoCompose")
         }
-
     }
-
     // Create output options
     val outputOptions = ImageCapture.OutputFileOptions.Builder(
         context.contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
@@ -209,44 +182,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
         )
         Toast.makeText(context, "Convert Success ", Toast.LENGTH_SHORT).show()
         return picture
-    }
-
-    suspend fun uploadPhoto(
-        apiKey: String?,
-        waypointId: String?,
-        photo: MultipartBody.Part?
-    ) {
-        val response = apiService.uploadPhoto(
-            apiKey = apiKey,
-            waypointId = waypointId,
-            photo = photo
-        )
-        val body = response.body()
-        withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                val id = body!!.waypointid
-                Toast.makeText(context, "Success $id ", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-    }
-
-    suspend fun getWayPoint(apiKey: String?, bean: JsonObject?):String? {
-        val response = apiService.getWayPointID(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", bean = bean)
-        val body = response.body()
-        var id:String? =null
-        withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                 id = response.body()!!.waypointid
-                Toast.makeText(context, "Success + $id", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
-            }
-        }
-        return id
     }
 
 
@@ -368,12 +303,12 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
                     obj.put("waypoint", wayPointObj)
                     var waypoinID:String? = ""
 
-                    GlobalScope.launch(Dispatchers.IO)  {
-                        val waypointDeferred = async(Dispatchers.IO) { getWayPoint(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", bean = wayPointObj) }
-                        val waypointID = waypointDeferred.await()
-
-                        launch(Dispatchers.Main) { uploadPhoto(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", waypointId = waypointID, multipartPic) }
-                    }
+//                    GlobalScope.launch(Dispatchers.IO)  {
+//                        val waypointDeferred = async(Dispatchers.IO) { getWayPoint(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", bean = wayPointObj) }
+//                        val waypointID = waypointDeferred.await()
+//
+//                        launch(Dispatchers.Main) { uploadPhoto(apiKey = "1f593949-c520-4747-a162-1c37229a9f54", waypointId = waypointID, multipartPic) }
+//                    }
 
                 }
                 override fun onError(exception: ImageCaptureException) {
@@ -469,7 +404,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
 //
 //        }
 
-
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -491,8 +425,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
                 }
             )
         }
-
-
         Box(modifier = Modifier.weight(8f)) {
 
                 Box(modifier = Modifier) {
@@ -504,9 +436,6 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
                             },
                         modifier = Modifier.fillMaxSize(),
                     )
-
-                    locationView(viewModel)
-
                 }
         }
         Box(
@@ -530,117 +459,13 @@ fun FullPreviewScreen(viewModel: ImageLocationInfoViewModel) {
 
         }
     }
-    ModalSheet(visible = galleryModalSheetVisible, onVisibleChange ={galleryModalSheetVisible=it} ) {
+
+    ModalSheet(visible = viewModel.galleryModalSheetVisible.value, onVisibleChange ={viewModel.galleryModalSheetVisible.value=it} ) {
         GalleryScreen()
     }
-    ModalBottomSheetSetting(sheetState, isSettingFragmentShow = isSettingFragmentShow, viewModel )
 
 
 }
-
-
-@Composable
-fun ZoomView(onGalleryButtonPressed:()->Unit,onZoomOnePressed:()->Unit, onZoomTwoPressed:()->Unit,onZoomThreePressed:()->Unit) {
-    Column(
-        modifier = Modifier
-            .background(Color.Black)
-            .padding(0.dp, 20.dp, 0.dp, 30.dp)
-    ) {
-        //1x
-//Zoom VIEW
-        var zoomRatio by remember {
-            mutableStateOf("1x")
-        }
-        Box(modifier = Modifier.size(40.dp, 40.dp), contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(R.drawable.ic_camera_metering_center_weighted_average_single),
-                contentDescription = null
-            )
-            Text(
-                text = "$zoomRatio",
-                Modifier.size(20.dp, 20.dp),
-                fontSize = 16.sp,
-                color = Color.White
-            )
-
-        }
-
-
-        Column(modifier = Modifier.weight(4f), verticalArrangement = Arrangement.Center) {
-            //3x
-            Box(modifier = Modifier
-                .size(40.dp, 40.dp)
-                .background(
-                    shape = RoundedCornerShape(200.dp),
-                    color = Color.Gray
-                )
-                .clickable {
-                    zoomRatio = "3x"
-                    onZoomThreePressed()
-                },
-                contentAlignment = Alignment.Center
-
-            ) {
-                Text(text = "3x", fontSize = 16.sp, color = Color.White)
-            }
-            //2x
-            Box(modifier = Modifier
-                .size(40.dp, 40.dp)
-                .background(
-                    shape = RoundedCornerShape(200.dp),
-                    color = Color.Gray
-                )
-                .clickable {
-                    zoomRatio = "2x"
-                    onZoomTwoPressed()
-                },
-                contentAlignment = Alignment.Center
-
-            ) {
-                Text(text = "2x", fontSize = 16.sp, color = Color.White)
-            }
-            //1x
-            Box(
-                modifier = Modifier
-                    .size(40.dp, 40.dp)
-                    .background(
-                        shape = RoundedCornerShape(200.dp),
-                        color = Color.Gray
-                    )
-                    .clickable {
-                        zoomRatio = "1x"
-                        onZoomOnePressed()
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "1x", fontSize = 16.sp, color = Color.White)
-            }
-        }
-
-
-        //uploadBtn
-        Box(
-            modifier = Modifier
-                .size(40.dp, 40.dp)
-                .background(
-                    shape = RoundedCornerShape(200.dp),
-                    color = Color.Gray
-                )
-                .clickable { onGalleryButtonPressed() },
-            contentAlignment = Alignment.Center,
-
-            ) {
-            Image(
-                painter = painterResource(R.drawable.ic_square_and_arrow_up_on_square_single),
-                modifier = Modifier.size(20.dp, 20.dp),
-                contentDescription = null
-            )
-        }
-    }
-}
-
-
-
 @Composable
 fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress:()->Unit, onFlashPressed:()->Unit,bmp:Bitmap?) {
     val context = LocalContext.current
@@ -793,7 +618,6 @@ fun getMostRecentImage(context: Context): Uri? {
             )
         }
     }
-
     return null
 }
 

@@ -2,7 +2,7 @@
     ExperimentalMaterialApi::class
 )
 
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.ui.setting
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,6 +48,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dlsandroidredesign.ModalBottomSheetLoginAndWaypointgroups
+import com.example.dlsandroidredesign.R
+import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import eu.wewox.modalsheet.ExperimentalSheetApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -94,22 +97,22 @@ fun settingFragment(){
 
         Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)){
             Text(text = "SAVE TO PHOTO LIBRARY OPTIONS")
-            SaveOptions()      }
+               }
 
 
         //UPLOAD OPTION
         Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)){
             Text(text = "UPLOAD OPTIONS")
-            UploadOptions(
-                onLogInPressed= {isLoginFragmentShow=true
-                    isWaypointgroupsFragmentsShow=false
-                    coroutineScope.launch { settingSheetState.show() }
-                },
-                onWaypointgroupsPressed = {isWaypointgroupsFragmentsShow=true
-                    isLoginFragmentShow=false
-                    coroutineScope.launch { settingSheetState.show()}
-                }
-            )
+//            UploadOptions(
+//                onLogInPressed= {isLoginFragmentShow=true
+//                    isWaypointgroupsFragmentsShow=false
+//                    coroutineScope.launch { settingSheetState.show() }
+//                },
+//                onWaypointgroupsPressed = {isWaypointgroupsFragmentsShow=true
+//                    isLoginFragmentShow=false
+//                    coroutineScope.launch { settingSheetState.show()}
+//                }
+//            )
         }
     }
 
@@ -165,21 +168,21 @@ fun DisplayOption( ){
         Column(modifier = Modifier
         ) {
             MyPhotoDisplaySwitch("Latitude/Longitude",settingCheckbox.contains("LatLon"),
-                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("LatLon",settingCheckbox) }
-                }
+                onCheckChanged = {}
+
             )
 
             Divider( thickness = 0.2.dp, color = Color.Black)
 
             MyPhotoDisplaySwitch("Elevation",settingCheckbox.contains("Elevation"),
-                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("Elevation",settingCheckbox)}
-                }
+                onCheckChanged = {}
+
             )
 
             Divider( thickness = 0.2.dp, color = Color.Black)
 
             MyPhotoDisplaySwitch("Grid Location",settingCheckbox.contains("Location"),
-                onCheckChanged = {coroutineScope.launch {preferenceDataStore.setSettingCheckBox("GridLocation",settingCheckbox)}})
+                onCheckChanged = {})
             Divider( thickness = 0.2.dp, color = Color.Black)
 
             MyPhotoDisplaySwitch("Distance from Grid Lines",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setDistance(newValue)}})
@@ -207,10 +210,9 @@ fun DisplayOption( ){
 
         }
 
-    }
-    Log.d("Setting", "Displayoption")
 
-}
+
+
 
 
 
@@ -373,11 +375,9 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
 
     LaunchedEffect(Unit) {
         val loginStatus = preferenceDataStore.getIsLoginSuccess.first()
-        val usernameDataStore = preferenceDataStore.getLoginSharedInfoList().first().name
 
         // Call a function to update the value in your Composable's state
         isLoginSuccessful = loginStatus
-        usernameDisplay = usernameDataStore
     }
 
 
@@ -543,7 +543,7 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
         }
     }
     Log.d("Setting", "UploadOptions")
-}
+}}}
 
 
 

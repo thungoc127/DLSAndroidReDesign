@@ -1,5 +1,6 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.data.remote
 
+import com.example.dlsandroidredesign.domain.entity.Waypointgroup
 import com.google.gson.annotations.SerializedName
 
  data class WaypointGroupsDTO (
