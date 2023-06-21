@@ -32,6 +32,7 @@ import com.arcgismaps.geometry.SpatialReference
 import com.arcgismaps.geometry.UtmConversionMode
 import com.arcgismaps.mapping.MobileMapPackage
 import com.arcgismaps.mapping.layers.FeatureLayer
+import com.example.dlsandroidredesign.data.di.ApplicationScope
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.example.dlsandroidredesign.data.local.UserDataStore
 import com.example.dlsandroidredesign.data.remote.DLSService
@@ -44,6 +45,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.gson.JsonObject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -70,12 +72,9 @@ import kotlin.coroutines.suspendCoroutine
 
 @SuppressLint("MissingPermission")
 class DLSRepositoryImpl @Inject constructor(
-    private val application: Application,
+    @ApplicationContext private val application: Context,
     private val userDataStore: UserDataStore,
     private val dlsService: DLSService,
-    private val viewModelScope:CoroutineScope,
-    private val lifecycleOwner: LifecycleOwner
-
 ) : DLSRepository {
     // state flow variable
     // private val _location = MutableState<LocationObject?>(null)
@@ -118,34 +117,34 @@ class DLSRepositoryImpl @Inject constructor(
     val preview by mutableStateOf(Preview.Builder().build())
 
     init {
-        viewModelScope.launch {
-            mobileMapPackage.load()
-            mobileMapPackage.loadStatus.collect {
-                Log.d("status: ", it.toString())
-                when (it) {
-                    LoadStatus.Loaded -> {
-                        sectionLayer = mobileMapPackage.maps
-                            .getOrNull(0)
-                            ?.operationalLayers
-                            ?.getOrNull(0) as? FeatureLayer
-
-                        fetchLocationUpdates().collect { location ->
-                            // Location retrieved successfully
-                            if (location != null) {
-
-                                val newLocationObject = withContext(Dispatchers.Default) {
-                                    getCompleteAddress(location)
-                                }
-
-                                _locationObject.value = newLocationObject
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            mobileMapPackage.load()
+//            mobileMapPackage.loadStatus.collect {
+//                Log.d("status: ", it.toString())
+//                when (it) {
+//                    LoadStatus.Loaded -> {
+//                        sectionLayer = mobileMapPackage.maps
+//                            .getOrNull(0)
+//                            ?.operationalLayers
+//                            ?.getOrNull(0) as? FeatureLayer
+//
+//                        fetchLocationUpdates().collect { location ->
+//                            // Location retrieved successfully
+//                            if (location != null) {
+//
+//                                val newLocationObject = withContext(Dispatchers.Default) {
+//                                    getCompleteAddress(location)
+//                                }
+//
+//                                _locationObject.value = newLocationObject
+//                            }
+//                        }
+//                    }
+//
+//                    else -> {}
+//                }
+//            }
+//        }
     }
 
     override fun getCurrentUser(): Flow<User?> = userDataStore.getUser()
@@ -341,68 +340,70 @@ class DLSRepositoryImpl @Inject constructor(
         val bearingDouble = location!!.bearing
         var dataTime = LocalDateTime.now()
 
-        viewModelScope.launch {
-            val queryParams = QueryParameters()
-            val agsString = "${latDouble}N${lonDouble}W"
-            val pnt = CoordinateFormatter.fromLatitudeLongitudeOrNull(
-                agsString,
-                SpatialReference.webMercator()
-            )
-            queryParams.geometry = pnt
-            queryParams.spatialRelationship = SpatialRelationship.Intersects
-            val result = sectionLayer?.featureTable?.queryFeatures(queryParams)
-            val utmString = CoordinateFormatter.toUtmOrNull(
-                pnt!!,
-                UtmConversionMode.NorthSouthIndicators,
-                true
-            )
+        cont.resume(null)
 
-            result?.apply {
-                onSuccess { queryResult ->
-                    val resultIterator = queryResult.iterator()
-                    if (resultIterator.hasNext()) {
-                        val feature = resultIterator.next()
-                        val extent: Envelope = feature.geometry!!.extent
-                        val attr: MutableMap<String, Any?> = feature.attributes
-                        var secId: String? = ""
-                        var secLbl: String? = ""
-                        var secTxt: String? = ""
-
-                        for (key in attr.keys) {
-                            when (key) {
-                                "TTTMRRSS" -> secId = attr[key] as String?
-                                "LABEL1" -> secLbl = attr[key] as String?
-                                "SEC" -> secTxt = attr[key] as String?
-                            }
-                        }
-
-                        val xDelta = (lonDouble - extent.xMin) / (extent.xMax - extent.xMin)
-                        val yDelta = (latDouble - extent.yMin) / (extent.yMax - extent.yMin)
-                        val utmTup = sepUtm(utmString!!)
-//                        val getCustomText = preferenceDataStore.getCustomText.last()
-
-
-
-                        cont.resume(LocationObject().apply {
-                            this.lat = String.format("%.6f", latDouble)
-                            this.lon = String.format("%.6f", lonDouble)
-                            this.elevation = "Eleve: ${dec.format(elevationDouble)} m"
-                            this.gridLocation = getGridLocation(secLbl, xDelta, yDelta)
-                            this.distance = getDistances(utmTup!!.second!!.toInt(), utmTup!!.third!!.toInt(), extent)
-                            this.utmCoordinate = utmTup!!.third + " m " + utmTup.second + " m " + "Zone: " + utmTup.first
-                            this.bearing = String.format("Bearing: %.0f", bearingDouble) + "\u2103 TN"
-                            this.address = getAddressFromLocation(application,latDouble,lonDouble)
-                            this.date = dataTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm:ss", Locale.ENGLISH))
-//                            this.custText = getCustomText
-                        })
-                    }
-                }
-
-                onFailure {
-                    cont.resume(LocationObject())
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            val queryParams = QueryParameters()
+//            val agsString = "${latDouble}N${lonDouble}W"
+//            val pnt = CoordinateFormatter.fromLatitudeLongitudeOrNull(
+//                agsString,
+//                SpatialReference.webMercator()
+//            )
+//            queryParams.geometry = pnt
+//            queryParams.spatialRelationship = SpatialRelationship.Intersects
+//            val result = sectionLayer?.featureTable?.queryFeatures(queryParams)
+//            val utmString = CoordinateFormatter.toUtmOrNull(
+//                pnt!!,
+//                UtmConversionMode.NorthSouthIndicators,
+//                true
+//            )
+//
+//            result?.apply {
+//                onSuccess { queryResult ->
+//                    val resultIterator = queryResult.iterator()
+//                    if (resultIterator.hasNext()) {
+//                        val feature = resultIterator.next()
+//                        val extent: Envelope = feature.geometry!!.extent
+//                        val attr: MutableMap<String, Any?> = feature.attributes
+//                        var secId: String? = ""
+//                        var secLbl: String? = ""
+//                        var secTxt: String? = ""
+//
+//                        for (key in attr.keys) {
+//                            when (key) {
+//                                "TTTMRRSS" -> secId = attr[key] as String?
+//                                "LABEL1" -> secLbl = attr[key] as String?
+//                                "SEC" -> secTxt = attr[key] as String?
+//                            }
+//                        }
+//
+//                        val xDelta = (lonDouble - extent.xMin) / (extent.xMax - extent.xMin)
+//                        val yDelta = (latDouble - extent.yMin) / (extent.yMax - extent.yMin)
+//                        val utmTup = sepUtm(utmString!!)
+////                        val getCustomText = preferenceDataStore.getCustomText.last()
+//
+//
+//
+//                        cont.resume(LocationObject().apply {
+//                            this.lat = String.format("%.6f", latDouble)
+//                            this.lon = String.format("%.6f", lonDouble)
+//                            this.elevation = "Eleve: ${dec.format(elevationDouble)} m"
+//                            this.gridLocation = getGridLocation(secLbl, xDelta, yDelta)
+//                            this.distance = getDistances(utmTup!!.second!!.toInt(), utmTup!!.third!!.toInt(), extent)
+//                            this.utmCoordinate = utmTup!!.third + " m " + utmTup.second + " m " + "Zone: " + utmTup.first
+//                            this.bearing = String.format("Bearing: %.0f", bearingDouble) + "\u2103 TN"
+//                            this.address = getAddressFromLocation(application,latDouble,lonDouble)
+//                            this.date = dataTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy HH:mm:ss", Locale.ENGLISH))
+////                            this.custText = getCustomText
+//                        })
+//                    }
+//                }
+//
+//                onFailure {
+//                    cont.resume(LocationObject())
+//                }
+//            }
+//        }
     }
 
 
@@ -506,7 +507,7 @@ class DLSRepositoryImpl @Inject constructor(
 
 // Get the InputStream from the selectedUri
             val contentResolver: ContentResolver = application.contentResolver
-            val inputStream = contentResolver.openInputStream(null)
+            val inputStream = contentResolver.openInputStream(Uri.parse(""))
 
 // Read the InputStream and convert it to a byte array
             val byteBuff = ByteArrayOutputStream()
