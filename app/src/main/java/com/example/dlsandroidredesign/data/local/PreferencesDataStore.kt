@@ -46,11 +46,27 @@ class PreferencesDataStore(private val context: Context){
         private var isLoginSuccessful = booleanPreferencesKey("logInStatus")
         private var userName = stringPreferencesKey("userName")
         private var passWord = stringPreferencesKey("password")
-        private var loginSharedInfoList = stringPreferencesKey("loginSharedInfoList")
         private var waypointgroup = stringPreferencesKey("waypointgroupcheck")
         private var waypointgroupCheck = stringPreferencesKey("groupIdCheck")
         private var settingCheckbox = stringPreferencesKey("settingCheck")
+        private var photoSize = stringPreferencesKey("photoSize")
+        private var uploadSize = stringPreferencesKey("uploadSize")
     }
+
+    //uploadSize
+    suspend fun setUploadSize(uploadSizeInput: String) {
+        context.dataStore.edit { it[uploadSize] = uploadSizeInput }
+    }
+
+    var getUploadSize =  context.dataStore.data.map { it[uploadSize] ?: "Original" }
+
+//photoSize
+    suspend fun setPhotoSize(photoSizeInput: String) {
+        context.dataStore.edit { it[photoSize] = photoSizeInput }
+    }
+
+    var getPhotoSize =  context.dataStore.data.map { it[photoSize] ?: "Original" }
+
 
     ///CheckBox
     fun getSettingCheckbox(): Flow<HashSet<String>> {
@@ -63,7 +79,7 @@ class PreferencesDataStore(private val context: Context){
         }
     }
 
-     suspend fun setSettingChheckBox(value: String, hashSet: HashSet<String>) {
+     suspend fun setSettingCheckBox(value: String, hashSet: HashSet<String>) {
         if (hashSet.contains(value)) {
             hashSet.remove(value)
             Log.d("setCheckBox","Remove")

@@ -7,16 +7,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.dlsandroidredesign.ui.login.LogInScreen
+import com.example.dlsandroidredesign.ui.mainScreen.FullPreviewScreen
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -41,33 +45,38 @@ class MainActivity : ComponentActivity() {
         // TODO: Check file exist or not
         copySectionsAssetToFile()
 
-        setContent {
-/*            val locationObject by viewModel.locationObject.collectAsStateWithLifecycle()
-            Log.d("location act: ", locationObject.toString())*/
 
+
+
+        setContent {
+            val locationPermission = remember{mutableStateOf(Manifest.permission.ACCESS_FINE_LOCATION)}.value
+            val cameraPermission = remember { mutableStateOf(Manifest.permission.CAMERA) }.value
+            val storagePermission = remember { mutableStateOf(Manifest.permission.WRITE_EXTERNAL_STORAGE) }.value
+            val permissionState = rememberMultiplePermissionsState(
+                permissions = listOf(
+                    cameraPermission,
+                    locationPermission,
+                    storagePermission
+                )
+            )
+            Log.d("getLocationProcess: ", "${permissionState.toString()}")
+            val viewModel: ImageLocationInfoViewModel by viewModels()
+
+
+            LaunchedEffect(permissionState) {
+                permissionState.launchMultiplePermissionRequest()
+            }
             DLSAndroidReDesignTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
                 ) {
-                    val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
-                    val cameraPermission = Manifest.permission.CAMERA
-                    val storagePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    val permissionState = rememberMultiplePermissionsState(
-                        permissions = listOf(
-                            cameraPermission,
-                            locationPermission,
-                            storagePermission
-                        )
-                    )
-
-                    LogInScreen()
-
-                    LaunchedEffect(permissionState) {
-                        permissionState.launchMultiplePermissionRequest()
-                    }
+                    FullPreviewScreen()
                 }
             }
+
+
+
         }
     }
 

@@ -21,9 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dlsandroidredesign.R
-import eu.wewox.modalsheet.ExperimentalSheetApi
 
 
 
@@ -32,7 +30,7 @@ fun ZoomView(onGalleryButtonPressed:()->Unit,onZoomOnePressed:()->Unit, onZoomTw
     Column(
         modifier = Modifier
             .background(Color.Black)
-            .padding(0.dp, 20.dp, 0.dp, 30.dp)
+            .padding(0.dp, 20.dp, 0.dp, 30.dp),
     ) {
         //1x
 //Zoom VIEW
@@ -54,7 +52,7 @@ fun ZoomView(onGalleryButtonPressed:()->Unit,onZoomOnePressed:()->Unit, onZoomTw
         }
 
 
-        Column(modifier = Modifier.weight(4f), verticalArrangement = Arrangement.Center) {
+        Column(modifier = Modifier.weight(4f).align(Alignment.CenterHorizontally), verticalArrangement = Arrangement.spacedBy(5.dp),) {
             //3x
             Box(modifier = Modifier
                 .size(40.dp, 40.dp)
@@ -66,7 +64,7 @@ fun ZoomView(onGalleryButtonPressed:()->Unit,onZoomOnePressed:()->Unit, onZoomTw
                     zoomRatio = "3x"
                     onZoomThreePressed()
                 },
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
 
             ) {
                 Text(text = "3x", fontSize = 16.sp, color = Color.White)

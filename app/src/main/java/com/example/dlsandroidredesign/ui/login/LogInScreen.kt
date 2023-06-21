@@ -18,10 +18,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,39 +37,42 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dlsandroidredesign.R
+import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LogInScreen(viewModel: LogInViewModel = hiltViewModel()) {
-
+fun LogInScreen(viewModel: LogInViewModel = hiltViewModel(),mainScreenViewModel: MainScreenViewModel= hiltViewModel()) {
+    val coroutineScope= rememberCoroutineScope()
     val context = LocalContext.current
+    val errorMessage = viewModel.errorMessage.collectAsState().value
     Log.d("LoginScreen","create")
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LogInScreen(
-        onLogin = { username: String, password: String ->
+        onLogin= { username: String, password: String ->
             viewModel.validate(username, password)
-        }
+            if (viewModel.success.value) {
+                Toast.makeText(context, "Login Successfully", Toast.LENGTH_SHORT).show()
+            }
+        },
+        errorMessage =errorMessage
+
+
     )
     Log.d("LoginScreen","create")
 
-    if (uiState.success) {
-        Toast.makeText(context, "Login Successfully", Toast.LENGTH_LONG).show()
-    }
 
-    if (uiState.errorMessage != null) {
-        Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_LONG).show()
-    }
 }
 
 @Composable
 private fun LogInScreen(
-    onLogin: (username: String, password: String) -> Unit
+    onLogin: (username: String, password: String) -> Unit,
+    errorMessage:String?
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var showPassword by rememberSaveable { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -151,6 +157,7 @@ private fun LogInScreen(
                     })
                 )
             }
+            Text(text = "$errorMessage")
         }
     }
 }

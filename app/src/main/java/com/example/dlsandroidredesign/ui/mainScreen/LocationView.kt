@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,17 +22,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.dlsandroidredesign.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
+import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 
 
 @SuppressLint("MissingPermission", "CoroutineCreationDuringComposition")
 @Composable
-fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
-    val location = viewModel.getLocationObject.collectAsStateWithLifecycle().value
+fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingViewModel: SettingFragmentViewModel= hiltViewModel()) {
+    val location = viewModel.locationObjectState.collectAsStateWithLifecycle().value
 //////CheckedVariable
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
-    val settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial =hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
+    val settingCheckbox by settingViewModel.checkBox.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -39,7 +42,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
     ) {
         Column(modifier = Modifier.align(Alignment.TopStart)) {
 
-            if (settingCheckbox.contains("LatLon")) {
+                if (settingCheckbox.latLon) {
                 Text(
                     text = "Lat/Lon",
                     fontSize = 14.sp,
@@ -56,7 +59,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
             }
             //
 
-            if (settingCheckbox.contains("LatLon")) {
+            if (settingCheckbox.latLon) {
                 //lat
                 Text(
                     text = "${location.lat}",
@@ -76,7 +79,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
 
 
             //lng
-            if (settingCheckbox.contains("LatLon")) {
+            if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.lon}",
                     fontSize = 14.sp,
@@ -93,7 +96,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
                 )
             }
             //elevation
-            if (settingCheckbox.contains("Elevation")) {
+            if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.elevation}",
                     fontSize = 14.sp,
@@ -111,7 +114,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
             }
 
             //GridLocation
-            if (settingCheckbox.contains("GridLocation")) {
+            if (settingCheckbox.gridLocation) {
                 Text(
                     text = "${location.gridLocation}",
                     fontSize = 14.sp,
@@ -129,7 +132,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
                     )
             }
             //DistanceFromGridLine
-            if (settingCheckbox.contains("Distance")) {
+            if (settingCheckbox.distance) {
                 Text(
                     text = "${location.distance}",
                     fontSize = 14.sp,
@@ -147,7 +150,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
                     )
             }
             //utmTxt
-            if (settingCheckbox.contains("Utm")) {
+            if (settingCheckbox.utmCoordinate) {
                 Text(
                     text = "${location.utmCoordinate}",
                     fontSize = 14.sp,
@@ -171,7 +174,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
             modifier = Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End
         ) {
             //bearingTxt
-            if (settingCheckbox.contains("Heading")) {
+            if (settingCheckbox.bearing) {
                 Text(
                     text = " ${location.bearing}",
                     fontSize = 14.sp,
@@ -188,7 +191,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
                 )
             }
             //addressTxt
-            if (settingCheckbox.contains("Address")) {
+            if (settingCheckbox.address) {
                 Text(
                     text = "${location.address}",
                     fontSize = 14.sp,
@@ -206,7 +209,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
             }
 
 
-            if (settingCheckbox.contains("Date")) {
+            if (settingCheckbox.date) {
                 Text(
 
                     text = "${location.date}",
@@ -226,9 +229,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel()) {
             }
         }
 
-        if(settingCheckbox.contains("CustomText")){
+        if(settingCheckbox.cusText){
             Text(
-                text = location.custText,
+                text =settingViewModel.cusText.collectAsState(initial = "").value ,
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.textOverlay),
                 style = TextStyle(

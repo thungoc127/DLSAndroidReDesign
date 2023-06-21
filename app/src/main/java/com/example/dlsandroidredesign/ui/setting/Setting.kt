@@ -23,8 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
@@ -33,7 +31,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,20 +45,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.dlsandroidredesign.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.ModalBottomSheetLoginAndWaypointgroups
 import com.example.dlsandroidredesign.R
+import com.example.dlsandroidredesign.data.CheckBoxKey
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
+import com.example.dlsandroidredesign.domain.entity.User
+import com.example.dlsandroidredesign.ui.login.LogInViewModel
+import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 import eu.wewox.modalsheet.ExperimentalSheetApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun settingFragment(){
-    var isLoginFragmentShow  by remember { mutableStateOf(false) }
-    var isWaypointgroupsFragmentsShow  by remember { mutableStateOf(false) }
-    val settingSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+fun settingFragment(viewModel: MainScreenViewModel= hiltViewModel(),loginViewModel: LogInViewModel= hiltViewModel()){
 
     val coroutineScope = rememberCoroutineScope()
     Column(
@@ -97,26 +97,25 @@ fun settingFragment(){
 
         Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)){
             Text(text = "SAVE TO PHOTO LIBRARY OPTIONS")
-               }
+            SaveOptions()
+        }
 
 
         //UPLOAD OPTION
         Column(modifier = Modifier.padding(20.dp,0.dp,20.dp,20.dp)){
             Text(text = "UPLOAD OPTIONS")
-//            UploadOptions(
-//                onLogInPressed= {isLoginFragmentShow=true
-//                    isWaypointgroupsFragmentsShow=false
-//                    coroutineScope.launch { settingSheetState.show() }
-//                },
-//                onWaypointgroupsPressed = {isWaypointgroupsFragmentsShow=true
-//                    isLoginFragmentShow=false
-//                    coroutineScope.launch { settingSheetState.show()}
-//                }
-//            )
+            UploadOptions(
+                onLogInPressed= {
+                    coroutineScope.launch { loginViewModel.setLoginVisible(true)}
+                },
+                onWaypointgroupsPressed = {
+                    coroutineScope.launch { viewModel.waypointGroupSheetState.show() }
+                }
+            )
         }
     }
 
-    ModalBottomSheetLoginAndWaypointgroups(sheetState = settingSheetState, isLoginFragmentShow = isLoginFragmentShow, isWaypointgroupsFragment = isWaypointgroupsFragmentsShow)
+    ModalBottomSheetLoginAndWaypointgroups(waypointGroupSheetState = viewModel.waypointGroupSheetState)
 
     Log.d("Setting", "SettingFragemnt")
 
@@ -130,7 +129,7 @@ fun MyPhotoDisplaySwitch(title: String, checked: Boolean, onCheckChanged: (Boole
         verticalAlignment = Alignment.CenterVertically) {
         Text(text =title, color= Color(0xFF00B0FF))
         Spacer(modifier = Modifier.weight(1f))
-        Checkbox(
+            Checkbox(
             checked = checked,
             onCheckedChange = {
                 onCheckChanged(it)
@@ -147,12 +146,14 @@ fun MyPhotoDisplaySwitch(title: String, checked: Boolean, onCheckChanged: (Boole
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DisplayOption( ){
+fun DisplayOption(settingFragmentViewModel: SettingFragmentViewModel= hiltViewModel(),imageLocationInfoViewModel: ImageLocationInfoViewModel= hiltViewModel() ){
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
     val coroutineScope = rememberCoroutineScope()
-    var settingCheckbox = preferenceDataStore.getSettingCheckbox().collectAsState(initial = hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")).value
+    val settingCheckbox by settingFragmentViewModel.checkBox.collectAsStateWithLifecycle()
     val menuTitleList :List<String> = listOf("Latitude/Longitude","Elevation","Grid Location","Distance from Grid Lines","Heading","Address","Date and Time","UTM Coordinates","Custom Text: ")
-    var customText =preferenceDataStore.getCustomText.collectAsState(initial = "")
+//    var customText =preferenceDataStore.getCustomText.collectAsState(initial = "")
+
+
 
 
     Box(modifier = Modifier
@@ -163,41 +164,54 @@ fun DisplayOption( ){
         for (menuTitle in menuTitleList){
 
         }
-
-
         Column(modifier = Modifier
         ) {
-            MyPhotoDisplaySwitch("Latitude/Longitude",settingCheckbox.contains("LatLon"),
-                onCheckChanged = {}
+            MyPhotoDisplaySwitch("Latitude/Longitude",settingCheckbox.latLon,
+                onCheckChanged = {
+                    settingFragmentViewModel.setCheckBox(CheckBoxKey.latlon.name, it)
+                }
+
+
+            )
+            Divider( thickness = 0.2.dp, color = Color.Black)
+
+            MyPhotoDisplaySwitch("Elevation",settingCheckbox.elevation,
+                onCheckChanged = {settingFragmentViewModel.setCheckBox(CheckBoxKey.elevation.name,it)
+                }
 
             )
 
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Elevation",settingCheckbox.contains("Elevation"),
-                onCheckChanged = {}
-
+            MyPhotoDisplaySwitch("Grid Location",settingCheckbox.gridLocation,
+                onCheckChanged = {settingFragmentViewModel.setCheckBox(CheckBoxKey.gridLocation.name,it)
+                }
             )
-
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Grid Location",settingCheckbox.contains("Location"),
-                onCheckChanged = {})
+            MyPhotoDisplaySwitch("Distance from Grid Lines",settingCheckbox.distance,
+                onCheckChanged = {settingFragmentViewModel.setCheckBox(CheckBoxKey.distance.name,it)
+                })
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Distance from Grid Lines",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setDistance(newValue)}})
+            MyPhotoDisplaySwitch("Heading",settingCheckbox.bearing,
+                onCheckChanged = { settingFragmentViewModel.setCheckBox(CheckBoxKey.bearing.name,it)
+                })
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Heading",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setHeading(newValue)}})
+            MyPhotoDisplaySwitch("Address",settingCheckbox.address,
+                onCheckChanged = {settingFragmentViewModel.setCheckBox(CheckBoxKey.address.name,it)
+                })
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Address",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setAddress(newValue)}})
+            MyPhotoDisplaySwitch("Date and Time",settingCheckbox.date,
+                onCheckChanged ={settingFragmentViewModel.setCheckBox(CheckBoxKey.date.name,it)
+                })
             Divider( thickness = 0.2.dp, color = Color.Black)
 
-            MyPhotoDisplaySwitch("Date and Time",settingCheckbox.contains("LatLon"), onCheckChanged ={ newValue-> coroutineScope.launch { preferenceDataStore.setDateAndTime(newValue)}})
-            Divider( thickness = 0.2.dp, color = Color.Black)
-
-            MyPhotoDisplaySwitch("UTM Coordinates",settingCheckbox.contains("LatLon"), onCheckChanged = { newValue-> coroutineScope.launch { preferenceDataStore.setUtm(newValue)}})
+            MyPhotoDisplaySwitch("UTM Coordinates",settingCheckbox.utmCoordinate,
+                onCheckChanged = { settingFragmentViewModel.setCheckBox(CheckBoxKey.utmCoordinate.name,it)
+                })
             Divider( thickness = 0.2.dp, color = Color.Black)
 
             Row(
@@ -205,21 +219,31 @@ fun DisplayOption( ){
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)) {
                 Text(text = "Custom Text: ")
-                BasicTextField(value = "${customText.value}", onValueChange = {newValue-> coroutineScope.launch(Dispatchers.IO) { preferenceDataStore.setCustomText(newValue)}})
+                BasicTextField(value = settingFragmentViewModel.cusText.collectAsState(initial = "").value
+                    , onValueChange = {settingFragmentViewModel.setCusText(it)
+                        imageLocationInfoViewModel.setCusTextLocationObject(it)
+
+                    })
+                Spacer(modifier = Modifier.weight(1f))
+                Checkbox(checked =settingCheckbox.cusText ,
+                    onCheckedChange = {settingFragmentViewModel.setCheckBox(CheckBoxKey.cusText.name,it)},
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.Green
+                    ),
+                    modifier = Modifier.clip(CircleShape))
             }
 
         }
-
-
-
+    }
+}
 
 
 
 
 ////SAVE TO PHOTO LIBRARY OPTIONS
 @Composable
-fun SaveOptions(){
-    var photoOptionIndex by remember { mutableStateOf(0) }
+fun SaveOptions(viewModel: SettingFragmentViewModel= hiltViewModel()){
+    val photoOptionIndex = viewModel.photoSize.collectAsState(initial = "Original").value
     Row(modifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(8.dp))
         .fillMaxWidth()
@@ -242,10 +266,10 @@ fun SaveOptions(){
                     Modifier
                         .weight(1f)
                         .background(
-                            color = if (photoOptionIndex == 1) Color.White else Color.LightGray,
+                            color = if (photoOptionIndex == "Tiny") Color.White else Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable(onClick = { photoOptionIndex = 1 })
+                        .clickable(onClick = { viewModel.setPhotoSize("Tiny") })
                         .padding(2.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Tiny")
                 }
@@ -260,10 +284,10 @@ fun SaveOptions(){
                     Modifier
                         .weight(1f)
                         .background(
-                            color = if (photoOptionIndex == 2) Color.White else Color.LightGray,
+                            color = if (photoOptionIndex == "Small") Color.White else Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable(onClick = { photoOptionIndex = 2 })
+                        .clickable(onClick = { viewModel.setPhotoSize("Small") })
                         .padding(2.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Small")
                 }
@@ -278,10 +302,10 @@ fun SaveOptions(){
                     Modifier
                         .weight(1f)
                         .background(
-                            color = if (photoOptionIndex == 3) Color.White else Color.LightGray,
+                            color = if (photoOptionIndex == "Medium") Color.White else Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable(onClick = { photoOptionIndex = 3 })
+                        .clickable(onClick = { viewModel.setPhotoSize("Medium") })
                         .padding(2.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Medium")
                 }
@@ -296,10 +320,10 @@ fun SaveOptions(){
                     Modifier
                         .weight(1f)
                         .background(
-                            color = if (photoOptionIndex == 4) Color.White else Color.LightGray,
+                            color = if (photoOptionIndex == "Large") Color.White else Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable(onClick = { photoOptionIndex = 4 })
+                        .clickable(onClick = { viewModel.setPhotoSize("Large") })
                         .padding(2.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Large")
                 }
@@ -314,18 +338,16 @@ fun SaveOptions(){
                     Modifier
                         .weight(1f)
                         .background(
-                            color = if (photoOptionIndex == 5) Color.White else Color.LightGray,
+                            color = if (photoOptionIndex == "Original") Color.White else Color.LightGray,
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .clickable(onClick = { photoOptionIndex = 5 })
+                        .clickable(onClick = { viewModel.setPhotoSize("Original") })
                         .padding(2.dp), contentAlignment = Alignment.Center) {
                     Text(text = "Original")
                 }
 
             }
-
         }
-
     }
 
     Log.d("Setting", "SaveOptions")
@@ -366,22 +388,11 @@ fun TabRowPhotoOption(){
     }}
 
 @Composable
-fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
+fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit,loginViewModel: LogInViewModel= hiltViewModel(),settingFragmentViewModel: SettingFragmentViewModel= hiltViewModel()){
     val context = LocalContext.current
-    val preferenceDataStore = PreferencesDataStore(context)
-    var isLoginSuccessful by remember { mutableStateOf(false) }
-    var usernameDisplay :String? by remember { mutableStateOf(null) }
-    val isAutoUpload =preferenceDataStore.getUploadAuto.collectAsState(initial = false).value
+    val isAutoUpload = settingFragmentViewModel.autoUploadStatus.collectAsState(initial = false)
 
-    LaunchedEffect(Unit) {
-        val loginStatus = preferenceDataStore.getIsLoginSuccess.first()
-
-        // Call a function to update the value in your Composable's state
-        isLoginSuccessful = loginStatus
-    }
-
-
-    var UploadSizeIndex by remember { mutableStateOf(0) }
+    val uploadSize=settingFragmentViewModel.uploadSize.collectAsStateWithLifecycle(initialValue = "Original").value
 
     Column(modifier = Modifier
         .background(color = Color.White, shape = RoundedCornerShape(8.dp))
@@ -393,35 +404,61 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .clickable { onLogInPressed() })
-            if(isLoginSuccessful) {
+            if(loginViewModel.isLogInSuccess.collectAsState(initial = false).value!!) {
                 Row(modifier = Modifier.align(Alignment.TopEnd)) {
-                    Text(text = "User: $usernameDisplay", color = Color(0xFF00B0FF))
+                    Text(text = "User: ${loginViewModel.currentUser.collectAsState(initial = User("","", emptyList(),"","")).value!!.userName}", color = Color(0xFF00B0FF))
                     Spacer(modifier = Modifier.width(20.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
-                        modifier = Modifier
-                            .size(30.dp, 30.dp),
-                        contentDescription = null
-                    )
+                    Checkbox(modifier= Modifier
+                        .size(30.dp, 30.dp),
+                        checked = true,
+                        onCheckedChange = {},
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = Color.Green
+                        ))
+//                    Image(
+//                        painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
+//                        modifier = Modifier
+//                            .size(30.dp, 30.dp),
+//                        contentDescription = null
+//                    )
                 }
             }
         }
 
         Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))
 
-        if(isLoginSuccessful){
+        if(loginViewModel.isLogInSuccess.collectAsState(initial = false).value!!){
+
             Box(modifier = Modifier
                 .fillMaxWidth()
-                .clickable {})
+                .clickable {
+                    if (isAutoUpload.value) {
+                        settingFragmentViewModel.setAutoUpload(false)
+                    } else {
+                        settingFragmentViewModel.setAutoUpload(true)
+                    }
+                })
             {
                 Text(text = "Upload Automatically", color= Color(0xFF00B0FF),
                     modifier = Modifier
                         .align(Alignment.TopStart))
-                Image(painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
-                    modifier= Modifier
-                        .size(30.dp, 30.dp)
-                        .align(Alignment.TopEnd),
-                    contentDescription =null )
+                Checkbox(modifier= Modifier
+                    .size(30.dp, 30.dp)
+                    .align(Alignment.TopEnd),
+                    checked = isAutoUpload.value,
+                    onCheckedChange = {settingFragmentViewModel.setAutoUpload(it)},
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.Green
+                    ))
+//                if(isAutoUpload.value){
+//                    Image(painter = painterResource(id = R.drawable.ic_checkmark_circle_fill_single),
+//                        modifier= Modifier
+//                            .size(30.dp, 30.dp)
+//                            .align(Alignment.TopEnd),
+//                        contentDescription =null )
+//                }
+
+
             }
 
             Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))}
@@ -450,10 +487,10 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                         Modifier
                             .weight(1f)
                             .background(
-                                color = if (UploadSizeIndex == 1) Color.White else Color.LightGray,
+                                color = if (uploadSize == "Tiny") Color.White else Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable(onClick = { UploadSizeIndex = 1 })
+                            .clickable(onClick = { settingFragmentViewModel.setUploadSize("Tiny") })
                             .padding(2.dp), contentAlignment = Alignment.Center) {
                         Text(text = "Tiny")
                     }
@@ -468,10 +505,10 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                         Modifier
                             .weight(1f)
                             .background(
-                                color = if (UploadSizeIndex == 2) Color.White else Color.LightGray,
+                                color = if (uploadSize == "Small") Color.White else Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable(onClick = { UploadSizeIndex = 2 })
+                            .clickable(onClick = { settingFragmentViewModel.setUploadSize("Small")})
                             .padding(2.dp), contentAlignment = Alignment.Center) {
                         Text(text = "Small")
                     }
@@ -486,10 +523,10 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                         Modifier
                             .weight(1f)
                             .background(
-                                color = if (UploadSizeIndex == 3) Color.White else Color.LightGray,
+                                color = if (uploadSize == "Medium") Color.White else Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable(onClick = { UploadSizeIndex = 3 })
+                            .clickable(onClick = { settingFragmentViewModel.setUploadSize("Medium") })
                             .padding(2.dp), contentAlignment = Alignment.Center) {
                         Text(text = "Medium")
                     }
@@ -504,10 +541,10 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                         Modifier
                             .weight(1f)
                             .background(
-                                color = if (UploadSizeIndex == 4) Color.White else Color.LightGray,
+                                color = if (uploadSize == "Large") Color.White else Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable(onClick = { UploadSizeIndex = 4 })
+                            .clickable(onClick = {settingFragmentViewModel.setUploadSize("Large") })
                             .padding(2.dp), contentAlignment = Alignment.Center) {
                         Text(text = "Large")
                     }
@@ -522,10 +559,10 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
                         Modifier
                             .weight(1f)
                             .background(
-                                color = if (UploadSizeIndex == 5) Color.White else Color.LightGray,
+                                color = if (uploadSize == "Original") Color.White else Color.LightGray,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable(onClick = { UploadSizeIndex = 5 })
+                            .clickable(onClick = { settingFragmentViewModel.setUploadSize("Original") })
                             .padding(2.dp), contentAlignment = Alignment.Center) {
                         Text(text = "Original")
                     }
@@ -535,15 +572,26 @@ fun UploadOptions(onLogInPressed:()->Unit,onWaypointgroupsPressed:()->Unit){
         }
 
         Divider( thickness = 0.2.dp, color = Color.Black, modifier = Modifier.padding(5.dp,5.dp,5.dp,5.dp))
-        if(isLoginSuccessful){
-            Row(modifier = Modifier.clickable { onWaypointgroupsPressed() }) {
+        if(loginViewModel.isLogInSuccess.collectAsState(initial = false).value!!){
+            Box(modifier = Modifier
+                .clickable { onWaypointgroupsPressed() }
+                .fillMaxWidth()
+                ) {
                 Text(text = "Waypoint Group")
-                Text(text = "ReplaceByGWayPointGroupName")
+                Row(modifier = Modifier.align(Alignment.TopEnd)) {
+                    Text(text = "${loginViewModel.currentUser.collectAsState(initial = User("","", emptyList(),"","")).value!!.groupNameCheck}")
+                    Image(painterResource(id = R.drawable.ic_chevron_right_single)
+                        , contentDescription =null
+                        ,modifier = Modifier
+                            .size(23.dp, 23.dp)
+                    )
+                }
+
             }
         }
     }
     Log.d("Setting", "UploadOptions")
-}}}
+}
 
 
 

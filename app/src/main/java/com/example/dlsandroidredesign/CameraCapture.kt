@@ -53,7 +53,8 @@
 //    AndroidView(
 //        modifier = modifier,
 //        factory = { context ->
-//            val previewView = PreviewView(context).apply {
+//            val previewView = PreviewView(context).
+//            apply {
 //                this.scaleType = scaleType
 //                layoutParams = ViewGroup.LayoutParams(
 //                    ViewGroup.LayoutParams.MATCH_PARENT,

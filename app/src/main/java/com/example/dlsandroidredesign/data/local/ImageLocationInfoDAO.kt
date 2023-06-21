@@ -1,16 +1,19 @@
 package com.example.dlsandroidredesign.data.local
 
+import android.net.Uri
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.Query
+import com.example.dlsandroidredesign.domain.entity.LocationObject
 
 
 @Dao
 interface ImageLocationInfoDAO {
     @Insert
     suspend fun insertImageLocationInfo(imageLocationInfo: ImageLocationInfo)
-    @Delete
-    suspend fun deleteImageLocationInfo(imageLocationInfo: ImageLocationInfo)
-/*    @Query("SELECT locationObject from ImageLocationInfo where uriImage =:UriImageInput ")
-    suspend fun getImageLocationInfoByUri(UriImageInput: Uri): List<LocationObject>*/
+    @Query("DELETE FROM ImageLocationInfo WHERE uriImage = :uriImage")
+    suspend fun deleteImageLocationInfo(uriImage: Uri)
+
+    @Query("SELECT locationObject FROM ImageLocationInfo WHERE uriImage = :uriImage")
+    suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject
 }

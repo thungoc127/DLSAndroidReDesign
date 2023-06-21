@@ -1,10 +1,7 @@
 package com.example.dlsandroidredesign.domain
 
-import android.content.Context
-import android.location.Location
 import android.net.Uri
-import androidx.lifecycle.LifecycleOwner
-import com.arcgismaps.geometry.Envelope
+import androidx.datastore.preferences.core.Preferences
 import com.example.dlsandroidredesign.domain.entity.LocationObject
 import com.example.dlsandroidredesign.domain.entity.User
 import com.google.gson.JsonObject
@@ -16,17 +13,28 @@ interface DLSRepository {
     fun getCurrentUser(): Flow<User?>
     suspend fun login(username: String, password: String): User?
     suspend fun getWayPoint(): String?
-    suspend fun getCompleteAddress(location: Location): LocationObject
-    suspend fun fetchLocationUpdates(): Flow<Location?>
-    fun getGridLocation(sec: String?, x: Double, y: Double): String
-    fun getDistances(x: Int, y: Int, ext: Envelope): String
-    fun getAddressFromLocation(context: Context, latitude: Double?, longitude: Double?, ): String
 
    suspend fun getLocationUpdate(): StateFlow<LocationObject>
-    suspend fun getWayPoint(apiKey: String?, bean: JsonObject?):String?
+    suspend fun getWayPointId(apiKey: String?, bean: JsonObject?):String?
     suspend fun uploadPhoto(apiKey: String?, waypointId: String?, photo: MultipartBody.Part?)
     fun getAllGalleryImages():List<Uri>
     suspend fun uploadPicture(apiKey:String?,bean: JsonObject?)
+     fun getLogInStatus():Flow<Boolean>
+    suspend fun refreshWaypointGroup()
+    suspend fun setGroupIdAndName(groupId:String, groupName:String)
+     suspend fun setCusText(cusText:String)
+     fun getCusText():Flow<String>
+    fun getCheckBox(): Flow<Preferences>
+    suspend fun setCheckBox(checkBoxKey: String, value: Boolean)
+    suspend fun insertImageLocationInfo(imageUri: Uri, locationInfoObject: LocationObject)
+    fun getIssAutomaticUpload(): Flow<Boolean>
+    suspend fun setIsAutomaticUpload(isAutomaticUploadSInput: Boolean)
+    suspend fun getGroupNameCheck(): Flow<String?>
+    suspend fun getLocationObjectByUri(): LocationObject
+ suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject
 
-    fun zoomCamera(zoomRatio: Float)
+ fun getPhotoSize(): Flow<String>
+ suspend fun setPhotoSize(resolutionInput: String)
+ suspend fun setUploadSize(resolutionInput: String)
+ fun getUploadSize(): Flow<String>
 }
