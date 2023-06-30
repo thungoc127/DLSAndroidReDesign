@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.dlsandroidredesign.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel

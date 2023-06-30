@@ -54,7 +54,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.dlsandroidredesign.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.example.dlsandroidredesign.ui.gallery.GalleryScreen

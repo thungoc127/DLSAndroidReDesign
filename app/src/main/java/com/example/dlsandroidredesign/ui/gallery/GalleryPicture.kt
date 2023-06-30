@@ -43,7 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.example.dlsandroidredesign.ImageLocationInfoViewModel
+import com.example.dlsandroidredesign.ui.mainScreen.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 

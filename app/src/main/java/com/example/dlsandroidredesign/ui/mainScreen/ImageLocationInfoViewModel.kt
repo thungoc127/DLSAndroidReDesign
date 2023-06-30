@@ -1,4 +1,4 @@
-package com.example.dlsandroidredesign
+package com.example.dlsandroidredesign.ui.mainScreen
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -106,7 +106,7 @@ class ImageLocationInfoViewModel @Inject constructor(
     private val photoSize: GetPhotoSize
 
 ) : ViewModel() {
-    val fileNameCapture = "temp.jpeg"
+    private val fileNameCapture = "temp.jpeg"
     val contentValues = ContentValues().apply {
         put(MediaStore.Images.Media.DISPLAY_NAME, fileNameCapture)
         put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
@@ -125,14 +125,14 @@ class ImageLocationInfoViewModel @Inject constructor(
     var locationInfoLeft = MutableStateFlow("")
     var locationInfoRight = MutableStateFlow("")
     private val _locationObject = MutableStateFlow(LocationObject())
-    val contentResolver: ContentResolver = context.contentResolver
+    private val contentResolver: ContentResolver = context.contentResolver
     private var _wayPointId = MutableStateFlow<String?>(null)
-    val wayPointId = _wayPointId
+    private val wayPointId = _wayPointId
     val locationObjectState: StateFlow<LocationObject> = _locationObject
     val currentUser = getCurrentUser.invoke()
     val uriSet: MutableStateFlow<MutableSet<Uri>> = MutableStateFlow(emptySet<Uri>().toMutableSet())
     init {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             mobileMapPackage.load()
             mobileMapPackage.loadStatus.collect {
                 Log.d("getLocationProcess: ", "${LoadStatus.Loaded}")
@@ -143,23 +143,6 @@ class ImageLocationInfoViewModel @Inject constructor(
                             ?.operationalLayers
                             ?.getOrNull(0) as? FeatureLayer
                         Log.d("getLocationProcess: ", "$sectionLayer")
-
-                        fetchLocationUpdates().collect { location ->
-                            Log.d("getLocationProcess: ", "${location!!.latitude}")
-
-                            // Location retrieved successfully
-                            if (location != null) {
-
-                                val newLocationObject = withContext(Dispatchers.IO) {
-                                    Log.d("getLocationProcess: ", "${location.latitude}")
-                                    getCompleteAddress(location)
-                                }
-                                _locationObject.value = newLocationObject
-                                Log.d("getLocationProcess: ", "$newLocationObject")
-                            } else {
-                                Log.d("getLocationProcess: ", "LocationNull")
-                            }
-                        }
                     }
 
                     else -> {
@@ -167,6 +150,29 @@ class ImageLocationInfoViewModel @Inject constructor(
                     }
                 }
                 Log.d("getLocationProcess: ", it.toString())
+            }
+        }
+    }
+
+    fun startFetchingLocation() {
+        viewModelScope.launch {
+            fetchLocationUpdates().collect { location ->
+                Log.d("getLocationProcess: ", "${location?.latitude}")
+
+                // Location retrieved successfully
+                if (location != null) {
+                  launch {
+                      val newLocationObject = withContext(Dispatchers.IO) {
+                          Log.d("getLocationProcess: ", "${location.latitude}")
+                          getCompleteAddress(location)
+                      }
+                      _locationObject.value = newLocationObject
+                      Log.d("getLocationProcess: ", "$newLocationObject")
+                  }
+
+                } else {
+                    Log.d("getLocationProcess: ", "LocationNull")
+                }
             }
         }
     }
@@ -323,7 +329,7 @@ class ImageLocationInfoViewModel @Inject constructor(
             yleft += 140f
         }
 
-        var xright = bitmap.width.toFloat()
+        var xright = (bitmap.width-20).toFloat()
         var yright = 120f
         val locationInfoRightnew = locationInfoRight.value.split("\n")
         locationInfoRightnew.forEach { line ->
@@ -541,10 +547,10 @@ class ImageLocationInfoViewModel @Inject constructor(
         location: Location?
     ) = suspendCoroutine { cont ->
         val lonDouble = location!!.longitude
-        val latDouble = location!!.latitude
-        val elevationDouble = location!!.altitude
-        val bearingDouble = location!!.bearing
-        var dataTime = LocalDateTime.now()
+        val latDouble = location.latitude
+        val elevationDouble = location.altitude
+        val bearingDouble = location.bearing
+        val dataTime = LocalDateTime.now()
 
         viewModelScope.launch {
             val queryParams = QueryParameters()
