@@ -6,11 +6,11 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.dlsandroidredesign.domain.entity.LocationObject
 
-
 @Dao
 interface ImageLocationInfoDAO {
     @Insert
     suspend fun insertImageLocationInfo(imageLocationInfo: ImageLocationInfo)
+
     @Query("DELETE FROM ImageLocationInfo WHERE uriImage = :uriImage")
     suspend fun deleteImageLocationInfo(uriImage: Uri)
 

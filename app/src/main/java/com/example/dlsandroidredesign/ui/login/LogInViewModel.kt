@@ -36,34 +36,31 @@ class LogInViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val loginUseCase: LoginUseCase,
     private val getCurrentUser: GetCurrentUser,
-    private val getLogInStatus: GetLogInStatus,
+    private val getLogInStatus: GetLogInStatus
 
-    ) : ViewModel() {
-    var loginSheetState  =ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
+) : ViewModel() {
+    var loginSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
     var loginVisible = mutableStateOf(false)
-    fun setLoginVisible(newValue:Boolean){
+    fun setLoginVisible(newValue: Boolean) {
         loginVisible.value = newValue
     }
     var currentUser: Flow<User?> = getCurrentUser.invoke()
     val isLogInSuccess = getLogInStatus.invoke()
-     val success = MutableStateFlow(false)
+    val success = MutableStateFlow(false)
 
-     var errorMessage=MutableStateFlow("")
+    var errorMessage = MutableStateFlow("")
     fun validate(username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val loginStatus = async {  loginUseCase.invoke(username, password) }
+            val loginStatus = async { loginUseCase.invoke(username, password) }
             if (loginStatus.await()) {
                 success.value = true
                 delay(1000)
                 setLoginVisible(false)
                 errorMessage.value = ""
-            }
-            else
-            {
+            } else {
                 errorMessage.value = "Failed! Please try again!"
                 success.value = false
             }
         }
     }
-
 }

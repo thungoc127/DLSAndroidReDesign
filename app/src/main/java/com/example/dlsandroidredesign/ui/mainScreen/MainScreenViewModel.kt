@@ -16,33 +16,22 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @HiltViewModel
-class MainScreenViewModel @Inject constructor(@ApplicationContext private val context: Context,
-                                              private val getLocationInfoUseCase: GetLocationInfoUseCase
-                                              ,private val getAllImages: GetAllImages
-):ViewModel(){
-    val zoomRatio= mutableStateOf(0.0f)
+class MainScreenViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val getLocationInfoUseCase: GetLocationInfoUseCase,
+    private val getAllImages: GetAllImages
+) : ViewModel() {
+    val zoomRatio = mutableStateOf(0.0f)
     val galleryModalSheetVisible = mutableStateOf(false)
     val settingSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
     val loginAndWaypointgroupSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
-    var waypointGroupSheetState  = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
-    var bmp =  mutableStateOf<Bitmap?>(null)
+    var waypointGroupSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
+    var bmp = mutableStateOf<Bitmap?>(null)
     var allImages = mutableStateOf(emptyList<Uri>())
-    fun getAllImage():List<Uri> {
-        allImages.value= viewModelScope.async {getAllImages.invoke()}.getCompleted()
+    fun getAllImage(): List<Uri> {
+        allImages.value = viewModelScope.async { getAllImages.invoke() }.getCompleted()
         return allImages.value
     }
-
-
-
-
-
-
-
-
-
-
-
 }

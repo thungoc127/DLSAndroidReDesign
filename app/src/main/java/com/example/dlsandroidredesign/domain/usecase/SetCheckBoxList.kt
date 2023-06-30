@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class SetCheckBoxList @Inject constructor(private val dlsRepository: DLSRepository) {
     suspend operator fun invoke(checkBoxKey: String, value: Boolean) {
-        return dlsRepository.setCheckBox(checkBoxKey,value)
+        return dlsRepository.setCheckBox(checkBoxKey, value)
     }
 }

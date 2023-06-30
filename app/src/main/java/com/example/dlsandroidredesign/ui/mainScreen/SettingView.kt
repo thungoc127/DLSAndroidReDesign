@@ -1,73 +1,73 @@
-//package com.example.dlsandroidredesign.ui.mainScreen
+// package com.example.dlsandroidredesign.ui.mainScreen
 //
-//import android.content.ContentResolver
-//import android.content.ContentValues
-//import android.content.Context
-//import android.graphics.Bitmap
-//import android.graphics.BitmapFactory
-//import android.graphics.Canvas
-//import android.graphics.Paint
-//import android.icu.text.SimpleDateFormat
-//import android.net.Uri
-//import android.os.Build
-//import android.provider.MediaStore
-//import android.util.Log
-//import android.widget.Toast
-//import androidx.camera.core.CameraSelector
-//import androidx.camera.core.ImageCapture
-//import androidx.camera.core.ImageCaptureException
-//import androidx.camera.lifecycle.ProcessCameraProvider
-//import androidx.camera.view.PreviewView
-//import androidx.compose.foundation.Image
-//import androidx.compose.foundation.background
-//import androidx.compose.foundation.clickable
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.Spacer
-//import androidx.compose.foundation.layout.fillMaxHeight
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.height
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.layout.size
-//import androidx.compose.foundation.shape.RoundedCornerShape
-//import androidx.compose.material.ExperimentalMaterialApi
-//import androidx.compose.material.ModalBottomSheetValue
-//import androidx.compose.material.rememberModalBottomSheetState
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.rememberCoroutineScope
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.draw.clip
-//import androidx.compose.ui.graphics.Color
-//import androidx.compose.ui.layout.ContentScale
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.platform.LocalLifecycleOwner
-//import androidx.compose.ui.res.painterResource
-//import androidx.compose.ui.unit.dp
-//import androidx.core.content.ContextCompat
-//import androidx.hilt.navigation.compose.hiltViewModel
-//import coil.compose.rememberAsyncImagePainter
-//import com.example.dlsandroidredesign.R
-//import com.example.dlsandroidredesign.ui.setting.settingFragment
-//import com.google.gson.JsonObject
-//import eu.wewox.modalsheet.ExperimentalSheetApi
-//import eu.wewox.modalsheet.ModalSheet
-//import kotlinx.coroutines.launch
-//import org.json.JSONObject
-//import java.io.File
-//import java.io.IOException
-//import java.io.OutputStream
-//import java.util.Calendar
-//import java.util.Locale
+// import android.content.ContentResolver
+// import android.content.ContentValues
+// import android.content.Context
+// import android.graphics.Bitmap
+// import android.graphics.BitmapFactory
+// import android.graphics.Canvas
+// import android.graphics.Paint
+// import android.icu.text.SimpleDateFormat
+// import android.net.Uri
+// import android.os.Build
+// import android.provider.MediaStore
+// import android.util.Log
+// import android.widget.Toast
+// import androidx.camera.core.CameraSelector
+// import androidx.camera.core.ImageCapture
+// import androidx.camera.core.ImageCaptureException
+// import androidx.camera.lifecycle.ProcessCameraProvider
+// import androidx.camera.view.PreviewView
+// import androidx.compose.foundation.Image
+// import androidx.compose.foundation.background
+// import androidx.compose.foundation.clickable
+// import androidx.compose.foundation.layout.Box
+// import androidx.compose.foundation.layout.Column
+// import androidx.compose.foundation.layout.Spacer
+// import androidx.compose.foundation.layout.fillMaxHeight
+// import androidx.compose.foundation.layout.fillMaxSize
+// import androidx.compose.foundation.layout.height
+// import androidx.compose.foundation.layout.padding
+// import androidx.compose.foundation.layout.size
+// import androidx.compose.foundation.shape.RoundedCornerShape
+// import androidx.compose.material.ExperimentalMaterialApi
+// import androidx.compose.material.ModalBottomSheetValue
+// import androidx.compose.material.rememberModalBottomSheetState
+// import androidx.compose.material3.MaterialTheme
+// import androidx.compose.runtime.Composable
+// import androidx.compose.runtime.getValue
+// import androidx.compose.runtime.mutableStateOf
+// import androidx.compose.runtime.remember
+// import androidx.compose.runtime.rememberCoroutineScope
+// import androidx.compose.runtime.setValue
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import androidx.compose.ui.draw.clip
+// import androidx.compose.ui.graphics.Color
+// import androidx.compose.ui.layout.ContentScale
+// import androidx.compose.ui.platform.LocalContext
+// import androidx.compose.ui.platform.LocalLifecycleOwner
+// import androidx.compose.ui.res.painterResource
+// import androidx.compose.ui.unit.dp
+// import androidx.core.content.ContextCompat
+// import androidx.hilt.navigation.compose.hiltViewModel
+// import coil.compose.rememberAsyncImagePainter
+// import com.example.dlsandroidredesign.R
+// import com.example.dlsandroidredesign.ui.setting.settingFragment
+// import com.google.gson.JsonObject
+// import eu.wewox.modalsheet.ExperimentalSheetApi
+// import eu.wewox.modalsheet.ModalSheet
+// import kotlinx.coroutines.launch
+// import org.json.JSONObject
+// import java.io.File
+// import java.io.IOException
+// import java.io.OutputStream
+// import java.util.Calendar
+// import java.util.Locale
 //
-//@OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
-//@Composable
-//fun Setting(viewModel:MainScreenViewModel= hiltViewModel()){
+// @OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
+// @Composable
+// fun Setting(viewModel:MainScreenViewModel= hiltViewModel()){
 //    val coroutineScope= rememberCoroutineScope()
 //    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
 //    val context = LocalContext.current
@@ -164,7 +164,7 @@
 //        val mimeType = "image/jpeg"
 //        viewModel.bmp.value= bitmap
 //
-//// Insert the image to the MediaStore
+// // Insert the image to the MediaStore
 //        val values = ContentValues().apply {
 //            put(MediaStore.Images.Media.TITLE, fileName)
 //            put(MediaStore.Images.Media.MIME_TYPE, mimeType)
@@ -173,13 +173,13 @@
 //            }
 //        }
 //
-//// Get the content resolver
+// // Get the content resolver
 //        val resolver: ContentResolver = context.contentResolver
 //
-//// Insert the image and get its content URI
+// // Insert the image and get its content URI
 //        val imageUri: Uri? = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 //
-//// Open an output stream to write the bitmap data
+// // Open an output stream to write the bitmap data
 //        try {
 //            imageUri?.let { uri ->
 //                val outputStream: OutputStream? = resolver.openOutputStream(uri)
@@ -227,9 +227,9 @@
 //                    //                    imageLocationInfoViewModel.insertImageLocationInfo(savedUriCapture!!, locationInfoObject = LocationObject())
 //                    */
 //
-////                    val picture= addTextOnImageAndSave(savedUriCapture)
-////                    // Handle further operations with the saved image URI
-////                    val multipartPic=ConvertUriToMultipart(picture)
+// //                    val picture= addTextOnImageAndSave(savedUriCapture)
+// //                    // Handle further operations with the saved image URI
+// //                    val multipartPic=ConvertUriToMultipart(picture)
 //                    val c = Calendar.getInstance().time
 //                    val df = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())
 //                    val formattedDate = df.format(c)
@@ -306,13 +306,13 @@
 //
 //    )
 //
-//}
+// }
 //
 //
 //
 //
-//@Composable
-//fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress:()->Unit, onFlashPressed:()->Unit,bmp: Bitmap?) {
+// @Composable
+// fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress:()->Unit, onFlashPressed:()->Unit,bmp: Bitmap?) {
 //    val context = LocalContext.current
 //    var imageUri by remember { mutableStateOf<Uri?>(null) }
 //    var painter = rememberAsyncImagePainter(model = bmp)
@@ -443,4 +443,4 @@
 //
 //
 //
-//}
+// }

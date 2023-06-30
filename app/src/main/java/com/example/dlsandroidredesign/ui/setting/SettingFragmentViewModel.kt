@@ -28,41 +28,37 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
-class SettingFragmentViewModel @Inject constructor(private val getCusText: GetCusText,
-                                                   private val setCusText: SetCusText,
-                                                   private val getCheckBoxUseCase: GetCheckBoxUseCase,
-                                                   private val setCheckBoxUseCase: SetCheckBoxUseCase,
-                                                   private val setAutoUploadStatus: SetAutoUploadStatus,
-                                                   private val getAutoUploadStatus: GetAutoUploadStatus,
-                                                   private val logInStatus: GetLogInStatus,
-                                                   private val currentUser: GetCurrentUser,
-                                                   private val getPhotoSize: GetPhotoSize,
-                                                   private val setPhotoSize: SetPhotoSize,
-                                                   private val setUploadSize: SetUploadSize,
-                                                   private val getUploadSize: GetUploadSize
+class SettingFragmentViewModel @Inject constructor(
+    private val getCusText: GetCusText,
+    private val setCusText: SetCusText,
+    private val getCheckBoxUseCase: GetCheckBoxUseCase,
+    private val setCheckBoxUseCase: SetCheckBoxUseCase,
+    private val setAutoUploadStatus: SetAutoUploadStatus,
+    private val getAutoUploadStatus: GetAutoUploadStatus,
+    private val logInStatus: GetLogInStatus,
+    private val currentUser: GetCurrentUser,
+    private val getPhotoSize: GetPhotoSize,
+    private val setPhotoSize: SetPhotoSize,
+    private val setUploadSize: SetUploadSize,
+    private val getUploadSize: GetUploadSize
 
-
-
-                                                   ):ViewModel() {
-
-
+) : ViewModel() {
 
     val uploadSize = getUploadSize.invoke()
-    fun setUploadSize(photoSize:String){
+    fun setUploadSize(photoSize: String) {
         viewModelScope.launch { setUploadSize.invoke(photoSize) }
     }
 
     val photoSize = getPhotoSize.invoke()
-    fun setPhotoSize(photoSize:String){
+    fun setPhotoSize(photoSize: String) {
         viewModelScope.launch { setPhotoSize.invoke(photoSize) }
     }
     private val _waypointGroupName = MutableStateFlow("")
     val waypointGroupName: StateFlow<String> = _waypointGroupName
 
     val autoUploadStatus = getAutoUploadStatus.invoke()
-    fun setAutoUpload(isAutoUpload:Boolean) = viewModelScope.launch { withContext(Dispatchers.IO){setAutoUploadStatus.invoke(isAutoUpload)}  }
+    fun setAutoUpload(isAutoUpload: Boolean) = viewModelScope.launch { withContext(Dispatchers.IO) { setAutoUploadStatus.invoke(isAutoUpload) } }
 
     var isLoginSuccessful by mutableStateOf(false)
     val cusText = getCusText.invoke()
@@ -74,15 +70,14 @@ class SettingFragmentViewModel @Inject constructor(private val getCusText: GetCu
     )
 
     fun setCheckBox(checkBoxKey: String, newValue: Boolean) {
-            viewModelScope.launch { setCheckBoxUseCase(checkBoxKey,newValue) }
+        viewModelScope.launch { setCheckBoxUseCase(checkBoxKey, newValue) }
     }
 
-    fun setCusText (cusText:String){
+    fun setCusText(cusText: String) {
         viewModelScope.launch { setCusText.invoke(cusText) }
     }
 
 //    fun setCheckBoxList(checkBoxList:List<Boolean>){
 //        viewModelScope.launch { setCheckBoxList.invoke(checkBoxList) }
 //    }
-
 }

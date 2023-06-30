@@ -5,7 +5,7 @@ import com.google.gson.JsonObject
 import javax.inject.Inject
 
 class GetWayPointId @Inject constructor(private val dlsRepository: DLSRepository) {
-    suspend operator fun invoke(apiKey: String?, bean: JsonObject?):String?{
-            return dlsRepository.getWayPointId(apiKey,bean)
+    suspend operator fun invoke(apiKey: String?, bean: JsonObject?): String? {
+        return dlsRepository.getWayPointId(apiKey, bean)
     }
 }

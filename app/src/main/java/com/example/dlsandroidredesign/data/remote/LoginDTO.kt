@@ -19,4 +19,3 @@ data class LoginDTO(
     val success: Boolean
         get() = _success == 1
 }
-

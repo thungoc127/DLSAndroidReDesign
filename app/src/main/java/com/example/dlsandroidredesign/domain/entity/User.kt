@@ -5,5 +5,5 @@ data class User(
     val userName: String,
     var waypointgroups: List<Waypointgroup>,
     var groupIdCheck: String,
-    var groupNameCheck: String,
+    var groupNameCheck: String
 )

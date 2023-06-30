@@ -27,12 +27,11 @@ import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 
-
 @SuppressLint("MissingPermission", "CoroutineCreationDuringComposition")
 @Composable
-fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingViewModel: SettingFragmentViewModel= hiltViewModel()) {
+fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settingViewModel: SettingFragmentViewModel = hiltViewModel()) {
     val location = viewModel.locationObjectState.collectAsStateWithLifecycle().value
-//////CheckedVariable
+// ////CheckedVariable
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
     val settingCheckbox by settingViewModel.checkBox.collectAsStateWithLifecycle()
     Box(
@@ -41,8 +40,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
             .fillMaxWidth()
     ) {
         Column(modifier = Modifier.align(Alignment.TopStart)) {
-
-                if (settingCheckbox.latLon) {
+            if (settingCheckbox.latLon) {
                 Text(
                     text = "Lat/Lon",
                     fontSize = 14.sp,
@@ -50,7 +48,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -60,7 +60,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
             //
 
             if (settingCheckbox.latLon) {
-                //lat
+                // lat
                 Text(
                     text = "${location.lat}",
                     fontSize = 14.sp,
@@ -68,7 +68,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -77,8 +79,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                 )
             }
 
-
-            //lng
+            // lng
             if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.lon}",
@@ -87,7 +88,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -95,7 +98,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
 
                 )
             }
-            //elevation
+            // elevation
             if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.elevation}",
@@ -104,7 +107,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -113,7 +118,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                 )
             }
 
-            //GridLocation
+            // GridLocation
             if (settingCheckbox.gridLocation) {
                 Text(
                     text = "${location.gridLocation}",
@@ -122,16 +127,17 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp),
+                        .padding(start = 5.dp, bottom = 2.dp)
 
-
-                    )
+                )
             }
-            //DistanceFromGridLine
+            // DistanceFromGridLine
             if (settingCheckbox.distance) {
                 Text(
                     text = "${location.distance}",
@@ -140,16 +146,17 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp),
+                        .padding(start = 5.dp, bottom = 2.dp)
 
-
-                    )
+                )
             }
-            //utmTxt
+            // utmTxt
             if (settingCheckbox.utmCoordinate) {
                 Text(
                     text = "${location.utmCoordinate}",
@@ -158,7 +165,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -168,12 +177,11 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
             }
         }
 
-
-
         Column(
-            modifier = Modifier.align(Alignment.TopEnd), horizontalAlignment = Alignment.End
+            modifier = Modifier.align(Alignment.TopEnd),
+            horizontalAlignment = Alignment.End
         ) {
-            //bearingTxt
+            // bearingTxt
             if (settingCheckbox.bearing) {
                 Text(
                     text = " ${location.bearing}",
@@ -182,7 +190,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -190,7 +200,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
 
                 )
             }
-            //addressTxt
+            // addressTxt
             if (settingCheckbox.address) {
                 Text(
                     text = "${location.address}",
@@ -199,7 +209,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
@@ -207,7 +219,6 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
 
                 )
             }
-
 
             if (settingCheckbox.date) {
                 Text(
@@ -218,34 +229,35 @@ fun LocationView(viewModel: ImageLocationInfoViewModel= hiltViewModel(),settingV
                     style = TextStyle(
                         fontSize = 24.sp,
                         shadow = Shadow(
-                            color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                            color = Color.White,
+                            offset = Offset(3.0f, 3.0f),
+                            blurRadius = 5f
                         )
                     ),
                     modifier = Modifier
                         .padding(start = 5.dp, bottom = 2.dp)
 
                 )
-
             }
         }
 
-        if(settingCheckbox.cusText){
+        if (settingCheckbox.cusText) {
             Text(
-                text =settingViewModel.cusText.collectAsState(initial = "").value ,
+                text = settingViewModel.cusText.collectAsState(initial = "").value,
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.textOverlay),
                 style = TextStyle(
                     fontSize = 24.sp,
                     shadow = Shadow(
-                        color = Color.White, offset = Offset(3.0f, 3.0f), blurRadius = 5f
+                        color = Color.White,
+                        offset = Offset(3.0f, 3.0f),
+                        blurRadius = 5f
                     )
                 ),
                 modifier = Modifier
                     .padding(start = 5.dp, bottom = 2.dp)
                     .align(Alignment.BottomCenter)
             )
-        }}
-
-
+        } 
+    }
 }
-

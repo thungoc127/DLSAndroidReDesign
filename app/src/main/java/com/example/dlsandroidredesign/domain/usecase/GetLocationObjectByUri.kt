@@ -6,7 +6,7 @@ import com.example.dlsandroidredesign.domain.entity.LocationObject
 import javax.inject.Inject
 
 class GetLocationObjectByUri @Inject constructor(private val dlsRepository: DLSRepository) {
-suspend operator fun invoke(uriImage:Uri): LocationObject {
-    return  dlsRepository.getLocationObjectByUri(uriImage)
-}
+    suspend operator fun invoke(uriImage: Uri): LocationObject {
+        return dlsRepository.getLocationObjectByUri(uriImage)
+    }
 }

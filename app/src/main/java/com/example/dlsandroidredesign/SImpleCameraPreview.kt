@@ -1,31 +1,31 @@
-//package com.example.dlsandroidredesign.ui.mainScreen
+// package com.example.dlsandroidredesign.ui.mainScreen
 //
-//import android.content.ContentValues
-//import android.content.Context
-//import android.os.Build
-//import android.os.Environment
-//import android.provider.MediaStore
-//import android.util.Log
-//import androidx.camera.core.ImageCapture
-//import androidx.camera.core.ImageCaptureException
-//import androidx.camera.view.PreviewView
-//import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.material3.Button
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.core.content.ContextCompat
-//import java.io.File
+// import android.content.ContentValues
+// import android.content.Context
+// import android.os.Build
+// import android.os.Environment
+// import android.provider.MediaStore
+// import android.util.Log
+// import androidx.camera.core.ImageCapture
+// import androidx.camera.core.ImageCaptureException
+// import androidx.camera.view.PreviewView
+// import androidx.compose.foundation.layout.Box
+// import androidx.compose.foundation.layout.fillMaxSize
+// import androidx.compose.material3.Button
+// import androidx.compose.runtime.Composable
+// import androidx.compose.ui.Alignment
+// import androidx.compose.ui.Modifier
+// import androidx.core.content.ContextCompat
+// import java.io.File
 //
 //
-//@Composable
-//fun CameraPreview(
+// @Composable
+// fun CameraPreview(
 //    imageCapture: ImageCapture,
 //    flashModeState: Int,
 //    onFlashModeStateChanged: (flashMode: Int) -> Unit,
 //    previewView: PreviewView
-//) {
+// ) {
 //
 //
 //    Box(modifier = Modifier.fillMaxSize()) {
@@ -33,7 +33,7 @@
 //
 //
 //
-///*        Button(onClick = {
+// /*        Button(onClick = {
 //            cameraSelectorState = if (cameraSelectorState == CameraSelector.DEFAULT_BACK_CAMERA) {
 //                CameraSelector.DEFAULT_FRONT_CAMERA
 //            } else {
@@ -61,10 +61,10 @@
 //        ) {
 //        }
 //    }
-//}
+// }
 //
 //
-//private fun takePicture(context: Context) {
+// private fun takePicture(context: Context) {
 //    var imageCapture = ImageCapture.Builder().build()
 //    // Create time-stamped file name and MediaStore entry
 //    val fileName = "IMG_${System.currentTimeMillis()}.jpg"
@@ -102,12 +102,12 @@
 //            }
 //        }
 //    )
-//}
+// }
 //
 //
-///*
-//@Composable
-//fun SimpleCameraPreviewFront() {
+// /*
+// @Composable
+// fun SimpleCameraPreviewFront() {
 //    val lifecycleOwner = LocalLifecycleOwner.current
 //    val context = LocalContext.current
 //    // Initialize the cameraProviderFuture
@@ -140,10 +140,10 @@
 //        factory = { previewView },
 //        modifier = Modifier.fillMaxSize(),
 //    )
-//}
+// }
 //
-//@Composable
-//fun Parent(){
+// @Composable
+// fun Parent(){
 //    val context = LocalContext.current
 //    var cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 //    val cameraProvider = cameraProviderFuture.get()
@@ -161,4 +161,4 @@
 //            SimpleCameraPreviewFront()}
 //    }
 //
-//}*/
+// }*/

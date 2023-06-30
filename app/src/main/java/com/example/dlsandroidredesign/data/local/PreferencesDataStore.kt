@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-
 val settingMap = mapOf(
     "latlon" to true,
     "elevation" to true,
@@ -26,7 +25,7 @@ val settingMap = mapOf(
     "date" to true
 )
 
-class PreferencesDataStore(private val context: Context){
+class PreferencesDataStore(private val context: Context) {
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("Setting_preferences")
         private var isLatitudeAndLongitudeChecked = booleanPreferencesKey("isLatitudeChecked")
@@ -53,44 +52,39 @@ class PreferencesDataStore(private val context: Context){
         private var uploadSize = stringPreferencesKey("uploadSize")
     }
 
-    //uploadSize
+    // uploadSize
     suspend fun setUploadSize(uploadSizeInput: String) {
         context.dataStore.edit { it[uploadSize] = uploadSizeInput }
     }
 
-    var getUploadSize =  context.dataStore.data.map { it[uploadSize] ?: "Original" }
+    var getUploadSize = context.dataStore.data.map { it[uploadSize] ?: "Original" }
 
-//photoSize
+// photoSize
     suspend fun setPhotoSize(photoSizeInput: String) {
         context.dataStore.edit { it[photoSize] = photoSizeInput }
     }
 
-    var getPhotoSize =  context.dataStore.data.map { it[photoSize] ?: "Original" }
+    var getPhotoSize = context.dataStore.data.map { it[photoSize] ?: "Original" }
 
-
-    ///CheckBox
+    // /CheckBox
     fun getSettingCheckbox(): Flow<HashSet<String>> {
-        Log.d("getCheckBox","Get")
+        Log.d("getCheckBox", "Get")
         return context.dataStore.data.map { preferences ->
             val serializedData = preferences[settingCheckbox]
             val settingCheckboxType = object : TypeToken<HashSet<String>>() {}.type
-            Gson().fromJson(serializedData, settingCheckboxType) ?: hashSetOf<String>("LatLon","Elevation","GridLocation","Distance","Heading","Address","Date","Utm","CustomText")
-
+            Gson().fromJson(serializedData, settingCheckboxType) ?: hashSetOf<String>("LatLon", "Elevation", "GridLocation", "Distance", "Heading", "Address", "Date", "Utm", "CustomText")
         }
     }
 
-     suspend fun setSettingCheckBox(value: String, hashSet: HashSet<String>) {
+    suspend fun setSettingCheckBox(value: String, hashSet: HashSet<String>) {
         if (hashSet.contains(value)) {
             hashSet.remove(value)
-            Log.d("setCheckBox","Remove")
-            Log.d("setCheckBox","$hashSet")
-
+            Log.d("setCheckBox", "Remove")
+            Log.d("setCheckBox", "$hashSet")
         } else {
             hashSet.add(value)
-            Log.d("setCheckBox","Set")
-            Log.d("setCheckBox","$hashSet")
-
-
+            Log.d("setCheckBox", "Set")
+            Log.d("setCheckBox", "$hashSet")
         }
         val newSerializedData = Gson().toJson(hashSet)
         context.dataStore.edit { preferences ->
@@ -98,16 +92,14 @@ class PreferencesDataStore(private val context: Context){
         }
     }
 
-
-    //groupIdCheck
+    // groupIdCheck
     suspend fun setWaypointgroupCheck(WaypointgroupCheckInput: String) {
         context.dataStore.edit { it[waypointgroupCheck] = WaypointgroupCheckInput }
     }
 
-    var getWaypointgroupCheck =  context.dataStore.data.map { it[waypointgroupCheck] ?: null }
+    var getWaypointgroupCheck = context.dataStore.data.map { it[waypointgroupCheck] ?: null }
 
-
-    //Waypoint group ch
+    // Waypoint group ch
 
     suspend fun setWaypointGroup(waypointGroupsInput: List<Waypointgroup>) {
         val serializedList = Gson().toJson(waypointGroupsInput)
@@ -124,142 +116,134 @@ class PreferencesDataStore(private val context: Context){
         }
     }
 
-
-    //isLoginSuccessful
+    // isLoginSuccessful
 
     suspend fun setIsLoginSuccessful(isSuccessFullInput: Boolean) {
         context.dataStore.edit { it[isLoginSuccessful] = isSuccessFullInput }
     }
 
-    var getIsLoginSuccess =  context.dataStore.data.map { it[isLoginSuccessful] ?: false }
+    var getIsLoginSuccess = context.dataStore.data.map { it[isLoginSuccessful] ?: false }
 
-    //UserName
+    // UserName
     suspend fun setUsername(userNameInput: String) {
         context.dataStore.edit { it[userName] = userNameInput }
     }
 
-    var getUsername =  context.dataStore.data.map { it[userName] ?: "" }
+    var getUsername = context.dataStore.data.map { it[userName] ?: "" }
 
-    //Password
+    // Password
     suspend fun setPassword(passwordInput: String) {
         context.dataStore.edit { it[passWord] = passwordInput }
     }
 
-    var getPassword =  context.dataStore.data.map { it[passWord] ?: "" }
+    var getPassword = context.dataStore.data.map { it[passWord] ?: "" }
 
-
-
-    //UploadAuto
+    // UploadAuto
     suspend fun setUploadAuto(uploadAutoInput: Boolean) {
         context.dataStore.edit { it[uploadAuto] = uploadAutoInput }
     }
 
-    var getUploadAuto =  context.dataStore.data.map { it[uploadAuto] ?: false }
+    var getUploadAuto = context.dataStore.data.map { it[uploadAuto] ?: false }
 
-    //LogInStatus
+    // LogInStatus
     suspend fun setLogInStatus(islogInStatus: Boolean) {
         context.dataStore.edit { it[isLoginSuccessful] = islogInStatus }
     }
 
-    var getLogInStatus =  context.dataStore.data.map { it[isLoginSuccessful] ?: false }
+    var getLogInStatus = context.dataStore.data.map { it[isLoginSuccessful] ?: false }
 
-    //SettingState
+    // SettingState
     suspend fun setSettingState(isSettingState: Boolean) {
         context.dataStore.edit { it[settingState] = isSettingState }
     }
 
-    var getSettingState =  context.dataStore.data.map { it[settingState] ?: true }
+    var getSettingState = context.dataStore.data.map { it[settingState] ?: true }
 
-    //logInState
+    // logInState
     suspend fun setlogInState(islogInState: Boolean) {
         context.dataStore.edit { it[logInState] = islogInState }
     }
 
-    var getlogInState =  context.dataStore.data.map { it[logInState] ?: false }
+    var getlogInState = context.dataStore.data.map { it[logInState] ?: false }
 
-
-    //LeftInfo
+    // LeftInfo
     suspend fun setLocationInfoLeft(locationInfoLeftInput: String) {
         context.dataStore.edit { it[locationInfoLeft] = locationInfoLeftInput }
     }
 
-    var getLocationInfoLeft =  context.dataStore.data.map { it[locationInfoLeft] ?: "" }
+    var getLocationInfoLeft = context.dataStore.data.map { it[locationInfoLeft] ?: "" }
 
-    //RightInfo
+    // RightInfo
     suspend fun setLocationInfoRight(locationInfoRightInput: String) {
         context.dataStore.edit { it[locationInfoRight] = locationInfoRightInput }
     }
 
-    var getLocationInfoRight =  context.dataStore.data.map { it[locationInfoRight] ?: "" }
+    var getLocationInfoRight = context.dataStore.data.map { it[locationInfoRight] ?: "" }
 
-    //Coordinate
+    // Coordinate
     suspend fun setLatitudeAndLongitudeChecked(isLatitudeInput: Boolean) {
         context.dataStore.edit { it[isLatitudeAndLongitudeChecked] = isLatitudeInput }
     }
 
-    var getLatitudeAndLongitudeChecked =  context.dataStore.data.map { it[isLatitudeAndLongitudeChecked] ?: true }
+    var getLatitudeAndLongitudeChecked = context.dataStore.data.map { it[isLatitudeAndLongitudeChecked] ?: true }
 
-
-    //Elevation
+    // Elevation
     suspend fun setElevation(isElevationInput: Boolean) {
         context.dataStore.edit { it[isElevationChecked] = isElevationInput }
     }
 
-    var getElevation =  context.dataStore.data.map { it[isElevationChecked] ?: true }
+    var getElevation = context.dataStore.data.map { it[isElevationChecked] ?: true }
 
-    //gridLocation
+    // gridLocation
     suspend fun setGridLocation(isGridLocationInput: Boolean) {
         context.dataStore.edit { it[isGridLocationChecked] = isGridLocationInput }
     }
 
-    var getGridLocation =  context.dataStore.data.map { it[isGridLocationChecked] ?: true }
+    var getGridLocation = context.dataStore.data.map { it[isGridLocationChecked] ?: true }
 
-    //distance
+    // distance
     suspend fun setDistance(isDistanceInput: Boolean) {
         context.dataStore.edit { it[isDistanceChecked] = isDistanceInput }
     }
 
-    var getDistance =  context.dataStore.data.map { it[isDistanceChecked] ?: true }
+    var getDistance = context.dataStore.data.map { it[isDistanceChecked] ?: true }
 
-    //Heading
+    // Heading
     suspend fun setHeading(isHeadingInput: Boolean) {
         context.dataStore.edit { it[isHeadingChecked] = isHeadingInput }
     }
 
-    var getHeading =  context.dataStore.data.map { it[isHeadingChecked] ?: true }
+    var getHeading = context.dataStore.data.map { it[isHeadingChecked] ?: true }
 
-    //Address
+    // Address
     suspend fun setAddress(isAddressInput: Boolean) {
         context.dataStore.edit { it[isAddressChecked] = isAddressInput }
     }
 
-    var getAddress =  context.dataStore.data.map { it[isAddressChecked] ?: true }
+    var getAddress = context.dataStore.data.map { it[isAddressChecked] ?: true }
 
-    //DateAndTime
+    // DateAndTime
     suspend fun setDateAndTime(isDateAndTimeInput: Boolean) {
         context.dataStore.edit { it[isdDateAndTimeChecked] = isDateAndTimeInput }
     }
 
-    var getDateAndTime =  context.dataStore.data.map { it[isdDateAndTimeChecked] ?: true }
+    var getDateAndTime = context.dataStore.data.map { it[isdDateAndTimeChecked] ?: true }
 
-    //Utm
+    // Utm
     suspend fun setUtm(isUtmInput: Boolean) {
         context.dataStore.edit { it[isUtmChecked] = isUtmInput }
     }
 
-    var getUtm =  context.dataStore.data.map { it[isUtmChecked] ?: true }
+    var getUtm = context.dataStore.data.map { it[isUtmChecked] ?: true }
 
-    //CustomText
+    // CustomText
 
     suspend fun setCustomText(customTextInput: String) {
         context.dataStore.edit { it[customText] = customTextInput }
     }
 
-    var getCustomText =  context.dataStore.data.map { it[customText] ?: "" }
-
-
+    var getCustomText = context.dataStore.data.map { it[customText] ?: "" }
 }
-
 
 /**
 var preferenceDataStore = PreferenceDataStore(this)
@@ -272,4 +256,3 @@ preferenceDataStore.setDetailts(channelDetails)
 }
 
  **/
-

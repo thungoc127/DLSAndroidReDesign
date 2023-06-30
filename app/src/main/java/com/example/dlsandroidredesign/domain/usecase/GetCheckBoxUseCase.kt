@@ -19,15 +19,15 @@ class GetCheckBoxUseCase @Inject constructor(private val dlsRepository: DLSRepos
     operator fun invoke(): Flow<CheckBox> {
         return dlsRepository.getCheckBox().map { preference ->
             CheckBox(
-                latLon = preference[latLon]?:true,
-                elevation =preference[elevation]?:true,
-                gridLocation = preference[gridLocation]?:true,
-                distance = preference[distance]?:true,
-                utmCoordinate = preference[utmCoordinate]?:true,
-                bearing = preference[bearing]?:true,
-                address = preference[address]?:true,
-                date = preference[date]?:true,
-                cusText = preference[cusText]?:true,
+                latLon = preference[latLon] ?: true,
+                elevation = preference[elevation] ?: true,
+                gridLocation = preference[gridLocation] ?: true,
+                distance = preference[distance] ?: true,
+                utmCoordinate = preference[utmCoordinate] ?: true,
+                bearing = preference[bearing] ?: true,
+                address = preference[address] ?: true,
+                date = preference[date] ?: true,
+                cusText = preference[cusText] ?: true
 
             )
         }

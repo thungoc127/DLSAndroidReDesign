@@ -13,19 +13,19 @@ import eu.wewox.modalsheet.ExperimentalSheetApi
 import eu.wewox.modalsheet.ModalSheet
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterialApi::class, ExperimentalSheetApi::class)
 @Composable
-fun ModalBottomSheetLoginAndWaypointgroups(logInViewModel: LogInViewModel= hiltViewModel(), waypointGroupSheetState:ModalBottomSheetState){
+fun ModalBottomSheetLoginAndWaypointgroups(logInViewModel: LogInViewModel = hiltViewModel(), waypointGroupSheetState: ModalBottomSheetState) {
     val coroutineScope = rememberCoroutineScope()
 
     ModalSheet(
         visible = logInViewModel.loginVisible.value,
         onVisibleChange = {
-            logInViewModel.errorMessage.value= ""
-            coroutineScope.launch { logInViewModel.setLoginVisible(it)} },
-        content={
-                LogInScreen()
+            logInViewModel.errorMessage.value = ""
+            coroutineScope.launch { logInViewModel.setLoginVisible(it) }
+        },
+        content = {
+            LogInScreen()
         }
     )
 
@@ -34,8 +34,8 @@ fun ModalBottomSheetLoginAndWaypointgroups(logInViewModel: LogInViewModel= hiltV
         onSystemBack = {
             coroutineScope.launch { waypointGroupSheetState.hide() }
         },
-        content={
-                WaypointgroupsFragment()
+        content = {
+            WaypointgroupsFragment()
         }
     )
 }

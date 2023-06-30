@@ -18,9 +18,8 @@ class GalleryViewModel @Inject constructor(
     private val getAllImages: GetAllImages
 ) : ViewModel() {
     var selectedImageUris = MutableStateFlow<List<Uri>>(emptyList<Uri>())
-    fun getMergeList(addList: List<Uri>){
-        selectedImageUris.value = selectedImageUris.value+addList
+    fun getMergeList(addList: List<Uri>) {
+        selectedImageUris.value = selectedImageUris.value + addList
         selectedImageUris.value = selectedImageUris.value.distinct()
     }
-
 }

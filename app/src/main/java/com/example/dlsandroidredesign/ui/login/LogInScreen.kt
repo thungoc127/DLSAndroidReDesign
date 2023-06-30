@@ -40,39 +40,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dlsandroidredesign.R
 import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LogInScreen(viewModel: LogInViewModel = hiltViewModel(),mainScreenViewModel: MainScreenViewModel= hiltViewModel()) {
-    val coroutineScope= rememberCoroutineScope()
+fun LogInScreen(viewModel: LogInViewModel = hiltViewModel(), mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val errorMessage = viewModel.errorMessage.collectAsState().value
-    Log.d("LoginScreen","create")
+    Log.d("LoginScreen", "create")
     LogInScreen(
-        onLogin= { username: String, password: String ->
+        onLogin = { username: String, password: String ->
             viewModel.validate(username, password)
             if (viewModel.success.value) {
                 Toast.makeText(context, "Login Successfully", Toast.LENGTH_SHORT).show()
             }
         },
-        errorMessage =errorMessage
-
+        errorMessage = errorMessage
 
     )
-    Log.d("LoginScreen","create")
-
-
+    Log.d("LoginScreen", "create")
 }
 
 @Composable
 private fun LogInScreen(
     onLogin: (username: String, password: String) -> Unit,
-    errorMessage:String?
+    errorMessage: String?
 ) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var showPassword by rememberSaveable { mutableStateOf(false) }
-
 
     Column(
         modifier = Modifier
@@ -118,24 +113,24 @@ private fun LogInScreen(
             )
             Spacer(modifier = Modifier.height(height = 14.dp))
             val isAllFieldsReady = username.isNotBlank() && password.isNotBlank()
-            Row(modifier = if (isAllFieldsReady) {
-                Modifier
-                    .clickable { onLogin(username, password) }
-                    .fillMaxWidth()
-                    .size(30.dp, 35.dp)
-                    .background(Color.White, shape = RoundedCornerShape(5.dp))
-                    .padding(horizontal = 10.dp)
-            } else {
-                Modifier
-                    .fillMaxWidth()
-                    .size(30.dp, 35.dp)
-                    .background(Color.White, shape = RoundedCornerShape(5.dp))
-                    .padding(horizontal = 10.dp)
-            },
+            Row(
+                modifier = if (isAllFieldsReady) {
+                    Modifier
+                        .clickable { onLogin(username, password) }
+                        .fillMaxWidth()
+                        .size(30.dp, 35.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
+                        .padding(horizontal = 10.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .size(30.dp, 35.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
+                        .padding(horizontal = 10.dp)
+                },
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically)
-
-            {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_checkmark_single),
                     contentDescription = null,
@@ -150,16 +145,17 @@ private fun LogInScreen(
                 )
                 Spacer(modifier = Modifier.width(width = 8.dp))
                 Text(
-                    text = "Verify", color = (if (isAllFieldsReady) {
-                        Color.Blue
-                    } else {
-                        Color.Black
-                    })
+                    text = "Verify",
+                    color = (
+                        if (isAllFieldsReady) {
+                            Color.Blue
+                        } else {
+                            Color.Black
+                        }
+                        )
                 )
             }
             Text(text = "$errorMessage")
         }
     }
 }
-
-

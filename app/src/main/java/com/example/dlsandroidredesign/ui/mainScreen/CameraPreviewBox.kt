@@ -66,28 +66,27 @@ import eu.wewox.modalsheet.ModalSheet
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalSheetApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel(),imageLocationInfoViewModel: ImageLocationInfoViewModel= hiltViewModel(),settingFragmentViewModel: SettingFragmentViewModel= hiltViewModel(),loginViewModel:LogInViewModel= hiltViewModel(),mainScreenViewModel: MainScreenViewModel= hiltViewModel()) {
+fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLocationInfoViewModel: ImageLocationInfoViewModel = hiltViewModel(), settingFragmentViewModel: SettingFragmentViewModel = hiltViewModel(), loginViewModel: LogInViewModel = hiltViewModel(), mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    //Camera
+    // Camera
     var cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
     var cameraSelectorState by remember { mutableStateOf(CameraSelector.DEFAULT_BACK_CAMERA) }
     var flashModeState by remember { mutableStateOf(FLASH_MODE_OFF) }
     val imageCapture by remember { mutableStateOf(ImageCapture.Builder().build()) }
     val preview by remember { mutableStateOf(androidx.camera.core.Preview.Builder().build()) }
-    //BottomFragment
+    // BottomFragment
     val preferenceDataStore = PreferencesDataStore(LocalContext.current)
     val previewView = remember { PreviewView(context) }
     var savedUri by remember { mutableStateOf<Uri?>(null) }
-//ScreenShotBox
+// ScreenShotBox
 
-    //Zoom value
+    // Zoom value
     var zoomRatio by remember { mutableStateOf<Float>(0.0f) }
     // Create time-stamped file name and MediaStore entry
 
@@ -96,7 +95,7 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel(),imageLocat
     val outputOptions = ImageCapture.OutputFileOptions.Builder(
         context.contentResolver,
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-        imageLocationInfoViewModel.contentValues,
+        imageLocationInfoViewModel.contentValues
 
     ).build()
 
@@ -122,15 +121,14 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel(),imageLocat
                     // Image capture is successful
                     // Access the captured image from outputFileResults
                     val savedUriCapture = outputFileResults.savedUri
-                    Log.d("Upload","savedUriCapture:$savedUriCapture")
+                    Log.d("Upload", "savedUriCapture:$savedUriCapture")
 
                     coroutineScope.launch {
-                        Log.d("Upload","currentuser:${imageLocationInfoViewModel.currentUser.first()}")
+                        Log.d("Upload", "currentuser:${imageLocationInfoViewModel.currentUser.first()}")
                     }
 
-                    Log.d("Upload","uri:${imageLocationInfoViewModel.processedImage.value}")
+                    Log.d("Upload", "uri:${imageLocationInfoViewModel.processedImage.value}")
                     imageLocationInfoViewModel.processAutoUpload(savedUriCapture)
-
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -141,7 +139,6 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel(),imageLocat
 
         )
     }
-
 
     fun switchCamera() {
         cameraSelectorState = if (cameraSelectorState == CameraSelector.DEFAULT_BACK_CAMERA) {
@@ -176,86 +173,83 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel= hiltViewModel(),imageLocat
         cameraControl.setLinearZoom(zoomRatio)
     }
 
-
-
-
     Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .weight(1f)
-                .background(color = Color.Black), contentAlignment = Alignment.Center
+                .background(color = Color.Black),
+            contentAlignment = Alignment.Center
         ) {
-            ZoomView(onGalleryButtonPressed={
-                mainScreenViewModel.getAllImage()
-                viewModel.galleryModalSheetVisible.value=true},
+            ZoomView(
+                onGalleryButtonPressed = {
+                    mainScreenViewModel.getAllImage()
+                    viewModel.galleryModalSheetVisible.value = true
+                },
                 onZoomOnePressed = {
-                    zoomRatio=0.0f
+                    zoomRatio = 0.0f
                     zoomCamera()
-                                   },
+                },
                 onZoomTwoPressed = {
-                    zoomRatio=0.1f
+                    zoomRatio = 0.1f
                     zoomCamera()
                 },
                 onZoomThreePressed = {
-                    zoomRatio=0.2f
+                    zoomRatio = 0.2f
                     zoomCamera()
                 }
             )
         }
         Box(modifier = Modifier.weight(8f)) {
-
-                Box(modifier = Modifier) {
-
-                    AndroidView(
-                        factory = {
-                            bindCameraUseCases()
-                            previewView
-                            },
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                    LocationView()
-                }
+            Box(modifier = Modifier) {
+                AndroidView(
+                    factory = {
+                        bindCameraUseCases()
+                        previewView
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+                LocationView()
+            }
         }
         Box(
             modifier = Modifier
                 .weight(1f)
                 .background(color = Color.Black)
-                .fillMaxWidth(), contentAlignment = Alignment.Center
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-
             Setting(
                 onSettingPressed = {
-                                   coroutineScope.launch{viewModel.settingSheetState.show()}
-                                   },
+                    coroutineScope.launch { viewModel.settingSheetState.show() }
+                },
                 onCameraCapturePressed = {
                     takePicture()
                 },
-                onSwitchCameraPress = { switchCamera()},
-                onFlashPressed = {flashSwitch()},
-                bmp = imageLocationInfoViewModel.bmp.value,
+                onSwitchCameraPress = { switchCamera() },
+                onFlashPressed = { flashSwitch() },
+                bmp = imageLocationInfoViewModel.bmp.value
             )
-
         }
     }
 
     ModalSheet(
         visible = viewModel.galleryModalSheetVisible.value,
-        onVisibleChange = { viewModel.galleryModalSheetVisible.value = it },
+        onVisibleChange = { viewModel.galleryModalSheetVisible.value = it }
 
-        ) {
+    ) {
         GalleryScreen()
     }
     ModalSheet(
         sheetState = viewModel.settingSheetState,
-        onSystemBack = {coroutineScope.launch { viewModel.settingSheetState.hide() }},
-        content={
-                settingFragment()}
+        onSystemBack = { coroutineScope.launch { viewModel.settingSheetState.hide() } },
+        content = {
+            settingFragment()
+        }
     )
-
-
 }
+
 @Composable
-fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress:()->Unit, onFlashPressed:()->Unit,bmp:Bitmap?) {
+fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress: () -> Unit, onFlashPressed: () -> Unit, bmp: Bitmap?) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var painter = rememberAsyncImagePainter(model = bmp)
@@ -278,7 +272,7 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //Setting
+        // Setting
         Box(
             modifier = Modifier
                 .size(50.dp, 50.dp)
@@ -297,9 +291,9 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
             )
         }
 
-        //Spacer
+        // Spacer
         Spacer(modifier = Modifier.height(8.dp))
-        //Flash (ic_bolt_slash_fill_single.xml)
+        // Flash (ic_bolt_slash_fill_single.xml)
         Box(
             modifier = Modifier
                 .size(50.dp, 50.dp)
@@ -307,9 +301,10 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
                     shape = RoundedCornerShape(200.dp),
                     color = Color.Gray
                 )
-                .clickable { onFlashPressed()
+                .clickable {
+                    onFlashPressed()
                     flashState = !flashState
-                           },
+                },
             contentAlignment = Alignment.Center
 
         ) {
@@ -318,15 +313,17 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
                 modifier = Modifier.size(20.dp, 20.dp),
                 contentDescription = null
             )
-            if(flashState){Image(
-                painter = painterResource(R.drawable.ic_bolt_slash_fill_single),
-                modifier = Modifier.size(20.dp, 20.dp),
-                contentDescription = null
-            )}
+            if (flashState) {
+                Image(
+                    painter = painterResource(R.drawable.ic_bolt_slash_fill_single),
+                    modifier = Modifier.size(20.dp, 20.dp),
+                    contentDescription = null
+                )
+            }
         }
-        //Spacer
+        // Spacer
         Spacer(modifier = Modifier.height(8.dp))
-        //Camera Capture
+        // Camera Capture
         Box(
             modifier = Modifier
                 .size(70.dp, 70.dp)
@@ -337,19 +334,18 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
                 .clickable {
                     onCameraCapturePressed()
                 },
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
 
-            ) {
+        ) {
             Image(
                 painter = painterResource(R.mipmap.ic_capture),
                 modifier = Modifier.size(70.dp, 70.dp),
                 contentDescription = null
             )
-
         }
-        //Spacer
+        // Spacer
         Spacer(modifier = Modifier.height(8.dp))
-        //rotate camera
+        // rotate camera
         Box(
             modifier = Modifier
                 .size(50.dp, 50.dp)
@@ -358,18 +354,18 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
                     color = Color.Gray
                 )
                 .clickable { onSwitchCameraPress() },
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
 
-            ) {
+        ) {
             Image(
                 painter = painterResource(R.drawable.ic_camera_rotate_fill_single),
                 modifier = Modifier.size(20.dp, 20.dp),
                 contentDescription = null
             )
         }
-        //Spacer
+        // Spacer
         Spacer(modifier = Modifier.height(8.dp))
-        //camera image
+        // camera image
         Box(
             modifier = Modifier
                 .size(70.dp, 70.dp)
@@ -377,21 +373,18 @@ fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, on
                     shape = RoundedCornerShape(18.dp),
                     color = Color.Gray
                 ),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
 
-            ) {
-
+        ) {
             Image(
                 painter = painter,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(shape = RoundedCornerShape(18.dp)),contentScale = ContentScale.FillBounds
-                    ,
+                    .clip(shape = RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.FillBounds,
                 contentDescription = null
             )
-
         }
-
     }
 }
 
@@ -418,4 +411,3 @@ fun getMostRecentImage(context: Context): Uri? {
     }
     return null
 }
-

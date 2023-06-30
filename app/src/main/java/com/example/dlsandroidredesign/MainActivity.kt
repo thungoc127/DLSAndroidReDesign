@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
     @get:SuppressLint("SuspiciousIndentation")
     @ExperimentalPermissionsApi
     val context: Context = this
+
     @OptIn(ExperimentalPermissionsApi::class)
     @SuppressLint("StateFlowValueCalledInComposition", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +46,8 @@ class MainActivity : ComponentActivity() {
         // TODO: Check file exist or not
         copySectionsAssetToFile()
 
-
-
-
         setContent {
-            val locationPermission = remember{mutableStateOf(Manifest.permission.ACCESS_FINE_LOCATION)}.value
+            val locationPermission = remember { mutableStateOf(Manifest.permission.ACCESS_FINE_LOCATION) }.value
             val cameraPermission = remember { mutableStateOf(Manifest.permission.CAMERA) }.value
             val storagePermission = remember { mutableStateOf(Manifest.permission.WRITE_EXTERNAL_STORAGE) }.value
             val permissionState = rememberMultiplePermissionsState(
@@ -59,9 +57,8 @@ class MainActivity : ComponentActivity() {
                     storagePermission
                 )
             )
-            Log.d("getLocationProcess: ", "${permissionState.toString()}")
+            Log.d("getLocationProcess: ", "$permissionState")
             val viewModel: ImageLocationInfoViewModel by viewModels()
-
 
             LaunchedEffect(permissionState) {
                 permissionState.launchMultiplePermissionRequest()
@@ -74,35 +71,29 @@ class MainActivity : ComponentActivity() {
                     FullPreviewScreen()
                 }
             }
-
-
-
         }
     }
 
     private fun copySectionsAssetToFile() {
-      try {
-          val fileName = "sections.mmpk"
-          val assetManager = assets
-          val inputStream: InputStream = assetManager.open(fileName)
+        try {
+            val fileName = "sections.mmpk"
+            val assetManager = assets
+            val inputStream: InputStream = assetManager.open(fileName)
 
-          val outputDir = File(getExternalFilesDir(null), fileName)
-          val outputStream: OutputStream = FileOutputStream(outputDir)
+            val outputDir = File(getExternalFilesDir(null), fileName)
+            val outputStream: OutputStream = FileOutputStream(outputDir)
 
-          val bufferSize = 1024
-          val buffer = ByteArray(bufferSize)
-          var bytesRead: Int
-          while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-              outputStream.write(buffer, 0, bytesRead)
-          }
+            val bufferSize = 1024
+            val buffer = ByteArray(bufferSize)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
 
-          inputStream.close()
-          outputStream.close()
-      } catch (error: Exception) {
-          error
-      }
+            inputStream.close()
+            outputStream.close()
+        } catch (error: Exception) {
+            error
+        }
     }
 }
-
-
-

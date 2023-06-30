@@ -12,10 +12,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-
-
 class CheckBoxDataStore @Inject constructor(
-    @ApplicationContext private val context: Context) {
+    @ApplicationContext private val context: Context
+) {
 
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("CheckBoxPref")
@@ -31,17 +30,15 @@ class CheckBoxDataStore @Inject constructor(
     }
 
     suspend fun setCheckBox(checkBoxKey: String, value: Boolean) {
-        Log.d("checkbox","Set $value")
+        Log.d("checkbox", "Set $value")
 
         context.dataStore.edit { preferences ->
             preferences[booleanPreferencesKey(checkBoxKey)] = value
         }
-        Log.d("checkbox","Get $value")
-
+        Log.d("checkbox", "Get $value")
     }
 
     fun getCheckBox(): Flow<Preferences> {
         return context.dataStore.data
     }
 }
-

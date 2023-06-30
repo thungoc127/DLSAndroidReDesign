@@ -6,10 +6,9 @@ import androidx.room.PrimaryKey
 import com.example.dlsandroidredesign.domain.entity.LocationObject
 
 @Entity
-data class ImageLocationInfo (
+data class ImageLocationInfo(
     @PrimaryKey(autoGenerate = true)
-    val number:Int?=null,
+    val number: Int? = null,
     val uriImage: Uri,
-    val locationObject: LocationObject?,
+    val locationObject: LocationObject?
 )
-

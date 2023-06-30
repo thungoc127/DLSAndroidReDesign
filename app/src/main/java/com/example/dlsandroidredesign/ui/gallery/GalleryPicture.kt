@@ -50,7 +50,7 @@ import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun GalleryScreen(mainScreenViewModel: MainScreenViewModel= hiltViewModel(),imageLocationInfoViewModel: ImageLocationInfoViewModel= hiltViewModel(),galleryViewModel: GalleryViewModel= hiltViewModel()){
+fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), imageLocationInfoViewModel: ImageLocationInfoViewModel = hiltViewModel(), galleryViewModel: GalleryViewModel = hiltViewModel()) {
     var selectedImageUris = galleryViewModel.selectedImageUris.collectAsStateWithLifecycle().value
 
     val uriSet = imageLocationInfoViewModel.uriSet.collectAsStateWithLifecycle()
@@ -59,30 +59,32 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel= hiltViewModel(),imag
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris -> galleryViewModel.getMergeList(uris) }
     )
-    Column( modifier = Modifier
-        .fillMaxWidth()
-        .height(390.dp) ){
-        Row(modifier = Modifier
-            .align(Alignment.End)
-            .padding(8.dp)){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(390.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(8.dp)
+        ) {
             OutlinedButton(
                 onClick = { imageLocationInfoViewModel.processUpload() },
                 colors = ButtonDefaults.buttonColors(Color.Gray)
-            ){
-            Text(text = "Done", color = Color.White)}
-
+            ) {
+                Text(text = "Done", color = Color.White)
+            }
         }
 
-
-
-
-
         LazyVerticalGrid(columns = GridCells.Fixed(3), contentPadding = PaddingValues(8.dp)) {
-            item{
+            item {
                 CameraPicker()
             }
             item {
-                Image(painter = painterResource(id = R.drawable.gallery), contentDescription = null,
+                Image(
+                    painter = painterResource(id = R.drawable.gallery),
+                    contentDescription = null,
                     modifier = Modifier
                         .clickable {
                             multiplePhotoPickerLauncher.launch(
@@ -90,80 +92,84 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel= hiltViewModel(),imag
                             )
                         }
                         .padding(4.dp)
-                        .aspectRatio(1f)
-                    ,contentScale = ContentScale.FillBounds
-
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.FillBounds
 
                 )
             }
 
-            //PictureFromDefaultGallery
+            // PictureFromDefaultGallery
             items(selectedImageUris) { uri ->
                 var isSelected by remember { mutableStateOf(uriSet.value.contains(uri)) }
                 val locationObject = imageLocationInfoViewModel.getLocationFromPicture(uri)
-                Log.d("imagePicker","locationObject$locationObject")
-                imageLocationInfoViewModel.insertImagelocationinfo(uri,locationObject)
-                Box(modifier  = Modifier.clickable {
-                    imageLocationInfoViewModel.setUriSet(uri)
-                    val check=uriSet.value.contains(uri)
-                    isSelected = check}
-                ){
+                Log.d("imagePicker", "locationObject$locationObject")
+                imageLocationInfoViewModel.insertImagelocationinfo(uri, locationObject)
+                Box(
+                    modifier = Modifier.clickable {
+                        imageLocationInfoViewModel.setUriSet(uri)
+                        val check = uriSet.value.contains(uri)
+                        isSelected = check
+                    }
+                ) {
                     AsyncImage(
                         model = uri,
                         contentDescription = null,
                         modifier = Modifier
                             .padding(4.dp)
-                            .aspectRatio(1f)
-                        ,contentScale = ContentScale.FillBounds
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.FillBounds
                     )
-                    if(isSelected){Image(modifier = Modifier
-                        .align(Alignment.Center)
-                        , painter = painterResource(id = R.drawable.ic_checkmark_single), contentDescription =null, )}
+                    if (isSelected) {
+                        Image(
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                            painter = painterResource(id = R.drawable.ic_checkmark_single),
+                            contentDescription = null
+                        )
+                    }
                 }
             }
 
-            //PictureFromTheApp
+            // PictureFromTheApp
             items(mainScreenViewModel.allImages.value) { imageUri ->
                 var isSelected by remember { mutableStateOf(uriSet.value.contains(imageUri)) }
-                Box(modifier = Modifier.clickable {
-                    imageLocationInfoViewModel.setUriSet(imageUri)
-                    val check=uriSet.value.contains(imageUri)
-                    isSelected = check
+                Box(
+                    modifier = Modifier.clickable {
+                        imageLocationInfoViewModel.setUriSet(imageUri)
+                        val check = uriSet.value.contains(imageUri)
+                        isSelected = check
 
-
-                    Log.d("galleryClick","uriSet:$uriSet") }){
-                    Log.d("galleryClick","isSelected:$isSelected")
+                        Log.d("galleryClick", "uriSet:$uriSet")
+                    }
+                ) {
+                    Log.d("galleryClick", "isSelected:$isSelected")
                     Image(
                         painter = rememberAsyncImagePainter(imageUri),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(4.dp)
-                            .aspectRatio(1f)
-                        ,contentScale = ContentScale.FillBounds
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.FillBounds
 
                     )
-                    Log.d("galleryClick","Boolean:${imageLocationInfoViewModel.checkUriContain(imageUri)}")
+                    Log.d("galleryClick", "Boolean:${imageLocationInfoViewModel.checkUriContain(imageUri)}")
 
-                    if(isSelected){Image(modifier = Modifier
-                        .align(Alignment.Center)
-                        , painter = painterResource(id = R.drawable.ic_checkmark_single), contentDescription =null, )}
-
-
+                    if (isSelected) {
+                        Image(
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                            painter = painterResource(id = R.drawable.ic_checkmark_single),
+                            contentDescription = null
+                        )
+                    }
                 }
-
-
             }
-
-
         }
     }
-
 }
 
-
-
 @Composable
-fun CameraPicker(){
+fun CameraPicker() {
     val context = LocalContext.current as ComponentActivity
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -177,20 +183,18 @@ fun CameraPicker(){
             // Handle the error or cancellation here
         }
     }
-    Image(painter = painterResource(id = R.drawable.camera_picker)
-        , contentDescription = null
-        ,modifier= Modifier
+    Image(
+        painter = painterResource(id = R.drawable.camera_picker),
+        contentDescription = null,
+        modifier = Modifier
             .padding(2.dp)
             .padding(4.dp)
             .aspectRatio(1f)
             .clickable {
                 val cameraPickerIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 launcher.launch(cameraPickerIntent)
-            }
-        ,contentScale = ContentScale.FillBounds
+            },
+        contentScale = ContentScale.FillBounds
 
     )
-
 }
-
-

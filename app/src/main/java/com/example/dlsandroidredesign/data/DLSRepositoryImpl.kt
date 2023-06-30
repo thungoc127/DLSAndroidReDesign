@@ -47,34 +47,33 @@ class DLSRepositoryImpl @Inject constructor(
 
     private val _locationObject = MutableStateFlow(LocationObject())
     override suspend fun getLocationUpdate(): StateFlow<LocationObject> {
-       return _locationObject
+        return _locationObject
     }
 
     override fun getCurrentUser(): Flow<User?> = userDataStore.getUser()
 
-    override fun getLogInStatus():Flow<Boolean> = userDataStore.getIsLoginSuccess
+    override fun getLogInStatus(): Flow<Boolean> = userDataStore.getIsLoginSuccess
 
     override suspend fun refreshWaypointGroup() {
-        val respone=  dlsService.getWayPointGroups(userDataStore.getUser().first()!!.id)
+        val respone = dlsService.getWayPointGroups(userDataStore.getUser().first()!!.id)
         val body = respone.body()
-        val currentUser=userDataStore.getUser().first()
-        userDataStore.setUser(currentUser!!.id,currentUser.userName,body!!.waypointgroups!!,currentUser.groupIdCheck,currentUser.groupNameCheck)
+        val currentUser = userDataStore.getUser().first()
+        userDataStore.setUser(currentUser!!.id, currentUser.userName, body!!.waypointgroups!!, currentUser.groupIdCheck, currentUser.groupNameCheck)
     }
 
     override suspend fun setGroupIdAndName(groupId: String, groupName: String) {
-        userDataStore.setGroupIdAndName(groupId,groupName)
+        userDataStore.setGroupIdAndName(groupId, groupName)
     }
 
     override suspend fun setCusText(cusText: String) {
         userDataStore.setCusText(cusText)
     }
 
-    override fun getCusText():Flow<String> {
-        return  userDataStore.getCusText
+    override fun getCusText(): Flow<String> {
+        return userDataStore.getCusText
     }
 
-
-    override suspend fun setIsAutomaticUpload(isAutomaticUploadSInput: Boolean)    {
+    override suspend fun setIsAutomaticUpload(isAutomaticUploadSInput: Boolean) {
         userDataStore.setIsAutomaticUpload(isAutomaticUploadSInput)
     }
 
@@ -86,14 +85,11 @@ class DLSRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-
-    override suspend fun getLocationObjectByUri(uriImage:Uri): LocationObject {
-        return  dlsDAO.getLocationObjectByUri(uriImage)
-
+    override suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject {
+        return dlsDAO.getLocationObjectByUri(uriImage)
     }
 
-
-    override fun getIssAutomaticUpload():Flow<Boolean>{
+    override fun getIssAutomaticUpload(): Flow<Boolean> {
         return userDataStore.getIssAutomaticUpload
     }
 
@@ -104,9 +100,9 @@ class DLSRepositoryImpl @Inject constructor(
         try {
             val response = dlsService.validate(username, password)
             val body = response.body()
-            if(response.isSuccessful && body != null && body.success && body.id != null) {
+            if (response.isSuccessful && body != null && body.success && body.id != null) {
                 userDataStore.setIsLoginSuccessful(true)
-                userDataStore.setUser(body.id!!,body.name!!, body.waypointgroups?: listOf(), body.waypointgroups!![0].groupid!!,body.waypointgroups!![0].groupname!!)
+                userDataStore.setUser(body.id!!, body.name!!, body.waypointgroups ?: listOf(), body.waypointgroups!![0].groupid!!, body.waypointgroups!![0].groupname!!)
                 userDataStore.getUser().first()
             } else {
                 null
@@ -120,21 +116,19 @@ class DLSRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun setPhotoSize(resolutionInput:String){
-        preferencesDataStore.setPhotoSize(resolutionInput )
+    override suspend fun setPhotoSize(resolutionInput: String) {
+        preferencesDataStore.setPhotoSize(resolutionInput)
     }
-    override fun getPhotoSize():Flow<String>{
+    override fun getPhotoSize(): Flow<String> {
         return preferencesDataStore.getPhotoSize
     }
 
-    override suspend fun setUploadSize(resolutionInput:String){
-        preferencesDataStore.setUploadSize(resolutionInput )
+    override suspend fun setUploadSize(resolutionInput: String) {
+        preferencesDataStore.setUploadSize(resolutionInput)
     }
-    override fun getUploadSize():Flow<String>{
+    override fun getUploadSize(): Flow<String> {
         return preferencesDataStore.getUploadSize
     }
-
-
 
     override suspend fun insertImageLocationInfo(imageUri: Uri, locationInfoObject: LocationObject) {
         dlsDAO.insertImageLocationInfo(
@@ -145,17 +139,16 @@ class DLSRepositoryImpl @Inject constructor(
             )
         )
     }
-    override suspend fun getWayPointId(apiKey: String?, bean: JsonObject?):String? {
+    override suspend fun getWayPointId(apiKey: String?, bean: JsonObject?): String? {
         val response = dlsService.getWayPointID(apiKey = apiKey, bean = bean)
         val body = response.body()
-        var id:String? =null
+        var id: String? = null
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
                 id = response.body()!!.waypointid
                 Toast.makeText(context, "Success + $id", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
             }
         }
         return id
@@ -178,7 +171,6 @@ class DLSRepositoryImpl @Inject constructor(
                 Toast.makeText(context, "Success $id ", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
-
             }
         }
     }
@@ -193,8 +185,8 @@ class DLSRepositoryImpl @Inject constructor(
         val query = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
-            selection,    //if would like to choose all gallery leave this null
-            selectionArgs, //if would like to choose all gallery leave this null
+            selection, // if would like to choose all gallery leave this null
+            selectionArgs, // if would like to choose all gallery leave this null
             sortOrder
         )
         query?.use { cursor ->
@@ -214,7 +206,4 @@ class DLSRepositoryImpl @Inject constructor(
     override suspend fun uploadPicture(apiKey: String?, bean: JsonObject?) {
         TODO("Not yet implemented")
     }
-
-
-
 }

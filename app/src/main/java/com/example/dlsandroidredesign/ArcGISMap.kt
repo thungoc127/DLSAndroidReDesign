@@ -1,20 +1,20 @@
-//package com.example.dlsandroidredesign
+// package com.example.dlsandroidredesign
 //
-//import android.location.Location
-//import android.util.Log
-//import androidx.compose.runtime.Composable
-//import com.esri.arcgisruntime.data.Feature
-//import com.esri.arcgisruntime.data.QueryParameters
-//import com.esri.arcgisruntime.geometry.CoordinateFormatter
-//import com.esri.arcgisruntime.geometry.Envelope
-//import com.esri.arcgisruntime.geometry.SpatialReferences
-//import com.esri.arcgisruntime.layers.FeatureLayer
-//import com.esri.arcgisruntime.loadable.LoadStatus
-//import com.esri.arcgisruntime.mapping.MobileMapPackage
-//import com.esri.arcgisruntime.mapping.view.MapView
+// import android.location.Location
+// import android.util.Log
+// import androidx.compose.runtime.Composable
+// import com.esri.arcgisruntime.data.Feature
+// import com.esri.arcgisruntime.data.QueryParameters
+// import com.esri.arcgisruntime.geometry.CoordinateFormatter
+// import com.esri.arcgisruntime.geometry.Envelope
+// import com.esri.arcgisruntime.geometry.SpatialReferences
+// import com.esri.arcgisruntime.layers.FeatureLayer
+// import com.esri.arcgisruntime.loadable.LoadStatus
+// import com.esri.arcgisruntime.mapping.MobileMapPackage
+// import com.esri.arcgisruntime.mapping.view.MapView
 //
-//@Composable
-//fun MapViewWithCompose(){
+// @Composable
+// fun MapViewWithCompose(){
 //     val packagePath = "sections.mmpk"
 //     lateinit var mapView: MapView
 //     var sectionLayer: FeatureLayer? = null
@@ -104,10 +104,10 @@
 //            val error = mobileMapPackage.loadError
 //            // Handle the error
 //        }
-//}}
+// }}
 //
 //
-//fun calcLsd(sec: String, x: Double, y: Double): String? {
+// fun calcLsd(sec: String, x: Double, y: Double): String? {
 //    var lsd = 0
 //    var qtr = ""
 //    if (x > 0 && x <= 0.25) {
@@ -168,4 +168,4 @@
 //        }
 //    }
 //    return "($qtr) $lsd-$sec"
-//}
+// }

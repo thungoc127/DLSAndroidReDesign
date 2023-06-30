@@ -9,16 +9,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class WaypointgroupViewModel @Inject constructor(private val refreshListWayPointGroup: RefreshListWayPointGroup,private val getCurrentUser: GetCurrentUser,private val setGroupId: SetGroupIdAndName):ViewModel() {
-    fun getWaypointgroup(){
-        viewModelScope.launch {  refreshListWayPointGroup.invoke() }
+class WaypointgroupViewModel @Inject constructor(private val refreshListWayPointGroup: RefreshListWayPointGroup, private val getCurrentUser: GetCurrentUser, private val setGroupId: SetGroupIdAndName) : ViewModel() {
+    fun getWaypointgroup() {
+        viewModelScope.launch { refreshListWayPointGroup.invoke() }
     }
-    fun setGroupIdAndName(groupId:String,groupName:String){
+    fun setGroupIdAndName(groupId: String, groupName: String) {
         viewModelScope.launch {
-            setGroupId.invoke(groupId,groupName)
+            setGroupId.invoke(groupId, groupName)
         }
     }
-
 }

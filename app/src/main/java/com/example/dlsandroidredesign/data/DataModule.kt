@@ -34,7 +34,6 @@ object DataModule {
             .addInterceptor(mHttpLoggingInterceptor)
             .build()
 
-
         return Retrofit.Builder()
             .baseUrl("https://www.abadata.ca/Abadata2/api/mobileforms/")
             .addConverterFactory(GsonConverterFactory.create())
