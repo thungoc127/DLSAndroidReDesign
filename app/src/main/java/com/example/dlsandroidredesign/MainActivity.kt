@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.dlsandroidredesign.ui.mainScreen.FullPreviewScreen
+import com.example.dlsandroidredesign.ui.mainScreen.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.ui.theme.DLSAndroidReDesignTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -30,39 +32,32 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
-@OptIn(ExperimentalMaterialApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @get:RequiresApi(Build.VERSION_CODES.O)
-    @get:SuppressLint("SuspiciousIndentation")
-    @ExperimentalPermissionsApi
-    val context: Context = this
+    private val viewModel: ImageLocationInfoViewModel by viewModels()
 
-    @OptIn(ExperimentalPermissionsApi::class)
-    @SuppressLint("StateFlowValueCalledInComposition", "MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO: Check file exist or not
         copySectionsAssetToFile()
-
         setContent {
-            val locationPermission = remember { mutableStateOf(Manifest.permission.ACCESS_FINE_LOCATION) }.value
-            val cameraPermission = remember { mutableStateOf(Manifest.permission.CAMERA) }.value
-            val storagePermission = remember { mutableStateOf(Manifest.permission.WRITE_EXTERNAL_STORAGE) }.value
             val permissionState = rememberMultiplePermissionsState(
                 permissions = listOf(
-                    cameraPermission,
-                    locationPermission,
-                    storagePermission
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 )
             )
-            Log.d("getLocationProcess: ", "$permissionState")
-            val viewModel: ImageLocationInfoViewModel by viewModels()
+//            Log.d("getLocationProcess: ", "$permissionState")
 
-            LaunchedEffect(permissionState) {
+            LaunchedEffect(Unit) {
                 permissionState.launchMultiplePermissionRequest()
             }
+
+            if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == true) {
+                viewModel.startFetchingLocation()
+            }
+
             DLSAndroidReDesignTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
