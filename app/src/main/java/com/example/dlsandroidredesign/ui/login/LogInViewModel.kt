@@ -21,15 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class UiState(
-    val success: Boolean = false,
-    val errorMessage: String? = ""
-) {
-    companion object {
-        val Empty = UiState()
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @HiltViewModel
 class LogInViewModel @Inject constructor(

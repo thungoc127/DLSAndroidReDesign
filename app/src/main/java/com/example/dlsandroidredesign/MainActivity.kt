@@ -3,21 +3,18 @@
 package com.example.dlsandroidredesign
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.dlsandroidredesign.ui.mainScreen.FullPreviewScreen
@@ -45,8 +42,12 @@ class MainActivity : ComponentActivity() {
             val permissionState = rememberMultiplePermissionsState(
                 permissions = listOf(
                     Manifest.permission.CAMERA,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_MEDIA_IMAGES
+
+                    )
             )
 //            Log.d("getLocationProcess: ", "$permissionState")
 
@@ -63,11 +64,36 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
                 ) {
-                    FullPreviewScreen()
+                    Box(){
+                        FullPreviewScreen()
+                        Column(
+                            modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                    if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false||
+                        permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false
+                            ){
+
+                            if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false)
+                            {
+                                Text(text = "Please grant camera permission to use the camera feature.", color = Color.White)
+                            }
+                            if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false)
+                            {
+                                Text(text = "Please grant location permission to use the location feature.", color = Color.White)
+                            }
+                                Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
+                                    Text(text = "Grant Permission")
+                                }
+
+                        }
+                        }
+
                 }
             }
         }
+        }
     }
+
 
     private fun copySectionsAssetToFile() {
         try {

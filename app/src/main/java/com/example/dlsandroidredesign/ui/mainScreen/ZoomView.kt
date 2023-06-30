@@ -25,6 +25,7 @@ import com.example.dlsandroidredesign.R
 
 @Composable
 fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, onZoomTwoPressed: () -> Unit, onZoomThreePressed: () -> Unit) {
+    fun Modifier.customThemeModifier() = padding(all = 5.dp).size(40.dp, 40.dp).background(shape = RoundedCornerShape(200.dp),color = Color.Gray)
     Column(
         modifier = Modifier
             .background(Color.Black)
@@ -48,15 +49,10 @@ fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, o
             )
         }
 
-        Column(modifier = Modifier.weight(4f).align(Alignment.CenterHorizontally), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+        Column(modifier = Modifier.weight(4f).align(Alignment.CenterHorizontally), verticalArrangement = Arrangement.Center) {
             // 3x
             Box(
-                modifier = Modifier
-                    .size(40.dp, 40.dp)
-                    .background(
-                        shape = RoundedCornerShape(200.dp),
-                        color = Color.Gray
-                    )
+                modifier = Modifier.customThemeModifier()
                     .clickable {
                         zoomRatio = "3x"
                         onZoomThreePressed()
@@ -68,12 +64,7 @@ fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, o
             }
             // 2x
             Box(
-                modifier = Modifier
-                    .size(40.dp, 40.dp)
-                    .background(
-                        shape = RoundedCornerShape(200.dp),
-                        color = Color.Gray
-                    )
+                modifier = Modifier.customThemeModifier()
                     .clickable {
                         zoomRatio = "2x"
                         onZoomTwoPressed()
@@ -85,12 +76,7 @@ fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, o
             }
             // 1x
             Box(
-                modifier = Modifier
-                    .size(40.dp, 40.dp)
-                    .background(
-                        shape = RoundedCornerShape(200.dp),
-                        color = Color.Gray
-                    )
+                modifier = Modifier.customThemeModifier()
                     .clickable {
                         zoomRatio = "1x"
                         onZoomOnePressed()
@@ -103,12 +89,7 @@ fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, o
 
         // uploadBtn
         Box(
-            modifier = Modifier
-                .size(40.dp, 40.dp)
-                .background(
-                    shape = RoundedCornerShape(200.dp),
-                    color = Color.Gray
-                )
+            modifier = Modifier.customThemeModifier()
                 .clickable { onGalleryButtonPressed() },
             contentAlignment = Alignment.Center
 

@@ -5,6 +5,7 @@ package com.example.dlsandroidredesign.ui.waypointGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,7 +60,9 @@ fun WaypointgroupsFragment(onRefreshPress: () -> Unit, onWaypointgroupChecked: (
                 .size(25.dp, 35.dp)
                 .background(color = Color(0xFFDDDDDD))
                 .padding(3.dp, 3.dp)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
 
         ) {
             Image(painter = painterResource(id = R.drawable.ic_xmark_single), contentDescription = null, modifier = Modifier.size(17.dp, 17.dp))
@@ -69,7 +72,7 @@ fun WaypointgroupsFragment(onRefreshPress: () -> Unit, onWaypointgroupChecked: (
         Row(modifier = Modifier.align(Alignment.End)) {
             Image(painter = painterResource(id = R.drawable.ic_arrow_triangle_2_circlepath_single), contentDescription = null, modifier = Modifier.size(23.dp, 23.dp))
             Text(
-                text = "Refesh List",
+                text = "Refresh List",
                 modifier = Modifier.clickable { onRefreshPress() },
                 color = Color.Blue,
                 fontSize = 20.sp

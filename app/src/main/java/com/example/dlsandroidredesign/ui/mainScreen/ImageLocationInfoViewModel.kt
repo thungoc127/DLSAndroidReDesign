@@ -205,7 +205,9 @@ class ImageLocationInfoViewModel @Inject constructor(
         Log.d("getLocation", "$locationObject")
         return locationObject
     }
-    private fun addLocationToImageUri(imageUri: Uri, latitude: Double, longitude: Double) {
+    private fun addLocationToImageUri(imageUri: Uri,locationObject: LocationObject) {
+        val latitude = locationObject.lat.toDouble()
+        val longitude = locationObject.lon.toDouble()
         val exif = ExifInterface(context.contentResolver.openFileDescriptor(imageUri, "rw")?.fileDescriptor!!)
         exif.setAttribute(
             TAG_GPS_LATITUDE,
@@ -224,8 +226,11 @@ class ImageLocationInfoViewModel @Inject constructor(
             if (longitude > 0) "E" else "W"
         )
         exif.saveAttributes()
-        getLocationFromPicture(imageUri)
+        val getLocationObjectfromPic= getLocationFromPicture(imageUri)
+        Log.d("getLocation", "urifromAddexif:$$imageUri")
+
         Log.d("getLocation", "finishSetExif${exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE)}")
+        Log.d("getLocation", "finishSetExifgetLocationObjectfromPic${getLocationObjectfromPic}")
     }
     private fun convert(coordinate: Double): String {
         var coord = coordinate
@@ -411,8 +416,10 @@ class ImageLocationInfoViewModel @Inject constructor(
             Log.d("Upload", "uriResultfromProcess:$locationObject")
             createText(locationObject)
         }
+
         val result = viewModelScope.async { addTextOnImageAndSave(savedUriCapture!!) }
         insertImagelocationinfo(result.await()!!, locationObject)
+        addLocationToImageUri(result.await()!!, locationObject)
         Log.d("Upload", "uriResultfromProcess:$result")
 
         return result.await()
@@ -474,14 +481,9 @@ class ImageLocationInfoViewModel @Inject constructor(
         uploadPhoto.invoke(apiKey, wayPointId, photo)
     }
     fun processAutoUpload(savedUriCapture: Uri?) {
-        val locationObject = locationObjectState.value
-        Log.d("processAutoUpload", "locationObject:$$locationObject")
-        val lat = locationObject.lat.toDouble()
-        val lon = locationObject.lon.toDouble()
-        Log.d("AutoUpload", "lat${locationObject.lat.toDouble()}")
-        Log.d("AutoUpload", "lon${locationObject.lon.toDouble()}")
-        addLocationToImageUri(savedUriCapture!!, lat, lon)
         viewModelScope.launch {
+            val locationObject = locationObjectState.first()
+            Log.d("processAutoUpload", "locationObject1:$$locationObject")
             val image = async { processImage(savedUriCapture, locationObject) }
             if (!currentUser.first()?.id.isNullOrEmpty()) {
                 if (autoUploadStatus.invoke().first()) {
@@ -501,10 +503,11 @@ class ImageLocationInfoViewModel @Inject constructor(
     fun processUpload() {
         for (uri in uriSet.value) {
             val locationObjectbyUri = getLocationFromPicture(uri)
+
             viewModelScope.launch {
                 if (!currentUser.first()?.id.isNullOrEmpty()) {
-                    Log.d("processUpload", "locationObjectbyUri:$$locationObjectbyUri")
-                    Log.d("processUpload", "uri:$$uri")
+                    Log.d("getLocation", "locationObjectbyUri:$$locationObjectbyUri")
+                    Log.d("getLocation", "uri:$$uri")
                     if (!locationObjectbyUri.lat.isNullOrBlank()) {
                         val apiKey = async { currentUser.first()?.id }
                         val wayPoint = async { getWayPointId(uri, locationObjectbyUri) }

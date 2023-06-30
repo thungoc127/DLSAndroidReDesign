@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -34,17 +36,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.example.dlsandroidredesign.ui.mainScreen.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.R
+import com.example.dlsandroidredesign.ui.mainScreen.ImageLocationInfoViewModel
 import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 
 @SuppressLint("SuspiciousIndentation")
@@ -52,9 +56,7 @@ import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 @Composable
 fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), imageLocationInfoViewModel: ImageLocationInfoViewModel = hiltViewModel(), galleryViewModel: GalleryViewModel = hiltViewModel()) {
     var selectedImageUris = galleryViewModel.selectedImageUris.collectAsStateWithLifecycle().value
-
     val uriSet = imageLocationInfoViewModel.uriSet.collectAsStateWithLifecycle()
-
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris -> galleryViewModel.getMergeList(uris) }
@@ -66,14 +68,24 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), im
     ) {
         Row(
             modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+
         ) {
+            Row(modifier = Modifier
+                .clickable { mainScreenViewModel.galleryModalSheetVisible.value = false },
+                verticalAlignment = Alignment.CenterVertically
+            )
+            {
+                Image(painter = painterResource(id = R.drawable.ic_xmark_single), contentDescription = null, modifier = Modifier.size(17.dp, 17.dp))
+                Text(text = " Close", color = Color(0xFF00B0FF), fontSize = 20.sp)
+            }
+            Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(
                 onClick = { imageLocationInfoViewModel.processUpload() },
                 colors = ButtonDefaults.buttonColors(Color.Gray)
             ) {
-                Text(text = "Done", color = Color.White)
+                Text(text = "Upload", color = Color.White)
             }
         }
 
@@ -124,6 +136,7 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), im
                             modifier = Modifier
                                 .align(Alignment.Center),
                             painter = painterResource(id = R.drawable.ic_checkmark_single),
+                            colorFilter = ColorFilter.tint(Color.Green),
                             contentDescription = null
                         )
                     }
@@ -159,6 +172,7 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), im
                             modifier = Modifier
                                 .align(Alignment.Center),
                             painter = painterResource(id = R.drawable.ic_checkmark_single),
+                            colorFilter = ColorFilter.tint(Color.Green),
                             contentDescription = null
                         )
                     }

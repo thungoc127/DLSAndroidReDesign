@@ -6,24 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.dlsandroidredesign.R
-import com.example.dlsandroidredesign.data.local.PreferencesDataStore
 import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 
 @SuppressLint("MissingPermission", "CoroutineCreationDuringComposition")
@@ -31,8 +23,8 @@ import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settingViewModel: SettingFragmentViewModel = hiltViewModel()) {
     val location = viewModel.locationObjectState.collectAsStateWithLifecycle().value
 // ////CheckedVariable
-    val preferenceDataStore = PreferencesDataStore(LocalContext.current)
     val settingCheckbox by settingViewModel.checkBox.collectAsStateWithLifecycle()
+    fun Modifier.customThemeModifier() = padding(start = 5.dp, bottom = 2.dp)
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -42,136 +34,56 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             if (settingCheckbox.latLon) {
                 Text(
                     text = "Lat/Lon",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
-            //
-
             if (settingCheckbox.latLon) {
                 // lat
                 Text(
                     text = "${location.lat}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
-
             // lng
             if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.lon}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
             // elevation
             if (settingCheckbox.latLon) {
                 Text(
                     text = "${location.elevation}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
-
             // GridLocation
             if (settingCheckbox.gridLocation) {
                 Text(
                     text = "${location.gridLocation}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
             // DistanceFromGridLine
             if (settingCheckbox.distance) {
                 Text(
                     text = "${location.distance}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
             // utmTxt
             if (settingCheckbox.utmCoordinate) {
                 Text(
                     text = "${location.utmCoordinate}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
         }
@@ -184,58 +96,24 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             if (settingCheckbox.bearing) {
                 Text(
                     text = " ${location.bearing}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
             // addressTxt
             if (settingCheckbox.address) {
                 Text(
                     text = "${location.address}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
 
             if (settingCheckbox.date) {
                 Text(
-
                     text = "${location.date}",
-                    fontSize = 14.sp,
-                    color = colorResource(id = R.color.textOverlay),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        shadow = Shadow(
-                            color = Color.White,
-                            offset = Offset(3.0f, 3.0f),
-                            blurRadius = 5f
-                        )
-                    ),
-                    modifier = Modifier
-                        .padding(start = 5.dp, bottom = 2.dp)
-
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.customThemeModifier()
                 )
             }
         }
@@ -243,18 +121,9 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
         if (settingCheckbox.cusText) {
             Text(
                 text = settingViewModel.cusText.collectAsState(initial = "").value,
-                fontSize = 14.sp,
-                color = colorResource(id = R.color.textOverlay),
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    shadow = Shadow(
-                        color = Color.White,
-                        offset = Offset(3.0f, 3.0f),
-                        blurRadius = 5f
-                    )
-                ),
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
-                    .padding(start = 5.dp, bottom = 2.dp)
+                    .customThemeModifier()
                     .align(Alignment.BottomCenter)
             )
         } 

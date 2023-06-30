@@ -8,7 +8,6 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.datastore.preferences.core.Preferences
 import com.example.dlsandroidredesign.data.local.CheckBoxDataStore
-import com.example.dlsandroidredesign.data.local.DLSDatabase
 import com.example.dlsandroidredesign.data.local.ImageLocationInfo
 import com.example.dlsandroidredesign.data.local.ImageLocationInfoDAO
 import com.example.dlsandroidredesign.data.local.PreferencesDataStore
@@ -35,7 +34,6 @@ class DLSRepositoryImpl @Inject constructor(
     private val preferencesDataStore: PreferencesDataStore,
     private val checkBoxDataStore: CheckBoxDataStore,
     private val dlsService: DLSService,
-    private val dlsDatabase: DLSDatabase,
     private val dlsDAO: ImageLocationInfoDAO
 ) : DLSRepository {
 
@@ -77,13 +75,6 @@ class DLSRepositoryImpl @Inject constructor(
         userDataStore.setIsAutomaticUpload(isAutomaticUploadSInput)
     }
 
-    override suspend fun getGroupNameCheck(): Flow<String?> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getLocationObjectByUri(): LocationObject {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject {
         return dlsDAO.getLocationObjectByUri(uriImage)
@@ -110,10 +101,6 @@ class DLSRepositoryImpl @Inject constructor(
         } catch (error: Exception) {
             null
         }
-    }
-
-    override suspend fun getWayPoint(): String? {
-        TODO("Not yet implemented")
     }
 
     override suspend fun setPhotoSize(resolutionInput: String) {
@@ -179,7 +166,7 @@ class DLSRepositoryImpl @Inject constructor(
         val folderPath = "/Pictures/DLSPhotoCompose"
         val images = mutableListOf<Uri>()
         val projection = arrayOf(MediaStore.Images.Media._ID)
-        val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC LIMIT 25"
+        val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC "
         val selection = "${MediaStore.Images.Media.DATA} like ?"
         val selectionArgs = arrayOf("%$folderPath%")
         val query = context.contentResolver.query(
@@ -191,19 +178,19 @@ class DLSRepositoryImpl @Inject constructor(
         )
         query?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            while (cursor.moveToNext()) {
+            var count = 0
+            while (cursor.moveToNext()&& count <= 25) {
                 val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     id
                 )
                 images.add(contentUri)
+                count++
             }
         }
         return images
     }
 
-    override suspend fun uploadPicture(apiKey: String?, bean: JsonObject?) {
-        TODO("Not yet implemented")
-    }
+
 }

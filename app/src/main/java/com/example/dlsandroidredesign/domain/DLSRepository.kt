@@ -12,13 +12,10 @@ import okhttp3.MultipartBody
 interface DLSRepository {
     fun getCurrentUser(): Flow<User?>
     suspend fun login(username: String, password: String): User?
-    suspend fun getWayPoint(): String?
-
     suspend fun getLocationUpdate(): StateFlow<LocationObject>
     suspend fun getWayPointId(apiKey: String?, bean: JsonObject?): String?
     suspend fun uploadPhoto(apiKey: String?, waypointId: String?, photo: MultipartBody.Part?)
     fun getAllGalleryImages(): List<Uri>
-    suspend fun uploadPicture(apiKey: String?, bean: JsonObject?)
     fun getLogInStatus(): Flow<Boolean>
     suspend fun refreshWaypointGroup()
     suspend fun setGroupIdAndName(groupId: String, groupName: String)
@@ -29,8 +26,6 @@ interface DLSRepository {
     suspend fun insertImageLocationInfo(imageUri: Uri, locationInfoObject: LocationObject)
     fun getIssAutomaticUpload(): Flow<Boolean>
     suspend fun setIsAutomaticUpload(isAutomaticUploadSInput: Boolean)
-    suspend fun getGroupNameCheck(): Flow<String?>
-    suspend fun getLocationObjectByUri(): LocationObject
     suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject
 
     fun getPhotoSize(): Flow<String>

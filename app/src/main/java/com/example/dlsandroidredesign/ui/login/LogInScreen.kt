@@ -86,31 +86,37 @@ private fun LogInScreen(
             Modifier
                 .padding(10.dp, 10.dp, 10.dp, 10.dp)
                 .background(Color.LightGray)
+            , horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = " USERNAME")
-            Spacer(modifier = Modifier.height(height = 3.dp))
-            BasicTextField(
-                modifier = Modifier
-                    .background(Color.White, shape = RoundedCornerShape(5.dp))
-                    .fillMaxWidth()
-                    .size(30.dp, 50.dp),
-                value = username,
-                onValueChange = { username = it }
-            )
+            Column() {
+                Text(text = " USERNAME")
+                Spacer(modifier = Modifier.height(height = 3.dp))
+                BasicTextField(
+                    modifier = Modifier
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
+                        .fillMaxWidth()
+                        .size(30.dp, 50.dp),
+                    value = username,
+                    onValueChange = { username = it }
+                )
+            }
 
             Spacer(modifier = Modifier.height(height = 8.dp))
-            Text(text = " PASSWORD")
+            Column() {
+                Text(text = " PASSWORD")
 
-            Spacer(modifier = Modifier.height(height = 3.dp))
-            BasicTextField(
-                modifier = Modifier
-                    .background(Color.White, shape = RoundedCornerShape(5.dp))
-                    .fillMaxWidth()
-                    .size(30.dp, 50.dp),
-                value = password,
-                onValueChange = { password = it },
-                visualTransformation = PasswordVisualTransformation()
-            )
+                Spacer(modifier = Modifier.height(height = 3.dp))
+                BasicTextField(
+                    modifier = Modifier
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
+                        .fillMaxWidth()
+                        .size(30.dp, 50.dp),
+                    value = password,
+                    onValueChange = { password = it },
+                    visualTransformation = PasswordVisualTransformation()
+                )
+            }
+
             Spacer(modifier = Modifier.height(height = 14.dp))
             val isAllFieldsReady = username.isNotBlank() && password.isNotBlank()
             Row(
