@@ -414,7 +414,7 @@ class ImageLocationInfoViewModel @Inject constructor(
         return imageUri
     }
 
-    suspend fun processImage(savedUriCapture: Uri?, locationObject: LocationObject): Uri {
+    private suspend fun processImage(savedUriCapture: Uri?, locationObject: LocationObject): Uri {
         runBlocking {
             Log.d("Upload", "uriResultfromProcess:$locationObject")
             createText(locationObject)
@@ -423,7 +423,7 @@ class ImageLocationInfoViewModel @Inject constructor(
         val result = viewModelScope.async { addTextOnImageAndSave(savedUriCapture!!) }
         insertImagelocationinfo(result.await(), locationObject)
         addLocationToImageUri(result.await(), locationObject)
-        Log.d("Upload", "uriResultfromProcess:$result")
+        Log.d("Upload", "uriResultFromProcess:$result")
 
         return result.await()
     }
@@ -462,13 +462,13 @@ class ImageLocationInfoViewModel @Inject constructor(
         while (test!!.read(buff).also { len = it } != -1) {
             byteBuff.write(buff, 0, len)
         }
-        val requestFileFront: RequestBody = byteBuff.toByteArray().toRequestBody("image/png".toMediaTypeOrNull())
-        val pictureMultipartBody = MultipartBody.Part.createFormData(
+        val requestFileFront: RequestBody =
+            byteBuff.toByteArray().toRequestBody("image/png".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(
             "photodata",
             "picture.png",
             requestFileFront
         )
-        return pictureMultipartBody
     }
 
     private val _processedImage = MutableStateFlow<Uri?>(null)
