@@ -133,9 +133,8 @@ class DLSRepositoryImpl @Inject constructor(
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
                 id = response.body()!!.waypointid
-                Toast.makeText(context, "Success + $id", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Fail to create Waypoint", Toast.LENGTH_SHORT).show()
             }
         }
         return id
@@ -155,9 +154,9 @@ class DLSRepositoryImpl @Inject constructor(
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
                 val id = body!!.waypointid
-                Toast.makeText(context, "Success $id ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Photo Uploaded Successfully ", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Failed to upload. Please try again", Toast.LENGTH_SHORT).show()
             }
         }
     }

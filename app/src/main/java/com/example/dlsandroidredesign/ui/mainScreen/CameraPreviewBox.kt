@@ -220,6 +220,7 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLoc
     ) {
         GalleryScreen()
     }
+
     ModalSheet(
         sheetState = viewModel.settingSheetState,
         onSystemBack = { coroutineScope.launch { viewModel.settingSheetState.hide() } },
@@ -227,5 +228,8 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLoc
             settingFragment()
         }
     )
+
+
+
 }
 

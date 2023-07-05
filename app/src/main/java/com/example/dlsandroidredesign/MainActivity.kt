@@ -29,6 +29,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
+@OptIn(ExperimentalPermissionsApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 

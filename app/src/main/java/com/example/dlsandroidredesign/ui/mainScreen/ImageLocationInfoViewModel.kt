@@ -8,14 +8,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.media.ExifInterface
-import android.media.ExifInterface.TAG_GPS_LATITUDE
-import android.media.ExifInterface.TAG_GPS_LATITUDE_REF
-import android.media.ExifInterface.TAG_GPS_LONGITUDE
-import android.media.ExifInterface.TAG_GPS_LONGITUDE_REF
 import android.net.Uri
 import android.os.Build
 import android.os.Looper
@@ -24,6 +20,11 @@ import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.runtime.mutableStateOf
+import androidx.exifinterface.media.ExifInterface
+import androidx.exifinterface.media.ExifInterface.TAG_GPS_LATITUDE
+import androidx.exifinterface.media.ExifInterface.TAG_GPS_LATITUDE_REF
+import androidx.exifinterface.media.ExifInterface.TAG_GPS_LONGITUDE
+import androidx.exifinterface.media.ExifInterface.TAG_GPS_LONGITUDE_REF
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcgismaps.LoadStatus
@@ -41,8 +42,7 @@ import com.example.dlsandroidredesign.domain.entity.PhotoSize
 import com.example.dlsandroidredesign.domain.usecase.GetAutoUploadStatus
 import com.example.dlsandroidredesign.domain.usecase.GetCheckBoxUseCase
 import com.example.dlsandroidredesign.domain.usecase.GetCurrentUser
-import com.example.dlsandroidredesign.domain.usecase.GetLocationObjectByUri
-import com.example.dlsandroidredesign.domain.usecase.GetLogInStatus
+import com.example.dlsandroidredesign.domain.usecase.GetCusText
 import com.example.dlsandroidredesign.domain.usecase.GetPhotoSize
 import com.example.dlsandroidredesign.domain.usecase.GetUploadSize
 import com.example.dlsandroidredesign.domain.usecase.GetWayPointId
@@ -76,7 +76,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.OutputStream
-import java.lang.Float.min
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -88,8 +87,8 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
+@Suppress("DEPRECATION")
 @SuppressLint("MissingPermission")
 @HiltViewModel
 class ImageLocationInfoViewModel @Inject constructor(
@@ -98,12 +97,11 @@ class ImageLocationInfoViewModel @Inject constructor(
     private val getWayPointId: GetWayPointId,
     private val getCurrentUser: GetCurrentUser,
     private val uploadPhoto: UploadPhoto,
-    private val logInStatus: GetLogInStatus,
     private val autoUploadStatus: GetAutoUploadStatus,
     private val insertImagelocationinfo: InsertImageLocationInfo,
-    private val getLocationObjectByUri: GetLocationObjectByUri,
     private val uploadSize: GetUploadSize,
-    private val photoSize: GetPhotoSize
+    private val photoSize: GetPhotoSize,
+    private val getCusText: GetCusText
 
 ) : ViewModel() {
     private val fileNameCapture = "temp.jpeg"
@@ -117,7 +115,6 @@ class ImageLocationInfoViewModel @Inject constructor(
     var bmp = mutableStateOf<Bitmap?>(null)
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     private val locationRequest: LocationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
-    var metadata: Metadata = mutableStateOf(Metadata()).value
     private val packagePath = File(context.getExternalFilesDir(null), "sections.mmpk").path
     private val mobileMapPackage = MobileMapPackage(packagePath)
     private var sectionLayer: FeatureLayer? = null
@@ -190,10 +187,10 @@ class ImageLocationInfoViewModel @Inject constructor(
     fun getLocationFromPicture(imageUri: Uri): LocationObject {
         val inputStream = contentResolver.openInputStream(imageUri)
         val exif = ExifInterface(inputStream!!)
-        val latitudes = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE)?.split(',') ?: return LocationObject()
-        val latitudesRef = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF)
-        val longitudes = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE)?.split(',') ?: return LocationObject()
-        val longitudesRef = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF)
+        val latitudes = exif.getAttribute(TAG_GPS_LATITUDE)?.split(',') ?: return LocationObject()
+        val latitudesRef = exif.getAttribute(TAG_GPS_LATITUDE_REF)
+        val longitudes = exif.getAttribute(TAG_GPS_LONGITUDE)?.split(',') ?: return LocationObject()
+        val longitudesRef = exif.getAttribute(TAG_GPS_LONGITUDE_REF)
         Log.d("getLocation", "latitudes$latitudes")
         Log.d("getLocation", "longitudes$longitudes")
 
@@ -208,30 +205,32 @@ class ImageLocationInfoViewModel @Inject constructor(
     private fun addLocationToImageUri(imageUri: Uri,locationObject: LocationObject) {
         val latitude = locationObject.lat.toDouble()
         val longitude = locationObject.lon.toDouble()
-        val exif = ExifInterface(context.contentResolver.openFileDescriptor(imageUri, "rw")?.fileDescriptor!!)
-        exif.setAttribute(
-            TAG_GPS_LATITUDE,
-            convert(latitude)
-        )
-        exif.setAttribute(
-            TAG_GPS_LATITUDE_REF,
-            if (latitude > 0) "N" else "S"
-        )
-        exif.setAttribute(
-            TAG_GPS_LONGITUDE,
-            convert(longitude)
-        )
-        exif.setAttribute(
-            TAG_GPS_LONGITUDE_REF,
-            if (longitude > 0) "E" else "W"
-        )
-        exif.saveAttributes()
-        val getLocationObjectfromPic= getLocationFromPicture(imageUri)
-        Log.d("getLocation", "urifromAddexif:$$imageUri")
 
-        Log.d("getLocation", "finishSetExif${exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE)}")
-        Log.d("getLocation", "finishSetExifgetLocationObjectfromPic${getLocationObjectfromPic}")
+            val exif = ExifInterface(context.contentResolver.openFileDescriptor(imageUri, "rw")?.fileDescriptor!!)
+            exif.setAttribute(
+                TAG_GPS_LATITUDE,
+                convert(latitude)
+            )
+            exif.setAttribute(
+                TAG_GPS_LATITUDE_REF,
+                if (latitude > 0) "N" else "S"
+            )
+            exif.setAttribute(
+                TAG_GPS_LONGITUDE,
+                convert(longitude)
+            )
+            exif.setAttribute(
+                TAG_GPS_LONGITUDE_REF,
+                if (longitude > 0) "E" else "W"
+            )
+            exif.saveAttributes()
+
+            val getLocationObjectfromPic = getLocationFromPicture(imageUri)
+            Log.d("getLocation", "urifromAddexif: $imageUri")
+            Log.d("getLocation", "finishSetExif ${exif.getAttribute(TAG_GPS_LONGITUDE)}")
+            Log.d("getLocation", "finishSetExif getLocationObjectfromPic $getLocationObjectfromPic")
     }
+
     private fun convert(coordinate: Double): String {
         var coord = coordinate
         coord = abs(coord)
@@ -260,7 +259,7 @@ class ImageLocationInfoViewModel @Inject constructor(
         viewModelScope.launch { insertImagelocationinfo.invoke(imageUri, locationObject) }
     }
 
-    suspend fun createText(locationObject: LocationObject) {
+    private suspend fun createText(locationObject: LocationObject) {
         val checkBoxList = getCheckBoxUsecase.invoke().first()
         Log.d("createText", "locationObject: $locationObject")
         val latlon: String = if (checkBoxList.latLon) { "Lat/lon\n${locationObject.lat}\n${locationObject.lon}\n" } else { "" }
@@ -272,9 +271,9 @@ class ImageLocationInfoViewModel @Inject constructor(
         locationInfoLeft.value = "$latlon$elevationNew$gridLocationNew$distanceNew$utmCoordinateNew"
         Log.d("createText", "locationInfoLeft: ${locationInfoLeft.value}")
 
-        val bearingNew: String = if (checkBoxList.bearing) { "${locationObject.bearing}" + "\n" } else { "" }
-        val addressNew: String = if (checkBoxList.address) { "${locationObject.address}" + "\n" } else { "" }
-        val dateTimeFormattedNew: String = if (checkBoxList.date) { "${locationObject.date}" } else { "" }
+        val bearingNew: String = if (checkBoxList.bearing) { locationObject.bearing + "\n" } else { "" }
+        val addressNew: String = if (checkBoxList.address) { locationObject.address + "\n" } else { "" }
+        val dateTimeFormattedNew: String = if (checkBoxList.date) { locationObject.date } else { "" }
         locationInfoRight.value = "$bearingNew$addressNew$dateTimeFormattedNew"
         Log.d("createText", "locationInfoLeft second: ${locationInfoRight.value}")
     }
@@ -292,24 +291,12 @@ class ImageLocationInfoViewModel @Inject constructor(
         } else {
         }
     }
-    fun scaleDown(realImage: Bitmap, maxImageSize: Float, filter: Boolean): Bitmap {
-        val ratio = min(
-            maxImageSize / realImage.width.toFloat(),
-            maxImageSize / realImage.height.toFloat()
-        )
-        val width = (ratio * realImage.width).roundToInt()
-        val height = (ratio * realImage.height).roundToInt()
-
-        val newBitmap = Bitmap.createScaledBitmap(realImage, width, height, filter)
-        return newBitmap
-    }
-
     private suspend fun addTextOnImageAndSave(savedUriCapture: Uri): Uri {
-        val inputStream = context.contentResolver.openInputStream(savedUriCapture!!)
+        val inputStream = context.contentResolver.openInputStream(savedUriCapture)
         var bitmap = BitmapFactory.decodeStream(inputStream)
         var bitmapConfig = bitmap.config
         if (bitmapConfig == null) {
-            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888
+            bitmapConfig = Bitmap.Config.ARGB_8888
         }
         bitmap = bitmap.copy(bitmapConfig, true)
 //         bitmap = scaleDown(bitmap,300f,true)
@@ -324,7 +311,7 @@ class ImageLocationInfoViewModel @Inject constructor(
             textSize = 80f
             textAlign = Paint.Align.RIGHT
         }
-        var xleft = 100f
+        val xleft = 100f
         var yleft = 120f
         val locationInfoLeftnew = locationInfoLeft.value.split("\n")
         locationInfoLeftnew.forEach { line ->
@@ -334,7 +321,7 @@ class ImageLocationInfoViewModel @Inject constructor(
             yleft += 140f
         }
 
-        var xright = (bitmap.width-20).toFloat()
+        val xright = (bitmap.width-20).toFloat()
         var yright = 120f
         val locationInfoRightnew = locationInfoRight.value.split("\n")
         locationInfoRightnew.forEach { line ->
@@ -343,6 +330,22 @@ class ImageLocationInfoViewModel @Inject constructor(
             canvas.drawText(line, xright, yright, paintRight)
             yright += 140f
         }
+
+
+        val cusText = getCusText.invoke().first()
+
+        val textBounds = Rect()
+        paint.getTextBounds(cusText, 0, cusText.length, textBounds)
+
+        val paintMid = Paint().apply {
+            color = android.graphics.Color.WHITE
+            textSize = 80f
+            textAlign = Paint.Align.LEFT
+        }
+        val  xMid = (bitmap.width - paint.measureText(cusText))/2
+        val yMid = bitmap.height - 60f
+
+        canvas.drawText(cusText,xMid,yMid,paintMid)
 
         val existingImageFile = File(context.filesDir, fileNameCapture)
 
@@ -371,7 +374,7 @@ class ImageLocationInfoViewModel @Inject constructor(
 
 // Open an output stream to write the bitmap data
         try {
-            imageUri?.let { uri ->
+            imageUri.let { uri ->
                 val outputStream: OutputStream? = resolver.openOutputStream(uri)
 
                 // Compress the bitmap to JPEG format and write it to the output stream
@@ -402,7 +405,7 @@ class ImageLocationInfoViewModel @Inject constructor(
                 outputStream?.close()
 
                 // Optionally, you can display a toast message to indicate the image has been saved
-                Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Image saved to gallery", LENGTH_SHORT).show()
                 deleteImageByName(fileNameCapture)
             }
         } catch (e: IOException) {
@@ -411,21 +414,21 @@ class ImageLocationInfoViewModel @Inject constructor(
         return imageUri
     }
 
-    suspend fun processImage(savedUriCapture: Uri?, locationObject: LocationObject): Uri? {
+    suspend fun processImage(savedUriCapture: Uri?, locationObject: LocationObject): Uri {
         runBlocking {
             Log.d("Upload", "uriResultfromProcess:$locationObject")
             createText(locationObject)
         }
 
         val result = viewModelScope.async { addTextOnImageAndSave(savedUriCapture!!) }
-        insertImagelocationinfo(result.await()!!, locationObject)
-        addLocationToImageUri(result.await()!!, locationObject)
+        insertImagelocationinfo(result.await(), locationObject)
+        addLocationToImageUri(result.await(), locationObject)
         Log.d("Upload", "uriResultfromProcess:$result")
 
         return result.await()
     }
 
-    suspend fun getWayPointId(uriImage: Uri?, locationObject: LocationObject): String {
+    private suspend fun getWayPointId(uriImage: Uri?, locationObject: LocationObject): String {
         withContext(Dispatchers.IO) {
             Log.d("getWayPointId", "uriImage:$$uriImage")
             Log.d("getWayPointId", "locationObjectawait:$locationObject")
@@ -441,7 +444,6 @@ class ImageLocationInfoViewModel @Inject constructor(
             Log.d("getWayPointId", "locationObjectawait:$locationObject")
             Log.d("AutoUpload", "groupId:${currentUser.first()!!.groupIdCheck}")
             Log.d("AutoUpload", "groupId:${currentUser.first()!!.groupIdCheck}")
-
             obj.put("waypoint", wayPointObj)
             val result = getWayPointId.invoke(currentUser.first()!!.id, wayPointObj)
             Log.d("AutoUpload", "wayPointObj:$wayPointObj")
@@ -466,14 +468,13 @@ class ImageLocationInfoViewModel @Inject constructor(
             "picture.png",
             requestFileFront
         )
-        Toast.makeText(context, "Convert Success ", Toast.LENGTH_SHORT).show()
         return pictureMultipartBody
     }
 
     private val _processedImage = MutableStateFlow<Uri?>(null)
     val processedImage: StateFlow<Uri?> = _processedImage
 
-    suspend fun uploadPhoto(
+    private suspend fun uploadPhoto(
         apiKey: String,
         wayPointId: String,
         photo: MultipartBody.Part?
@@ -492,37 +493,40 @@ class ImageLocationInfoViewModel @Inject constructor(
                     Log.d("AutoUpload", "apiKey:${apiKey.await()}")
                     Log.d("AutoUpload", "wayPointId:${wayPoint.await()}")
                     val pictureMultipartBody = async { convertUriToMultipart(image.await()) }
-                    uploadPhoto(apiKey.await()!!, wayPoint.await()!!, pictureMultipartBody.await())
+                    uploadPhoto(apiKey.await()!!, wayPoint.await(), pictureMultipartBody.await())
                     Log.d("AutoUpload", "uri:$$pictureMultipartBody.await()")
                 }
             }
-            val getLocationFromPicture = getLocationFromPicture(image.await()!!)
+            val getLocationFromPicture = getLocationFromPicture(image.await())
             Log.d("AutoUpload", "finish upload:locationObject:$getLocationFromPicture")
         }
     }
     fun processUpload() {
+        viewModelScope.launch {
+        if (!currentUser.first()?.id.isNullOrEmpty()) {
         for (uri in uriSet.value) {
             val locationObjectbyUri = getLocationFromPicture(uri)
-
-            viewModelScope.launch {
-                if (!currentUser.first()?.id.isNullOrEmpty()) {
-                    Log.d("getLocation", "locationObjectbyUri:$$locationObjectbyUri")
-                    Log.d("getLocation", "uri:$$uri")
-                    if (!locationObjectbyUri.lat.isNullOrBlank()) {
-                        val apiKey = async { currentUser.first()?.id }
-                        val wayPoint = async { getWayPointId(uri, locationObjectbyUri) }
-                        val pictureMultipartBody = async { convertUriToMultipart(uri) }
-                        uploadPhoto(apiKey.await()!!, wayPoint.await(), pictureMultipartBody.await())
-                    } else {
-                        val currentLocationObject = locationObjectState.first()
-                        val apiKey = async { currentUser.first()?.id }
-                        val wayPoint = async { getWayPointId(uri, currentLocationObject) }
-                        val pictureMultipartBody = async { convertUriToMultipart(uri) }
-                        uploadPhoto(apiKey.await()!!, wayPoint.await(), pictureMultipartBody.await())
-                    }
-                } else { Toast.makeText(context, "Please login!", LENGTH_SHORT) }
+            Log.d("getLocation", "locationObjectbyUri:$$locationObjectbyUri")
+            Log.d("getLocation", "uri:$${currentUser.first()}")
+            if (!locationObjectbyUri.lat.isNullOrBlank()) {
+                val apiKey = async { currentUser.first()?.id }
+                val wayPoint = async { getWayPointId(uri, locationObjectbyUri) }
+                val pictureMultipartBody = async { convertUriToMultipart(uri) }
+                uploadPhoto(apiKey.await()!!, wayPoint.await(), pictureMultipartBody.await())
             }
+            else {
+                val currentLocationObject = locationObjectState.first()
+                val apiKey = async { currentUser.first()?.id }
+                val wayPoint = async { getWayPointId(uri, currentLocationObject) }
+                val pictureMultipartBody = async { convertUriToMultipart(uri) }
+                uploadPhoto(apiKey.await()!!, wayPoint.await(), pictureMultipartBody.await())
+                    }
         }
+        }
+        else  {
+            Log.d("getLocation", "currentUser:$${currentUser.first()}")
+            Toast.makeText(context, "Please login before uploading.", LENGTH_SHORT).show() }
+    }
     }
 
     private fun fetchLocationUpdates(): Flow<Location?> = callbackFlow {
@@ -602,15 +606,15 @@ class ImageLocationInfoViewModel @Inject constructor(
                                 this.elevation = "Eleve: ${dec.format(elevationDouble)} m"
                                 this.gridLocation = getGridLocation(secLbl, xDelta, yDelta)
                                 this.distance = getDistances(
-                                    utmTup!!.second!!.toInt(),
-                                    utmTup!!.third!!.toInt(),
+                                    utmTup.second!!.toInt(),
+                                    utmTup.third!!.toInt(),
                                     extent
                                 )
                                 this.utmCoordinate =
-                                    utmTup!!.third + " m " + utmTup.second + " m " + "Zone: " + utmTup.first
+                                    utmTup.third + " m " + utmTup.second + " m " + "Zone: " + utmTup.first
                                 this.bearing =
                                     String.format("Bearing: %.0f", bearingDouble) + "\u2103 TN"
-                                this.address = getAddressFromLocation(context, latDouble, lonDouble)
+                                this.address = getAddressFromLocation(latDouble, lonDouble)
                                 this.date = dataTime.format(
                                     DateTimeFormatter.ofPattern(
                                         "MMM d, yyyy HH:mm:ss",
@@ -623,7 +627,6 @@ class ImageLocationInfoViewModel @Inject constructor(
                         )
                     }
                 }
-
                 onFailure {
                     cont.resume(LocationObject())
                 }
@@ -632,29 +635,28 @@ class ImageLocationInfoViewModel @Inject constructor(
     }
 
     private fun getAddressFromLocation(
-        context: Context,
         latitude: Double?,
         longitude: Double?
     ): String {
         val geocoder = Geocoder(context, Locale.getDefault())
         return try {
-            @Suppress("DEPRECATION")
-            val addresses: List<Address> =
-                geocoder.getFromLocation(latitude!!, longitude!!, 1) ?: listOf()
+            val addresses: List<Address> = geocoder.getFromLocation(latitude!!, longitude!!, 1) ?: listOf()
             return if (addresses.isNotEmpty()) {
                 val address: Address = addresses[0]
-
                 // Retrieve the address information
                 val addressLine: String = address.getAddressLine(0)
-                val city: String? = address.locality
-                val state: String? = address.adminArea
-                val country: String? = address.countryName
-                val postalCode: String? = address.postalCode
+//                val city: String? = address.locality
+//                val state: String? = address.adminArea
+//                val country: String? = address.countryName
+//                val postalCode: String? = address.postalCode
                 addressLine
             } else {
+                Log.d("getLocationProcess","address:fail")
                 ""
             }
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
+            Log.d("getLocationProcess","address exception")
             e.printStackTrace()
             ""
         }
@@ -670,12 +672,12 @@ class ImageLocationInfoViewModel @Inject constructor(
 
         val minTup = sepUtm(utmMin!!)
         val minX: Int = try {
-            minTup!!.component2()!!.toInt()
+            minTup.component2()!!.toInt()
         } catch (e: Exception) {
             0
         }
         val minY: Int = try {
-            minTup!!.component3()!!.toInt()
+            minTup.component3()!!.toInt()
         } catch (e: Exception) {
             0
         }
@@ -698,7 +700,7 @@ class ImageLocationInfoViewModel @Inject constructor(
         return "$ch $dist"
     }
 
-    fun sepUtm(str: String): Triple<String?, String?, String?>? {
+    private fun sepUtm(str: String): Triple<String?, String?, String?> {
         val utmArr = str.split(" ".toRegex()).dropLastWhile { it.isEmpty() }
             .toTypedArray()
         val zone = utmArr[0].substring(0, utmArr[0].length - 1)
@@ -707,9 +709,9 @@ class ImageLocationInfoViewModel @Inject constructor(
         return Triple(zone, east, nor)
     }
 
-    fun getGridLocation(sec: String?, x: Double, y: Double): String {
-        var qtr: String = ""
-        var lsd: Int = 0
+    private fun getGridLocation(sec: String?, x: Double, y: Double): String {
+        var qtr = ""
+        var lsd = 0
         if (x > 0 && x <= 0.25) {
             if (y > 0 && y <= 0.25) {
                 lsd = 4

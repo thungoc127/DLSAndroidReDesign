@@ -8,9 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.dlsandroidredesign.domain.entity.CheckBox
 import com.example.dlsandroidredesign.domain.usecase.GetAutoUploadStatus
 import com.example.dlsandroidredesign.domain.usecase.GetCheckBoxUseCase
-import com.example.dlsandroidredesign.domain.usecase.GetCurrentUser
 import com.example.dlsandroidredesign.domain.usecase.GetCusText
-import com.example.dlsandroidredesign.domain.usecase.GetLogInStatus
 import com.example.dlsandroidredesign.domain.usecase.GetPhotoSize
 import com.example.dlsandroidredesign.domain.usecase.GetUploadSize
 import com.example.dlsandroidredesign.domain.usecase.SetAutoUploadStatus
@@ -36,8 +34,6 @@ class SettingFragmentViewModel @Inject constructor(
     private val setCheckBoxUseCase: SetCheckBoxUseCase,
     private val setAutoUploadStatus: SetAutoUploadStatus,
     private val getAutoUploadStatus: GetAutoUploadStatus,
-    private val logInStatus: GetLogInStatus,
-    private val currentUser: GetCurrentUser,
     private val getPhotoSize: GetPhotoSize,
     private val setPhotoSize: SetPhotoSize,
     private val setUploadSize: SetUploadSize,

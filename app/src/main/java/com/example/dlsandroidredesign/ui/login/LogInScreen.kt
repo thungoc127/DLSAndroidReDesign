@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,12 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.dlsandroidredesign.R
-import com.example.dlsandroidredesign.ui.mainScreen.MainScreenViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LogInScreen(viewModel: LogInViewModel = hiltViewModel(), mainScreenViewModel: MainScreenViewModel = hiltViewModel()) {
-    val coroutineScope = rememberCoroutineScope()
+fun LogInScreen(viewModel: LogInViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val errorMessage = viewModel.errorMessage.collectAsState().value
     Log.d("LoginScreen", "create")
@@ -89,7 +86,7 @@ private fun LogInScreen(
             , horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column() {
-                Text(text = " USERNAME")
+                Text(text = "USERNAME")
                 Spacer(modifier = Modifier.height(height = 3.dp))
                 BasicTextField(
                     modifier = Modifier

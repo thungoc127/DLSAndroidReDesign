@@ -41,7 +41,7 @@
      Column(
          modifier = Modifier
              .background(Color.Black)
-             .padding(0.dp, 15.dp, 0.dp, 15.dp)
+             .padding(0.dp, 30.dp, 0.dp, 15.dp)
              .fillMaxHeight(),
 
          horizontalAlignment = Alignment.CenterHorizontally
