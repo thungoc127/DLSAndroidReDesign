@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_MEDIA_IMAGES
 
-                    )
+                )
             )
 //            Log.d("getLocationProcess: ", "$permissionState")
 
@@ -65,36 +65,31 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
                 ) {
-                    Box(){
+                    Box() {
                         FullPreviewScreen()
                         Column(
-                            modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                    if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false||
-                        permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false
-                            ){
-
-                            if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false)
-                            {
-                                Text(text = "Please grant camera permission to use the camera feature.", color = Color.White)
-                            }
-                            if(permissionState.permissions.firstOrNull{ it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false)
-                            {
-                                Text(text = "Please grant location permission to use the location feature.", color = Color.White)
-                            }
+                            if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false ||
+                                permissionState.permissions.firstOrNull { it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false
+                            ) {
+                                if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.CAMERA }?.status?.isGranted == false) {
+                                    Text(text = "Please grant camera permission to use the camera feature.", color = Color.White)
+                                }
+                                if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == false) {
+                                    Text(text = "Please grant location permission to use the location feature.", color = Color.White)
+                                }
                                 Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
                                     Text(text = "Grant Permission")
                                 }
-
+                            }
                         }
-                        }
-
+                    }
                 }
             }
         }
-        }
     }
-
 
     private fun copySectionsAssetToFile() {
         try {

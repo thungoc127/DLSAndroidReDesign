@@ -126,6 +126,6 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
                     .customThemeModifier()
                     .align(Alignment.BottomCenter)
             )
-        } 
+        }
     }
 }

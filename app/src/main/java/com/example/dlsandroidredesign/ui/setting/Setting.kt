@@ -75,18 +75,16 @@ fun settingFragment(viewModel: MainScreenViewModel = hiltViewModel(), loginViewM
         SaveToPhotoLibraryOptions()
         // UPLOAD OPTION
         UploadOptions(
-            onLogInPressed = {coroutineScope.launch { loginViewModel.setLoginVisible(true) } },
+            onLogInPressed = { coroutineScope.launch { loginViewModel.setLoginVisible(true) } },
             onWaypointgroupsPressed = { coroutineScope.launch { viewModel.waypointGroupSheetState.show() } }
         )
     }
 
     ModalBottomSheetLoginAndWaypointgroups(waypointGroupSheetState = viewModel.waypointGroupSheetState)
-
 }
 
-
 @Composable
-fun BoxSizeSave(modifier: Modifier, size:String, settingFragmentViewModel: SettingFragmentViewModel = hiltViewModel()){
+fun BoxSizeSave(modifier: Modifier, size: String, settingFragmentViewModel: SettingFragmentViewModel = hiltViewModel()) {
     val saveSize = settingFragmentViewModel.photoSize.collectAsStateWithLifecycle(initialValue = "Original").value
 
     Box(
@@ -100,11 +98,11 @@ fun BoxSizeSave(modifier: Modifier, size:String, settingFragmentViewModel: Setti
         contentAlignment = Alignment.Center
     ) {
         Text(text = size)
-}
+    }
 }
 
 @Composable
-fun BoxSizeUpload(modifier: Modifier,size:String,settingFragmentViewModel: SettingFragmentViewModel = hiltViewModel()){
+fun BoxSizeUpload(modifier: Modifier, size: String, settingFragmentViewModel: SettingFragmentViewModel = hiltViewModel()) {
     val uploadSize = settingFragmentViewModel.uploadSize.collectAsStateWithLifecycle(initialValue = "Original").value
 
     Box(
@@ -143,6 +141,3 @@ fun MyPhotoDisplaySwitch(title: String, checked: Boolean, onCheckChanged: (Boole
         )
     }
 }
-
-
-

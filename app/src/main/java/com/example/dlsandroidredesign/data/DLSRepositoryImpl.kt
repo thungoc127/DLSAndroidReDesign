@@ -75,7 +75,6 @@ class DLSRepositoryImpl @Inject constructor(
         userDataStore.setIsAutomaticUpload(isAutomaticUploadSInput)
     }
 
-
     override suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject {
         return dlsDAO.getLocationObjectByUri(uriImage)
     }
@@ -178,7 +177,7 @@ class DLSRepositoryImpl @Inject constructor(
         query?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             var count = 0
-            while (cursor.moveToNext()&& count <= 25) {
+            while (cursor.moveToNext() && count <= 25) {
                 val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -190,6 +189,4 @@ class DLSRepositoryImpl @Inject constructor(
         }
         return images
     }
-
-
 }

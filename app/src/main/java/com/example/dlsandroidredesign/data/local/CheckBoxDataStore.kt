@@ -18,15 +18,15 @@ class CheckBoxDataStore @Inject constructor(
 
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("CheckBoxPref")
-        val latLon = booleanPreferencesKey(CheckBoxKey.latlon.name)
-        val elevation = booleanPreferencesKey(CheckBoxKey.elevation.name)
-        val gridLocation = booleanPreferencesKey(CheckBoxKey.gridLocation.name)
-        val distance = booleanPreferencesKey(CheckBoxKey.distance.name)
-        val utmCoordinate = booleanPreferencesKey(CheckBoxKey.utmCoordinate.name)
-        val bearing = booleanPreferencesKey(CheckBoxKey.bearing.name)
-        val address = booleanPreferencesKey(CheckBoxKey.address.name)
-        val date = booleanPreferencesKey(CheckBoxKey.date.name)
-        val cusText = booleanPreferencesKey(CheckBoxKey.cusText.name)
+        val latLon = booleanPreferencesKey(CheckBoxKey.LatLon.name)
+        val elevation = booleanPreferencesKey(CheckBoxKey.Elevation.name)
+        val gridLocation = booleanPreferencesKey(CheckBoxKey.GridLocation.name)
+        val distance = booleanPreferencesKey(CheckBoxKey.Distance.name)
+        val utmCoordinate = booleanPreferencesKey(CheckBoxKey.UtmCoordinate.name)
+        val bearing = booleanPreferencesKey(CheckBoxKey.Bearing.name)
+        val address = booleanPreferencesKey(CheckBoxKey.Address.name)
+        val date = booleanPreferencesKey(CheckBoxKey.Date.name)
+        val cusText = booleanPreferencesKey(CheckBoxKey.CusText.name)
     }
 
     suspend fun setCheckBox(checkBoxKey: String, value: Boolean) {

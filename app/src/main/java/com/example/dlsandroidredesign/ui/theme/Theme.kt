@@ -66,8 +66,7 @@ fun DLSAndroidReDesignTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content,
-        shapes = Shapes,
+        shapes = Shapes
 
     )
-
 }

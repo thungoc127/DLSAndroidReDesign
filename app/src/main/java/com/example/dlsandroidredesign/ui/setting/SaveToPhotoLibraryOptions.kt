@@ -100,12 +100,10 @@ fun SaveToPhotoLibraryOptions(viewModel: SettingFragmentViewModel = hiltViewMode
                     )
                     // Original
                     BoxSizeSave(modifier = Modifier.weight(1f), size = "Original")
-
                 }
             }
         }
     }
 
     Log.d("Setting", "SaveOptions")
-    }
-
+}

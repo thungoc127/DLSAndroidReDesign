@@ -228,8 +228,4 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLoc
             settingFragment()
         }
     )
-
-
-
 }
-

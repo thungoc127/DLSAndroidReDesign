@@ -5,6 +5,4 @@ import javax.inject.Inject
 
 class GetWayPointUseCase @Inject constructor(
     private val dlsRepository: DLSRepository
-) {
-
-}
+)

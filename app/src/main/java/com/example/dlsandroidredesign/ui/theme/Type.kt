@@ -19,7 +19,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        color =  Color(0xFF3C3939),
+        color = Color(0xFF3C3939),
         fontSize = 14.sp,
         shadow = Shadow(
             color = Color.White,
@@ -28,4 +28,3 @@ val Typography = Typography(
         )
     )
 )
-

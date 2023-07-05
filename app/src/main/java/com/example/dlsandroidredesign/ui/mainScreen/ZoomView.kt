@@ -25,7 +25,7 @@ import com.example.dlsandroidredesign.R
 
 @Composable
 fun ZoomView(onGalleryButtonPressed: () -> Unit, onZoomOnePressed: () -> Unit, onZoomTwoPressed: () -> Unit, onZoomThreePressed: () -> Unit) {
-    fun Modifier.customThemeModifier() = padding(all = 5.dp).size(40.dp, 40.dp).background(shape = RoundedCornerShape(200.dp),color = Color.Gray)
+    fun Modifier.customThemeModifier() = padding(all = 5.dp).size(40.dp, 40.dp).background(shape = RoundedCornerShape(200.dp), color = Color.Gray)
     Column(
         modifier = Modifier
             .background(Color.Black)

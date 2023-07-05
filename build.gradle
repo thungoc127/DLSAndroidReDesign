@@ -29,5 +29,6 @@ subprojects {
     // Optionally configure plugin
     ktlint {
         debug = true
+        disabledRules = ["no-wildcard-imports"] // not supported with ktlint 0.48+
     }
 }

@@ -32,7 +32,6 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
     val settingCheckbox by settingFragmentViewModel.checkBox.collectAsStateWithLifecycle()
     val menuTitleList: List<String> = listOf("Latitude/Longitude", "Elevation", "Grid Location", "Distance from Grid Lines", "Heading", "Address", "Date and Time", "UTM Coordinates", "Custom Text: ")
 
-
     Column(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 20.dp)) {
         Text(text = "PHOTO DISPLAY OPTIONS")
         Box(
@@ -50,7 +49,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Latitude/Longitude",
                     settingCheckbox.latLon,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.latlon.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.LatLon.name, it)
                     }
 
                 )
@@ -60,7 +59,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Elevation",
                     settingCheckbox.elevation,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.elevation.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.Elevation.name, it)
                     }
 
                 )
@@ -71,7 +70,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Grid Location",
                     settingCheckbox.gridLocation,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.gridLocation.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.GridLocation.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -80,7 +79,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Distance from Grid Lines",
                     settingCheckbox.distance,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.distance.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.Distance.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -89,7 +88,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Heading",
                     settingCheckbox.bearing,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.bearing.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.Bearing.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -98,7 +97,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Address",
                     settingCheckbox.address,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.address.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.Address.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -107,7 +106,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "Date and Time",
                     settingCheckbox.date,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.date.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.Date.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -116,7 +115,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     "UTM Coordinates",
                     settingCheckbox.utmCoordinate,
                     onCheckChanged = {
-                        settingFragmentViewModel.setCheckBox(CheckBoxKey.utmCoordinate.name, it)
+                        settingFragmentViewModel.setCheckBox(CheckBoxKey.UtmCoordinate.name, it)
                     }
                 )
                 Divider(thickness = 0.2.dp, color = Color.Black)
@@ -130,7 +129,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                 ) {
                     Text(text = "Custom Text: ")
                     BasicTextField(
-                        modifier= Modifier.fillMaxWidth().weight(1f),
+                        modifier = Modifier.fillMaxWidth().weight(1f),
                         value = settingFragmentViewModel.cusText.collectAsState(initial = "").value,
                         onValueChange = {
                             settingFragmentViewModel.setCusText(it)
@@ -139,7 +138,7 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
                     )
                     Checkbox(
                         checked = settingCheckbox.cusText,
-                        onCheckedChange = { settingFragmentViewModel.setCheckBox(CheckBoxKey.cusText.name, it) },
+                        onCheckedChange = { settingFragmentViewModel.setCheckBox(CheckBoxKey.CusText.name, it) },
                         colors = CheckboxDefaults.colors(
                             checkedColor = Color.Green
                         ),
@@ -150,7 +149,3 @@ fun PhotoDisplayOptions(settingFragmentViewModel: SettingFragmentViewModel = hil
         }
     }
 }
-
-
-
-
