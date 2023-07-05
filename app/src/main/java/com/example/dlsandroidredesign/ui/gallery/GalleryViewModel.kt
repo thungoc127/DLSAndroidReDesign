@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
 @HiltViewModel
+// TODO: not recommend holding application in viewModel.
 class GalleryViewModel @Inject constructor(
     private val application: Application,
     private val dao: ImageLocationInfoDAO,

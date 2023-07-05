@@ -41,6 +41,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             if (settingCheckbox.latLon) {
                 // lat
                 Text(
+                    // TODO: the location.lat is already string. Doesn't need to put in ""
                     text = "${location.lat}",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
@@ -126,6 +127,6 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
                     .customThemeModifier()
                     .align(Alignment.BottomCenter)
             )
-        } 
+        }
     }
 }

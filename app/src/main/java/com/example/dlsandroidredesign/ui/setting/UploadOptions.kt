@@ -38,8 +38,6 @@ fun UploadOptions(onLogInPressed: () -> Unit, onWaypointgroupsPressed: () -> Uni
     val isAutoUpload = settingFragmentViewModel.autoUploadStatus.collectAsState(initial = false)
     val uploadSize = settingFragmentViewModel.uploadSize.collectAsStateWithLifecycle(initialValue = "Original").value
 
-
-
     Column(modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 20.dp)) {
         Text(text = "UPLOAD OPTIONS")
         Column(
@@ -198,6 +196,4 @@ fun UploadOptions(onLogInPressed: () -> Unit, onWaypointgroupsPressed: () -> Uni
         }
         Log.d("Setting", "UploadOptions")
     }
-
-
 }

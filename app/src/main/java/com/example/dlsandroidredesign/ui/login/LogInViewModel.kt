@@ -30,6 +30,7 @@ class LogInViewModel @Inject constructor(
     private val getLogInStatus: GetLogInStatus
 
 ) : ViewModel() {
+    // TODO: Sheet State might consider as a view state(not data). This could be in compose function.
     var loginSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
     var loginVisible = mutableStateOf(false)
     fun setLoginVisible(newValue: Boolean) {
@@ -42,6 +43,7 @@ class LogInViewModel @Inject constructor(
     var errorMessage = MutableStateFlow("")
     fun validate(username: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            // TODO: It doesn't need async { } actually unless we want to await that later.
             val loginStatus = async { loginUseCase.invoke(username, password) }
             if (loginStatus.await()) {
                 success.value = true

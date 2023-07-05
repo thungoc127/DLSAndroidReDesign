@@ -72,11 +72,11 @@ fun GalleryScreen(mainScreenViewModel: MainScreenViewModel = hiltViewModel(), im
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-            Row(modifier = Modifier
-                .clickable { mainScreenViewModel.galleryModalSheetVisible.value = false },
+            Row(
+                modifier = Modifier
+                    .clickable { mainScreenViewModel.galleryModalSheetVisible.value = false },
                 verticalAlignment = Alignment.CenterVertically
-            )
-            {
+            ) {
                 Image(painter = painterResource(id = R.drawable.ic_xmark_single), contentDescription = null, modifier = Modifier.size(17.dp, 17.dp))
                 Text(text = " Close", color = Color(0xFF00B0FF), fontSize = 20.sp)
             }

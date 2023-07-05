@@ -82,8 +82,8 @@ private fun LogInScreen(
         Column(
             Modifier
                 .padding(10.dp, 10.dp, 10.dp, 10.dp)
-                .background(Color.LightGray)
-            , horizontalAlignment = Alignment.CenterHorizontally
+                .background(Color.LightGray),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column() {
                 Text(text = "USERNAME")

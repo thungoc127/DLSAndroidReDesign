@@ -53,6 +53,7 @@ class DLSRepositoryImpl @Inject constructor(
     override fun getLogInStatus(): Flow<Boolean> = userDataStore.getIsLoginSuccess
 
     override suspend fun refreshWaypointGroup() {
+        // TODO: If we see this green underline, it means we might spell wrong.
         val respone = dlsService.getWayPointGroups(userDataStore.getUser().first()!!.id)
         val body = respone.body()
         val currentUser = userDataStore.getUser().first()
@@ -74,7 +75,6 @@ class DLSRepositoryImpl @Inject constructor(
     override suspend fun setIsAutomaticUpload(isAutomaticUploadSInput: Boolean) {
         userDataStore.setIsAutomaticUpload(isAutomaticUploadSInput)
     }
-
 
     override suspend fun getLocationObjectByUri(uriImage: Uri): LocationObject {
         return dlsDAO.getLocationObjectByUri(uriImage)
@@ -178,7 +178,7 @@ class DLSRepositoryImpl @Inject constructor(
         query?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
             var count = 0
-            while (cursor.moveToNext()&& count <= 25) {
+            while (cursor.moveToNext() && count <= 25) {
                 val id = cursor.getLong(idColumn)
                 val contentUri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -190,6 +190,4 @@ class DLSRepositoryImpl @Inject constructor(
         }
         return images
     }
-
-
 }
