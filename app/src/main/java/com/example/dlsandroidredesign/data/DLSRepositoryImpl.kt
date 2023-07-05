@@ -53,6 +53,7 @@ class DLSRepositoryImpl @Inject constructor(
     override fun getLogInStatus(): Flow<Boolean> = userDataStore.getIsLoginSuccess
 
     override suspend fun refreshWaypointGroup() {
+        // TODO: If we see this green underline, it means we might spell wrong.
         val respone = dlsService.getWayPointGroups(userDataStore.getUser().first()!!.id)
         val body = respone.body()
         val currentUser = userDataStore.getUser().first()

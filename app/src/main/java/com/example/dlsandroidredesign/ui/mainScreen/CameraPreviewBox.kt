@@ -47,6 +47,9 @@ import eu.wewox.modalsheet.ModalSheet
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+// TODO: Remove unused OptIn, parameter such as settingFragmentViewModel, loginViewModel, preferenceDataStore, savedUri
+// TODO: Use immutable variable (val) instead of var if doesn't want to change later
+// TODO: Tip alt + enter to see suggestion. gray and yellow is quite safe to follow suggestion
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalSheetApi::class, ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -93,6 +96,7 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLoc
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
+    // TODO: imageCapture is not possible to be null, remove optional sign (?)
     fun takePicture() {
         imageCapture?.takePicture(
             outputOptions,

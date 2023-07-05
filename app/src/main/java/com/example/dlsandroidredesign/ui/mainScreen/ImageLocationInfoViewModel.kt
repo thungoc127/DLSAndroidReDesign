@@ -88,6 +88,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.abs
 
+// TODO: If possible, avoid using context in viewModel. Try to move things that need context into view or repository.
+// TODO: Lots of logic in this viewModel, possibly move logics in to use cases and repository
+// TODO: These will be a huge change. but after changed, will be a nice clean view model.
 @Suppress("DEPRECATION")
 @SuppressLint("MissingPermission")
 @HiltViewModel
