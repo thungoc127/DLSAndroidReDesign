@@ -1,6 +1,6 @@
 package com.example.dlsandroidredesign.ui.mainScreen
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +29,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.dlsandroidredesign.R
 
 @Composable
-fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress: () -> Unit, onFlashPressed: () -> Unit, bmp: Bitmap?) {
-    var painter = rememberAsyncImagePainter(model = bmp)
+fun Setting(onSettingPressed: () -> Unit, onCameraCapturePressed: () -> Unit, onSwitchCameraPress: () -> Unit, onFlashPressed: () -> Unit, uriImage: Uri?) {
+    var painter = rememberAsyncImagePainter(model = uriImage)
     var flashState by remember {
         mutableStateOf(true)
     }

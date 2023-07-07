@@ -212,7 +212,7 @@ fun FullPreviewScreen(viewModel: MainScreenViewModel = hiltViewModel(), imageLoc
                 },
                 onSwitchCameraPress = { switchCamera() },
                 onFlashPressed = { flashSwitch() },
-                bmp = imageLocationInfoViewModel.bmp.value
+                uriImage = imageLocationInfoViewModel.uriImage.value
             )
         }
     }

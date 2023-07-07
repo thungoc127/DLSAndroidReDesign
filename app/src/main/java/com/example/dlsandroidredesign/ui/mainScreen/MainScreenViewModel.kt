@@ -1,7 +1,6 @@
 package com.example.dlsandroidredesign.ui.mainScreen
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
@@ -23,12 +22,9 @@ class MainScreenViewModel @Inject constructor(
     private val getLocationInfoUseCase: GetLocationInfoUseCase,
     private val getAllImages: GetAllImages
 ) : ViewModel() {
-    val zoomRatio = mutableStateOf(0.0f)
     val galleryModalSheetVisible = mutableStateOf(false)
     val settingSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
-    val loginAndWaypointgroupSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
     var waypointGroupSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, isSkipHalfExpanded = true)
-    var bmp = mutableStateOf<Bitmap?>(null)
     var allImages = mutableStateOf(emptyList<Uri>())
     fun getAllImage(): List<Uri> {
         allImages.value = viewModelScope.async { getAllImages.invoke() }.getCompleted()

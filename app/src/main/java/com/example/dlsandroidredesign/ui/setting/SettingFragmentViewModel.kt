@@ -29,27 +29,27 @@ import javax.inject.Inject
 // TODO: alt + enter on the val
 @HiltViewModel
 class SettingFragmentViewModel @Inject constructor(
-    private val getCusText: GetCusText,
+    getCusText: GetCusText,
     private val setCusText: SetCusText,
-    private val getCheckBoxUseCase: GetCheckBoxUseCase,
+    getCheckBoxUseCase: GetCheckBoxUseCase,
     private val setCheckBoxUseCase: SetCheckBoxUseCase,
     private val setAutoUploadStatus: SetAutoUploadStatus,
-    private val getAutoUploadStatus: GetAutoUploadStatus,
-    private val getPhotoSize: GetPhotoSize,
+    getAutoUploadStatus: GetAutoUploadStatus,
+    getPhotoSize: GetPhotoSize,
     private val setPhotoSize: SetPhotoSize,
     private val setUploadSize: SetUploadSize,
-    private val getUploadSize: GetUploadSize
+    getUploadSize: GetUploadSize
 
 ) : ViewModel() {
 
     val uploadSize = getUploadSize.invoke()
     fun setUploadSize(photoSize: String) {
-        viewModelScope.launch { setUploadSize.invoke(photoSize) }
+        viewModelScope.launch(Dispatchers.IO) { setUploadSize.invoke(photoSize) }
     }
 
     val photoSize = getPhotoSize.invoke()
     fun setPhotoSize(photoSize: String) {
-        viewModelScope.launch { setPhotoSize.invoke(photoSize) }
+        viewModelScope.launch(Dispatchers.IO) { setPhotoSize.invoke(photoSize) }
     }
     private val _waypointGroupName = MutableStateFlow("")
     val waypointGroupName: StateFlow<String> = _waypointGroupName
@@ -68,11 +68,11 @@ class SettingFragmentViewModel @Inject constructor(
     )
 
     fun setCheckBox(checkBoxKey: String, newValue: Boolean) {
-        viewModelScope.launch { setCheckBoxUseCase(checkBoxKey, newValue) }
+        viewModelScope.launch(Dispatchers.IO) { setCheckBoxUseCase(checkBoxKey, newValue) }
     }
 
     fun setCusText(cusText: String) {
-        viewModelScope.launch { setCusText.invoke(cusText) }
+        viewModelScope.launch(Dispatchers.IO) { setCusText.invoke(cusText) }
     }
 
 //    fun setCheckBoxList(checkBoxList:List<Boolean>){

@@ -1,6 +1,7 @@
 package com.example.dlsandroidredesign.ui.mainScreen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +22,8 @@ import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 @SuppressLint("MissingPermission", "CoroutineCreationDuringComposition")
 @Composable
 fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settingViewModel: SettingFragmentViewModel = hiltViewModel()) {
-    val location = viewModel.locationObjectState.collectAsStateWithLifecycle().value
+    val location = viewModel.locationObject.collectAsStateWithLifecycle().value
+    Log.d("getLocationProcess","locationview$location")
 // ////CheckedVariable
     val settingCheckbox by settingViewModel.checkBox.collectAsStateWithLifecycle()
     fun Modifier.customThemeModifier() = padding(start = 5.dp, bottom = 2.dp)
@@ -42,7 +44,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
                 // lat
                 Text(
                     // TODO: the location.lat is already string. Doesn't need to put in ""
-                    text = "${location.lat}",
+                    text = location.lat,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -50,7 +52,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // lng
             if (settingCheckbox.latLon) {
                 Text(
-                    text = "${location.lon}",
+                    text = location.lon,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -58,7 +60,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // elevation
             if (settingCheckbox.latLon) {
                 Text(
-                    text = "${location.elevation}",
+                    text = location.elevation,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -66,7 +68,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // GridLocation
             if (settingCheckbox.gridLocation) {
                 Text(
-                    text = "${location.gridLocation}",
+                    text = location.gridLocation,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -74,7 +76,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // DistanceFromGridLine
             if (settingCheckbox.distance) {
                 Text(
-                    text = "${location.distance}",
+                    text = location.distance,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -82,7 +84,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // utmTxt
             if (settingCheckbox.utmCoordinate) {
                 Text(
-                    text = "${location.utmCoordinate}",
+                    text = location.utmCoordinate,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -96,7 +98,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // bearingTxt
             if (settingCheckbox.bearing) {
                 Text(
-                    text = " ${location.bearing}",
+                    text = location.bearing,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -104,7 +106,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
             // addressTxt
             if (settingCheckbox.address) {
                 Text(
-                    text = "${location.address}",
+                    text = location.address,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )
@@ -112,7 +114,7 @@ fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settin
 
             if (settingCheckbox.date) {
                 Text(
-                    text = "${location.date}",
+                    text = location.date,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.customThemeModifier()
                 )

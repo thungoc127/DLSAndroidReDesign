@@ -6,7 +6,7 @@ import com.example.dlsandroidredesign.domain.entity.LocationObject
 import javax.inject.Inject
 
 class InsertImageLocationInfo @Inject constructor(private val dlsRepository: DLSRepository) {
-    suspend operator fun invoke(imageUri: Uri, locationInfoObject: LocationObject) {
+    suspend operator fun invoke(imageUri: Uri, locationInfoObject: LocationObject?) {
         dlsRepository.insertImageLocationInfo(imageUri, locationInfoObject)
     }
 }

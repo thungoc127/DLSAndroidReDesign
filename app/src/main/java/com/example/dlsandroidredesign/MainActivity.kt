@@ -14,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -34,6 +36,8 @@ import java.io.OutputStream
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ImageLocationInfoViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +60,9 @@ class MainActivity : ComponentActivity() {
                 permissionState.launchMultiplePermissionRequest()
             }
 
+            val coroutineScope = rememberCoroutineScope()
             if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == true) {
-                viewModel.startFetchingLocation()
+                coroutineScope.launch {  viewModel.startFetchingLocation() }
             }
 
             DLSAndroidReDesignTheme {

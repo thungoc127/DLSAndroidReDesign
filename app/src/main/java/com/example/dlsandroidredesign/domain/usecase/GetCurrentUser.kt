@@ -8,7 +8,6 @@ import javax.inject.Inject
 class GetCurrentUser @Inject constructor(
     private val dlsRepository: DLSRepository
 ) {
-
     operator fun invoke(): Flow<User?> {
         return dlsRepository.getCurrentUser()
     }
