@@ -461,6 +461,7 @@ class DLSRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 id = response.body()!!.waypointid
             } else {
+                // TODO: Toast is an android thing. It should be used in view side only
                 Toast.makeText(context, "Fail to create Waypoint", Toast.LENGTH_SHORT).show()
             }
         }
@@ -480,6 +481,7 @@ class DLSRepositoryImpl @Inject constructor(
         val body = response.body()
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
+                // TODO: Toast is an android thing. It should be used in view side only
                 val id = body!!.waypointid
                 Toast.makeText(context, "Photo Uploaded Successfully ", Toast.LENGTH_SHORT).show()
             } else {
