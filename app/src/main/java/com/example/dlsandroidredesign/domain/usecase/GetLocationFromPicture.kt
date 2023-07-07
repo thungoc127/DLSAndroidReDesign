@@ -9,7 +9,7 @@ import com.example.dlsandroidredesign.domain.entity.LocationObject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class GetLocationFromPicture @Inject constructor(@ApplicationContext private val context: Context){
+class GetLocationFromPicture @Inject constructor(@ApplicationContext private val context: Context) {
     operator fun invoke(imageUri: Uri): LocationObject {
         val contentResolver: ContentResolver = context.contentResolver
         val inputStream = contentResolver.openInputStream(imageUri)

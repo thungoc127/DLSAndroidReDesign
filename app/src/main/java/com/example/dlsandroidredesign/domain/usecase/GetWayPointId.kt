@@ -14,7 +14,7 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-class GetWayPointId @Inject constructor(private val dlsRepository: DLSRepository, ) {
+class GetWayPointId @Inject constructor(private val dlsRepository: DLSRepository) {
     suspend operator fun invoke(uriImage: Uri?, locationObject: LocationObject): String {
         var result = ""
         withContext(Dispatchers.IO) {
@@ -33,9 +33,9 @@ class GetWayPointId @Inject constructor(private val dlsRepository: DLSRepository
             Log.d("getWayPointId", "locationObjectawait:$locationObject")
             Log.d("AutoUpload", "groupId:${currentUser.first()!!.groupIdCheck}")
             obj.put("waypoint", wayPointObj)
-            result = dlsRepository.getWayPointId(currentUser.first()!!.id,wayPointObj)!!
+            result = dlsRepository.getWayPointId(currentUser.first()!!.id, wayPointObj)!!
             Log.d("AutoUpload", "wayPointObj:$wayPointObj")
         }
         return result
-}
+    }
 }

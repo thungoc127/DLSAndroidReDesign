@@ -55,6 +55,7 @@ class SettingFragmentViewModel @Inject constructor(
     val waypointGroupName: StateFlow<String> = _waypointGroupName
 
     val autoUploadStatus = getAutoUploadStatus.invoke()
+
     // TODO: Recommend to use IO Dispatcher in repository. In viewModel, left just only viewModelScope.launch (let the data layer handle switching scope)
     fun setAutoUpload(isAutoUpload: Boolean) = viewModelScope.launch { withContext(Dispatchers.IO) { setAutoUploadStatus.invoke(isAutoUpload) } }
 

@@ -23,7 +23,7 @@ import com.example.dlsandroidredesign.ui.setting.SettingFragmentViewModel
 @Composable
 fun LocationView(viewModel: ImageLocationInfoViewModel = hiltViewModel(), settingViewModel: SettingFragmentViewModel = hiltViewModel()) {
     val location = viewModel.locationObject.collectAsStateWithLifecycle().value
-    Log.d("getLocationProcess","locationview$location")
+    Log.d("getLocationProcess", "locationview$location")
 // ////CheckedVariable
     val settingCheckbox by settingViewModel.checkBox.collectAsStateWithLifecycle()
     fun Modifier.customThemeModifier() = padding(start = 5.dp, bottom = 2.dp)

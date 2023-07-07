@@ -9,10 +9,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.math.abs
 
-class AddLocationToImageUri @Inject constructor(@ApplicationContext private val context: Context,
-                                                private val getLocationFromPicture:GetLocationFromPicture
-                                                ) {
-    operator fun invoke(imageUri: Uri, locationObject: LocationObject){
+class AddLocationToImageUri @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val getLocationFromPicture: GetLocationFromPicture
+) {
+    operator fun invoke(imageUri: Uri, locationObject: LocationObject) {
         val latitude = locationObject.lat.toDouble()
         val longitude = locationObject.lon.toDouble()
 

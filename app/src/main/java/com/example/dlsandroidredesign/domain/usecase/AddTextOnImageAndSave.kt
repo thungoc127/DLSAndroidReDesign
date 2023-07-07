@@ -26,11 +26,11 @@ class AddTextOnImageAndSave @Inject constructor(
     private val uploadSize: GetUploadSize,
     private val photoSize: GetPhotoSize,
     private val getCusText: GetCusText,
-    private val autoUploadStatus: GetAutoUploadStatus,
+    private val autoUploadStatus: GetAutoUploadStatus
 
-    ) {
+) {
     private val contentResolver: ContentResolver = context.contentResolver
-    suspend operator fun invoke(savedUriCapture: Uri,fileNameCapture:String,locationInfoLeft:String,locationInfoRight:String): Uri {
+    suspend operator fun invoke(savedUriCapture: Uri, fileNameCapture: String, locationInfoLeft: String, locationInfoRight: String): Uri {
         val inputStream = context.contentResolver.openInputStream(savedUriCapture)
         var bitmap = BitmapFactory.decodeStream(inputStream)
         var bitmapConfig = bitmap.config
@@ -143,7 +143,7 @@ class AddTextOnImageAndSave @Inject constructor(
 
                 // Optionally, you can display a toast message to indicate the image has been saved
                 Toast.makeText(context, "Image saved to gallery", Toast.LENGTH_SHORT).show()
-                deleteImageByName(fileNameCapture,contentResolver)
+                deleteImageByName(fileNameCapture, contentResolver)
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -152,7 +152,7 @@ class AddTextOnImageAndSave @Inject constructor(
     }
 }
 
-private fun deleteImageByName (imageName: String,contentResolver:ContentResolver) {
+private fun deleteImageByName(imageName: String, contentResolver: ContentResolver) {
     val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
     val selectionArgs = arrayOf(imageName)
     val deletedRows = contentResolver.delete(

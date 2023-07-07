@@ -10,9 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
+// TODO: not recommend holding application in viewModel.
 @SuppressLint("MissingPermission")
 @HiltViewModel
-// TODO: not recommend holding application in viewModel.
 class GalleryViewModel @Inject constructor(
     private val application: Application,
     private val dao: ImageLocationInfoDAO,

@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class CreateText @Inject constructor(
-    private val getCheckBoxUsecase: GetCheckBoxUseCase,
+    private val getCheckBoxUsecase: GetCheckBoxUseCase
 ) {
-    suspend operator fun invoke(locationObject: LocationObject?):List<String> {
-        val locationObjectNullable = locationObject?:LocationObject()
+    suspend operator fun invoke(locationObject: LocationObject?): List<String> {
+        val locationObjectNullable = locationObject ?: LocationObject()
         val locationInfoList = mutableListOf<String>()
         val checkBoxList = getCheckBoxUsecase.invoke().first()
         Log.d("createText", "locationObject: $locationObjectNullable")
@@ -26,9 +26,8 @@ class CreateText @Inject constructor(
         val bearingNew: String = if (checkBoxList.bearing) { locationObjectNullable.bearing + "\n" } else { "" }
         val addressNew: String = if (checkBoxList.address) { locationObjectNullable.address + "\n" } else { "" }
         val dateTimeFormattedNew: String = if (checkBoxList.date) { locationObjectNullable.date } else { "" }
-        val b= "$bearingNew$addressNew$dateTimeFormattedNew"
+        val b = "$bearingNew$addressNew$dateTimeFormattedNew"
         locationInfoList.add(b)
         return locationInfoList
-
-}
+    }
 }

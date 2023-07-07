@@ -3,7 +3,7 @@ package com.example.dlsandroidredesign.domain.usecase
 import javax.inject.Inject
 
 class GetGridLocation @Inject constructor() {
-    operator fun invoke(sec: String?, x: Double, y: Double): String{
+    operator fun invoke(sec: String?, x: Double, y: Double): String {
         var qtr = ""
         var lsd = 0
         if (x > 0 && x <= 0.25) {

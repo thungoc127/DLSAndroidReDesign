@@ -4,7 +4,6 @@ import android.location.Location
 import android.net.Uri
 import androidx.datastore.preferences.core.Preferences
 import com.arcgismaps.geometry.Envelope
-import com.arcgismaps.mapping.layers.FeatureLayer
 import com.example.dlsandroidredesign.domain.entity.LocationObject
 import com.example.dlsandroidredesign.domain.entity.User
 import com.google.gson.JsonObject
@@ -40,6 +39,8 @@ interface DLSRepository {
     fun getGridLocation(sec: String?, x: Double, y: Double): String
     fun getDistance(x: Int, y: Int, ext: Envelope): String
     fun getAddressFromLocation(latitude: Double?, longitude: Double?): String
-    suspend fun getCompleteAddress(location: Location?, sectionLayer: FeatureLayer?): LocationObject
-     fun getLocationObjectState(): Flow<LocationObject>
+    suspend fun getCompleteAddress(location: Location?): LocationObject
+
+//    fun getLocationObjectState(): Flow<LocationObject>
+    fun getLocation(): Flow<Location?>
 }

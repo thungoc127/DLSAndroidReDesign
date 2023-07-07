@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 class ConvertUriToMultipart @Inject constructor(@ApplicationContext private val context: Context) {
-     operator fun invoke(ImageUri: Uri?): MultipartBody.Part {
+    operator fun invoke(ImageUri: Uri?): MultipartBody.Part {
         val test = context.contentResolver.openInputStream(ImageUri!!)
         val byteBuff = ByteArrayOutputStream()
         val buffSize = 1024

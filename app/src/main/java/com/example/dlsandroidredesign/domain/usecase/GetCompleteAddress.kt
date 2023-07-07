@@ -6,8 +6,6 @@ import com.example.dlsandroidredesign.domain.DLSRepository
 import javax.inject.Inject
 
 class GetCompleteAddress @Inject constructor(private val dlsRepository: DLSRepository) {
-    suspend operator fun invoke(location: Location?,sectionLayer:FeatureLayer?) {
-        }
+    suspend operator fun invoke(location: Location?, sectionLayer: FeatureLayer?) {
     }
-
-
+}

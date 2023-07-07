@@ -12,4 +12,3 @@ class SepUtm @Inject constructor() {
         return Triple(zone, east, nor)
     }
 }
-
