@@ -1,9 +1,9 @@
 package com.example.dlsandroidredesign.domain.entity
 
 data class PhotoSize(
-    val tiny: Int = 20,
-    val small: Int = 40,
-    val medium: Int = 60,
-    val large: Int = 80,
-    val original: Int = 60
+    val tiny: Float = 800f,
+    val small: Float = 1600f,
+    val medium: Float = 3200f,
+    val large: Float = 3200f,
+    val original: Float = 3200f
 )

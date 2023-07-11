@@ -25,7 +25,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -60,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
             val coroutineScope = rememberCoroutineScope()
             if (permissionState.permissions.firstOrNull { it.permission == Manifest.permission.ACCESS_FINE_LOCATION }?.status?.isGranted == true) {
-                coroutineScope.launch { viewModel.startFetchingLocation() }
+                viewModel.startFetchingLocation()
             }
 
             DLSAndroidReDesignTheme {

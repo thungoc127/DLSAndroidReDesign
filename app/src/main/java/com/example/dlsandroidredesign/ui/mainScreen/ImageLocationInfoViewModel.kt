@@ -13,14 +13,12 @@ import com.example.dlsandroidredesign.domain.usecase.AddLocationToImageUri
 import com.example.dlsandroidredesign.domain.usecase.AddTextOnImageAndSave
 import com.example.dlsandroidredesign.domain.usecase.ConvertUriToMultipart
 import com.example.dlsandroidredesign.domain.usecase.CreateText
-import com.example.dlsandroidredesign.domain.usecase.FetchLocation
 import com.example.dlsandroidredesign.domain.usecase.GetAutoUploadStatus
 import com.example.dlsandroidredesign.domain.usecase.GetCurrentUser
 import com.example.dlsandroidredesign.domain.usecase.GetLocationFromPicture
 import com.example.dlsandroidredesign.domain.usecase.GetLocationInfoUseCase
 import com.example.dlsandroidredesign.domain.usecase.GetWayPointId
 import com.example.dlsandroidredesign.domain.usecase.InsertImageLocationInfo
-import com.example.dlsandroidredesign.domain.usecase.LoadMobileMapPackage
 import com.example.dlsandroidredesign.domain.usecase.UploadPicture
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -46,8 +44,6 @@ class ImageLocationInfoViewModel @Inject constructor(
     private val createText: CreateText,
     private val getWayPointId: GetWayPointId,
     private val getConvertUriToMultipart: ConvertUriToMultipart,
-    private val loadMobileMapPackage: LoadMobileMapPackage,
-    private val fetchLocation: FetchLocation,
     private val getLocationInfoUseCase: GetLocationInfoUseCase
 ) : ViewModel() {
     private val fileNameCapture = "temp.jpeg"
@@ -72,8 +68,6 @@ class ImageLocationInfoViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // TODO: Could remove this use case since the map package has initialized in repository init {}
-            loadMobileMapPackage.invoke()
             launch {
                 getLocationInfoUseCase().collect {
                     _locationObject.value = it
@@ -82,8 +76,13 @@ class ImageLocationInfoViewModel @Inject constructor(
         }
     }
 
-    suspend fun startFetchingLocation() {
-        fetchLocation.invoke()
+     fun startFetchingLocation() {
+         viewModelScope.launch {
+             getLocationInfoUseCase().collect {
+                 _locationObject.value = it
+             }
+         }
+
     }
 
     fun setCusTextLocationObject(newValue: String) {

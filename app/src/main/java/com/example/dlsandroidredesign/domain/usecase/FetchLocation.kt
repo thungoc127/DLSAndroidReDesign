@@ -7,6 +7,5 @@ class FetchLocation @Inject constructor(
     private val dlsRepository: DLSRepositoryImpl
 ) {
     suspend operator fun invoke() {
-        return dlsRepository.startFetchingLocation()
     }
 }

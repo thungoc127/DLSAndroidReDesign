@@ -20,6 +20,7 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStream
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class AddTextOnImageAndSave @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -116,26 +117,27 @@ class AddTextOnImageAndSave @Inject constructor(
 
                 // Compress the bitmap to JPEG format and write it to the output stream
                 val autoUploadStatus = autoUploadStatus.invoke().first()
-
                 if (autoUploadStatus) {
                     val size = PhotoSize()
+
                     when (uploadSize.invoke().first()) {
-                        "Tiny" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.tiny, outputStream)
-                        "Small" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.small, outputStream)
-                        "Medium" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.medium, outputStream)
-                        "Large" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.large, outputStream)
-                        "Original" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.original, outputStream)
+                        "Tiny" -> bitmap = scaleDown(bitmap,size.tiny,true)
+                        "Small" -> bitmap = scaleDown(bitmap,size.small,true)
+                        "Medium" -> bitmap = scaleDown(bitmap,size.medium,true)
+                        "Large" -> bitmap = bitmap
+                        "Original" -> bitmap = bitmap
                     }
                 } else {
                     val size = PhotoSize()
                     when (photoSize.invoke().first()) {
-                        "Tiny" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.tiny, outputStream)
-                        "Small" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.small, outputStream)
-                        "Medium" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.medium, outputStream)
-                        "Large" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.large, outputStream)
-                        "Original" -> bitmap.compress(Bitmap.CompressFormat.JPEG, size.original, outputStream)
+                        "Tiny" -> bitmap = scaleDown(bitmap,size.tiny,true)
+                        "Small" -> bitmap = scaleDown(bitmap,size.small,true)
+                        "Medium" -> bitmap = scaleDown(bitmap,size.medium,true)
+                        "Large" -> bitmap = bitmap
+                        "Original" -> bitmap = bitmap
                     }
                 }
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
 
                 // Flush and close the output stream
                 outputStream?.flush()
@@ -152,7 +154,16 @@ class AddTextOnImageAndSave @Inject constructor(
     }
 }
 
-private fun deleteImageByName(imageName: String, contentResolver: ContentResolver) {
+fun scaleDown(realImage: Bitmap, maxImageSize: Float, filter: Boolean): Bitmap {
+    val ratio = maxImageSize.coerceAtMost(maxImageSize) / realImage.width.coerceAtLeast(realImage.height)
+    val width = (ratio * realImage.width).roundToInt()
+    val height = (ratio * realImage.height).roundToInt()
+
+    val newBitmap = Bitmap.createScaledBitmap(realImage, width, height, filter)
+    return newBitmap
+}
+
+private fun deleteImageByName (imageName: String,contentResolver:ContentResolver) {
     val selection = "${MediaStore.Images.Media.DISPLAY_NAME} = ?"
     val selectionArgs = arrayOf(imageName)
     val deletedRows = contentResolver.delete(
@@ -164,4 +175,5 @@ private fun deleteImageByName(imageName: String, contentResolver: ContentResolve
         Log.d("deleteRows", "Morethan1picneedtodelel")
     } else {
     }
+
 }
